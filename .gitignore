@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.env
+*.db
+.coverage
+.pytest_cache/
+
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+.pub-cache/
+.pub/
+
+# IDE
+.idea/
+.vscode/
+.DS_Store
+
+# Android signing
+*.jks
+key.properties
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec

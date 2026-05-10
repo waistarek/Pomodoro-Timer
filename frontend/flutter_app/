@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+
+git clone https://github.com/flutter/flutter.git -b stable --depth 1 $HOME/flutter
+export PATH="$PATH:$HOME/flutter/bin"
+
+flutter doctor
+flutter pub get
+flutter build web --release --dart-define=API_BASE_URL=https://DEINE-BACKEND-URL
+
