@@ -1,6 +1,6 @@
 [build]
   base = "frontend/flutter_app"
-  command = "flutter build web --release --dart-define=API_BASE_URL=$API_BASE_URL"
+  command = "bash netlify_build.sh"
   publish = "build/web"
 
 [[redirects]]
