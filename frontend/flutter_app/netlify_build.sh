@@ -7,4 +7,4 @@ export PATH="$PATH:$HOME/flutter/bin"
 
 flutter doctor
 flutter pub get
-flutter build web --release --release --dart-define=API_BASE_URL=http://127.0.0.1:8000
+flutter build web --release --release --dart-define=API_BASE_URL="${API_BASE_URL:-https://pomodoro-backend-00pe.onrender.com}"
