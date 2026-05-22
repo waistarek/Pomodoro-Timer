@@ -66,14 +66,74 @@ class TimerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _tick() async {
+  /*Future<void> _tick() async {
     engine.tickOneSecond();
     if (engine.isFinished) {
       await _finishPhase();
     }
     notifyListeners();
+  }*/
+  // here is the fix of the multipe rings at the end of a period 
+  bool _finishingPhase = false;
+
+Future<void> _tick() async {
+  if (_finishingPhase) return;
+
+  engine.tickOneSecond();
+
+  if (engine.isFinished) {
+    await _finishPhaseOnce();
+    return;
   }
 
+  notifyListeners();
+}
+
+Future<void> _finishPhaseOnce() async {
+  if (_finishingPhase) return;
+  _finishingPhase = true;
+
+  _timer?.cancel();
+  _timer = null;
+
+  final finishedPhase = engine.phase;
+  final startedAt = _phaseStartedAt ?? DateTime.now();
+  final endedAt = DateTime.now();
+
+  try {
+    if (_settings.soundEnabled) {
+      await _soundService.playPhaseFinishedSound();
+    }
+
+    await _sessionService.createSession(
+      PomodoroSession(
+        taskId: _selectedTask?.remoteId,
+        phaseType: finishedPhase.apiValue,
+        durationMinutes: _durationForPhase(finishedPhase),
+        completed: true,
+        startedAt: startedAt,
+        endedAt: endedAt,
+      ),
+    );
+  } catch (_) {
+    // später Sync-Queue ergänzen
+  }
+
+  engine.switchToNextPhase();
+  _phaseStartedAt = DateTime.now();
+
+  _finishingPhase = false;
+
+  if (_settings.autoStart) {
+    running = false;
+    startOrResume();
+  } else {
+    running = false;
+    notifyListeners();
+  }
+}
+
+  // the end 
   Future<void> _finishPhase() async {
     final finishedPhase = engine.phase;
     final startedAt = _phaseStartedAt ?? DateTime.now().subtract(Duration(minutes: _durationForPhase(finishedPhase)));
