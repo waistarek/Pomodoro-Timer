@@ -45,7 +45,7 @@ class TimerProvider extends ChangeNotifier {
   }
 
   void startOrResume() {
-    if (running) return;
+    if (running || _finishingPhase) return;
     running = true;
     _phaseStartedAt ??= DateTime.now();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
@@ -53,6 +53,7 @@ class TimerProvider extends ChangeNotifier {
   }
 
   void pause() {
+    if (_finishingPhase) return;
     running = false;
     _timer?.cancel();
     _timer = null;
@@ -60,96 +61,53 @@ class TimerProvider extends ChangeNotifier {
   }
 
   void reset() {
+    if (_finishingPhase) return;
     pause();
     _phaseStartedAt = null;
     engine.reset();
     notifyListeners();
   }
 
-  /*Future<void> _tick() async {
-    engine.tickOneSecond();
-    if (engine.isFinished) {
-      await _finishPhase();
-    }
-    notifyListeners();
-  }*/
+ 
   // here is the fix of the multipe rings at the end of a period 
   bool _finishingPhase = false;
 
-Future<void> _tick() async {
-  if (_finishingPhase) return;
+  Future<void> _tick() async {
+    if (_finishingPhase) return;
 
-  engine.tickOneSecond();
+    engine.tickOneSecond();
 
-  if (engine.isFinished) {
-    await _finishPhaseOnce();
-    return;
-  }
-
-  notifyListeners();
-}
-
-Future<void> _finishPhaseOnce() async {
-  if (_finishingPhase) return;
-  _finishingPhase = true;
-
-  _timer?.cancel();
-  _timer = null;
-
-  final finishedPhase = engine.phase;
-  final startedAt = _phaseStartedAt ?? DateTime.now();
-  final endedAt = DateTime.now();
-
-  try {
-    if (_settings.soundEnabled) {
-      await _soundService.playPhaseFinishedSound();
+    if (engine.isFinished) {
+      await _finishPhaseOnce();
+      return;
     }
 
-    await _sessionService.createSession(
-      PomodoroSession(
-        taskId: _selectedTask?.remoteId,
-        phaseType: finishedPhase.apiValue,
-        durationMinutes: _durationForPhase(finishedPhase),
-        completed: true,
-        startedAt: startedAt,
-        endedAt: endedAt,
-      ),
-    );
-  } catch (_) {
-    // später Sync-Queue ergänzen
-  }
-
-  engine.switchToNextPhase();
-  _phaseStartedAt = DateTime.now();
-
-  _finishingPhase = false;
-
-  if (_settings.autoStart) {
-    running = false;
-    startOrResume();
-  } else {
-    running = false;
     notifyListeners();
   }
-}
 
-  // the end 
-  Future<void> _finishPhase() async {
+  Future<void> _finishPhaseOnce() async {
+    if (_finishingPhase) return;
+
+    _finishingPhase = true;
+
+    _timer?.cancel();
+    _timer = null;
+
     final finishedPhase = engine.phase;
-    final startedAt = _phaseStartedAt ?? DateTime.now().subtract(Duration(minutes: _durationForPhase(finishedPhase)));
+    final startedAt = _phaseStartedAt ?? DateTime.now();
     final endedAt = DateTime.now();
 
-    if (_settings.soundEnabled) {
-      try {
-        await _soundService.playPhaseFinishedSound();
-      } catch (_) {}
-    }
-
-    if (finishedPhase == PomodoroPhase.work) {
-      await _localStorage.setJsonObject('last_completed_work', {'at': endedAt.toIso8601String()});
-    }
-
     try {
+      if (finishedPhase == PomodoroPhase.work) {
+        await _localStorage.setJsonObject('last_completed_work', {
+          'at': endedAt.toIso8601String(),
+        });
+      }
+
+      if (_settings.soundEnabled) {
+        await _soundService.playPhaseFinishedSound();
+      }
+
       await _sessionService.createSession(
         PomodoroSession(
           taskId: _selectedTask?.remoteId,
@@ -161,16 +119,26 @@ Future<void> _finishPhaseOnce() async {
         ),
       );
     } catch (_) {
-      // Offline: Die App läuft weiter. Eine spätere echte Sync-Queue kann hier ergänzt werden.
-    }
+      // Offline oder Fehler beim Speichern/Sound:
+      // Die App läuft trotzdem weiter.
+      // Später kann hier eine Sync-Queue ergänzt werden.
+    } finally {
+      engine.switchToNextPhase();
+      _phaseStartedAt = DateTime.now();
 
-    engine.switchToNextPhase();
-    _phaseStartedAt = DateTime.now();
+      _finishingPhase = false;
+      running = false;
 
-    if (!_settings.autoStart) {
-      pause();
+      if (_settings.autoStart) {
+        startOrResume();
+      } else {
+        notifyListeners();
+      }
     }
   }
+
+  // the end 
+  
 
   int _durationForPhase(PomodoroPhase phase) {
     switch (phase) {
