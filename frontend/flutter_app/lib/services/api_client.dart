@@ -13,7 +13,8 @@ class ApiException implements Exception {
 }
 
 class ApiClient {
-  ApiClient({required this.localStorage, http.Client? client}) : _client = client ?? http.Client();
+  ApiClient({required this.localStorage, http.Client? client})
+      : _client = client ?? http.Client();
 
   final LocalStorageService localStorage;
   final http.Client _client;
@@ -30,24 +31,31 @@ class ApiClient {
   }
 
   Future<dynamic> get(String path, {bool auth = true}) async {
-    final response = await _client.get(_uri(path), headers: _headers(auth: auth));
+    final response =
+        await _client.get(_uri(path), headers: _headers(auth: auth));
     return _handle(response);
   }
 
-  Future<dynamic> post(String path, Map<String, dynamic> body, {bool auth = true}) async {
-    final response = await _client.post(_uri(path), headers: _headers(auth: auth), body: jsonEncode(body));
+  Future<dynamic> post(String path, Map<String, dynamic> body,
+      {bool auth = true}) async {
+    final response = await _client.post(_uri(path),
+        headers: _headers(auth: auth), body: jsonEncode(body));
     return _handle(response);
   }
 
-  Future<dynamic> put(String path, Map<String, dynamic> body, {bool auth = true}) async {
-    final response = await _client.put(_uri(path), headers: _headers(auth: auth), body: jsonEncode(body));
+  Future<dynamic> put(String path, Map<String, dynamic> body,
+      {bool auth = true}) async {
+    final response = await _client.put(_uri(path),
+        headers: _headers(auth: auth), body: jsonEncode(body));
     return _handle(response);
   }
 
   Future<void> delete(String path, {bool auth = true}) async {
-    final response = await _client.delete(_uri(path), headers: _headers(auth: auth));
+    final response =
+        await _client.delete(_uri(path), headers: _headers(auth: auth));
     if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw ApiException(_extractMessage(response), statusCode: response.statusCode);
+      throw ApiException(_extractMessage(response),
+          statusCode: response.statusCode);
     }
   }
 
@@ -56,7 +64,8 @@ class ApiClient {
       if (response.body.isEmpty) return null;
       return jsonDecode(response.body);
     }
-    throw ApiException(_extractMessage(response), statusCode: response.statusCode);
+    throw ApiException(_extractMessage(response),
+        statusCode: response.statusCode);
   }
 
   String _extractMessage(http.Response response) {

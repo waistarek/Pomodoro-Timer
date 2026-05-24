@@ -18,9 +18,10 @@ from .schemas import (
     UserCreate,
     UserLogin,
     UserRead,
+    TaskStatsResponse,
 )
 from .security import create_access_token, hash_password, verify_password
-from .stats import build_stats
+from .stats import build_stats, build_task_stats
 
 Base.metadata.create_all(bind=engine)
 
@@ -151,6 +152,9 @@ def stats_weekly(current_user: User = Depends(get_current_user), db: Session = D
 def stats_monthly(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> StatsResponse:
     return build_stats(_user_sessions(db, current_user.id), "monthly")
 
+@app.get("/stats/tasks", response_model=TaskStatsResponse)
+def stats_tasks(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> TaskStatsResponse:
+    return build_task_stats(_user_sessions(db, current_user.id))
 
 @app.get("/settings", response_model=SettingsRead)
 def get_settings(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> Setting:

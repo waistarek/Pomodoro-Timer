@@ -21,7 +21,8 @@ class _TaskEditorDialogState extends State<TaskEditorDialog> {
     super.initState();
     final task = widget.task;
     _titleController = TextEditingController(text: task?.title ?? '');
-    _descriptionController = TextEditingController(text: task?.description ?? '');
+    _descriptionController =
+        TextEditingController(text: task?.description ?? '');
     _tagsController = TextEditingController(text: task?.tags ?? '');
     _priority = task?.priority ?? 'medium';
   }
@@ -29,7 +30,8 @@ class _TaskEditorDialogState extends State<TaskEditorDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.task == null ? 'Aufgabe erstellen' : 'Aufgabe bearbeiten'),
+      title: Text(
+          widget.task == null ? 'Aufgabe erstellen' : 'Aufgabe bearbeiten'),
       content: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -39,32 +41,38 @@ class _TaskEditorDialogState extends State<TaskEditorDialog> {
               TextFormField(
                 controller: _titleController,
                 decoration: const InputDecoration(labelText: 'Titel'),
-                validator: (value) => value == null || value.trim().isEmpty ? 'Bitte Titel eingeben' : null,
+                validator: (value) => value == null || value.trim().isEmpty
+                    ? 'Bitte Titel eingeben'
+                    : null,
               ),
               TextFormField(
                 controller: _descriptionController,
                 decoration: const InputDecoration(labelText: 'Beschreibung'),
               ),
               DropdownButtonFormField<String>(
-                value: _priority,
+                initialValue: _priority,
                 decoration: const InputDecoration(labelText: 'Priorität'),
                 items: const [
                   DropdownMenuItem(value: 'low', child: Text('Niedrig')),
                   DropdownMenuItem(value: 'medium', child: Text('Mittel')),
                   DropdownMenuItem(value: 'high', child: Text('Hoch')),
                 ],
-                onChanged: (value) => setState(() => _priority = value ?? 'medium'),
+                onChanged: (value) =>
+                    setState(() => _priority = value ?? 'medium'),
               ),
               TextFormField(
                 controller: _tagsController,
-                decoration: const InputDecoration(labelText: 'Tags/Kategorien, z. B. Uni, Arbeit'),
+                decoration: const InputDecoration(
+                    labelText: 'Tags/Kategorien, z. B. Uni, Arbeit'),
               ),
             ],
           ),
         ),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Abbrechen')),
+        TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Abbrechen')),
         FilledButton(
           onPressed: () {
             if (!_formKey.currentState!.validate()) return;

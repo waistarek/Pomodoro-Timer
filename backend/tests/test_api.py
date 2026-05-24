@@ -94,3 +94,48 @@ def test_settings_update():
     assert response.status_code == 200
     assert response.json()["work_minutes"] == 30
     assert response.json()["theme"] == "dark"
+
+
+def test_task_stats_grouped_by_task():
+    headers = register_and_login()
+
+    task_response = client.post(
+        "/tasks",
+        headers=headers,
+        json={
+            "title": "Mathe lernen",
+            "description": "",
+            "priority": "medium",
+            "tags": "",
+            "completed": False,
+        },
+    )
+    assert task_response.status_code == 201
+    task_id = task_response.json()["id"]
+
+    start = datetime.utcnow() - timedelta(minutes=60)
+    end = datetime.utcnow()
+
+    response = client.post(
+        "/sessions",
+        headers=headers,
+        json={
+            "task_id": task_id,
+            "phase_type": "work",
+            "duration_minutes": 60,
+            "completed": True,
+            "started_at": start.isoformat(),
+            "ended_at": end.isoformat(),
+        },
+    )
+    assert response.status_code == 201
+
+    response = client.get("/stats/tasks", headers=headers)
+    assert response.status_code == 200
+
+    data = response.json()
+    assert data["total_focus_minutes"] == 60
+    assert data["total_pomodoros"] == 1
+    assert data["items"][0]["task_id"] == task_id
+    assert data["items"][0]["task_title"] == "Mathe lernen"
+    assert data["items"][0]["focus_minutes"] == 60

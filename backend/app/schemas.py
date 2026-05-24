@@ -102,3 +102,16 @@ class StatsResponse(BaseModel):
     total_focus_minutes: int
     current_streak_days: int
     best_focus_day: str | None = None
+
+class TaskStatsItem(BaseModel):
+    task_id: int | None = None
+    task_title: str
+    pomodoros: int
+    focus_minutes: int
+    focus_hours: float
+
+
+class TaskStatsResponse(BaseModel):
+    items: list[TaskStatsItem]
+    total_pomodoros: int
+    total_focus_minutes: int

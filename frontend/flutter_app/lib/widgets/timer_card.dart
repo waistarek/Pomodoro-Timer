@@ -17,7 +17,8 @@ class TimerCard extends StatelessWidget {
             padding: const EdgeInsets.all(24),
             child: Column(
               children: [
-                Text(timer.phase.label, style: Theme.of(context).textTheme.headlineSmall),
+                Text(timer.phase.label,
+                    style: Theme.of(context).textTheme.headlineSmall),
                 const SizedBox(height: 24),
                 SizedBox(
                   width: 260,
@@ -35,9 +36,11 @@ class TimerCard extends StatelessWidget {
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(timer.formattedTime, style: Theme.of(context).textTheme.displayLarge),
+                          Text(timer.formattedTime,
+                              style: Theme.of(context).textTheme.displayLarge),
                           const SizedBox(height: 8),
-                          Text('${timer.completedPomodoros} Pomodoros abgeschlossen'),
+                          Text(
+                              '${timer.completedPomodoros} Pomodoros abgeschlossen'),
                         ],
                       ),
                     ],

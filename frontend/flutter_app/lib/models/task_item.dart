@@ -76,7 +76,8 @@ class TaskItem {
       tags: json['tags'] ?? '',
       completed: json['completed'] ?? false,
       completedPomodoros: json['completed_pomodoros'] ?? 0,
-      createdAt: DateTime.tryParse(json['created_at']?.toString() ?? '') ?? DateTime.now(),
+      createdAt: DateTime.tryParse(json['created_at']?.toString() ?? '') ??
+          DateTime.now(),
     );
   }
 }

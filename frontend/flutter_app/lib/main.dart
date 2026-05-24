@@ -22,23 +22,38 @@ Future<void> main() async {
   await localStorage.init();
 
   final apiClient = ApiClient(localStorage: localStorage);
-  final authService = AuthService(apiClient: apiClient, localStorage: localStorage);
+  final authService =
+      AuthService(apiClient: apiClient, localStorage: localStorage);
   final taskService = TaskService(apiClient: apiClient);
-  final sessionService = SessionService(apiClient: apiClient);
+  final sessionService = SessionService(
+    apiClient: apiClient,
+    localStorage: localStorage,
+  );
   final settingsService = SettingsService(apiClient: apiClient);
-  final statsService = StatsService(apiClient: apiClient);
+  final statsService = StatsService(
+    apiClient: apiClient,
+    localStorage: localStorage,
+  );
   final soundService = SoundService();
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider(authService)..loadLocalSession()),
-        ChangeNotifierProvider(create: (_) => SettingsProvider(localStorage, settingsService)..load()),
-        ChangeNotifierProvider(create: (_) => TaskProvider(localStorage, taskService)..loadLocalTasks()),
-        ChangeNotifierProxyProvider2<SettingsProvider, TaskProvider, TimerProvider>(
-          create: (_) => TimerProvider(localStorage, sessionService, soundService),
+        ChangeNotifierProvider(
+            create: (_) => AuthProvider(authService)..loadLocalSession()),
+        ChangeNotifierProvider(
+            create: (_) =>
+                SettingsProvider(localStorage, settingsService)..load()),
+        ChangeNotifierProvider(
+            create: (_) =>
+                TaskProvider(localStorage, taskService)..loadLocalTasks()),
+        ChangeNotifierProxyProvider2<SettingsProvider, TaskProvider,
+            TimerProvider>(
+          create: (_) =>
+              TimerProvider(localStorage, sessionService, soundService),
           update: (_, settingsProvider, taskProvider, timerProvider) {
-            final provider = timerProvider ?? TimerProvider(localStorage, sessionService, soundService);
+            final provider = timerProvider ??
+                TimerProvider(localStorage, sessionService, soundService);
             provider.updateSettings(settingsProvider.settings);
             provider.updateSelectedTask(taskProvider.selectedTask);
             return provider;
@@ -68,7 +83,8 @@ class PomodoroRoot extends StatelessWidget {
             useMaterial3: true,
           ),
           darkTheme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: settings.themeColor, brightness: Brightness.dark),
+            colorScheme: ColorScheme.fromSeed(
+                seedColor: settings.themeColor, brightness: Brightness.dark),
             useMaterial3: true,
           ),
           home: const AppShell(),

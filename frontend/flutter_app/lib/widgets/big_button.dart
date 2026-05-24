@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class BigButton extends StatelessWidget {
-  const BigButton({super.key, required this.label, required this.icon, required this.onPressed, this.filled = true});
+  const BigButton(
+      {super.key,
+      required this.label,
+      required this.icon,
+      required this.onPressed,
+      this.filled = true});
 
   final String label;
   final IconData icon;

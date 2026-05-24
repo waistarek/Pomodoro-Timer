@@ -11,12 +11,16 @@ class AuthService {
   bool get hasLocalToken => localStorage.token != null;
 
   Future<UserProfile> register(String email, String password) async {
-    final data = await apiClient.post('/auth/register', {'email': email, 'password': password}, auth: false);
+    final data = await apiClient.post(
+        '/auth/register', {'email': email, 'password': password},
+        auth: false);
     return UserProfile.fromJson(data);
   }
 
   Future<void> login(String email, String password) async {
-    final data = await apiClient.post('/auth/login', {'email': email, 'password': password}, auth: false);
+    final data = await apiClient.post(
+        '/auth/login', {'email': email, 'password': password},
+        auth: false);
     await localStorage.setToken(data['access_token']);
   }
 

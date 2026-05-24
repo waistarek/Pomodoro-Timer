@@ -1,7 +1,7 @@
 from collections import defaultdict
 from datetime import date, datetime, timedelta
 from .models import PomodoroSession
-from .schemas import StatsItem, StatsResponse
+from .schemas import StatsItem, StatsResponse, TaskStatsItem, TaskStatsResponse
 
 
 def _date_range(days: int) -> list[date]:
@@ -86,4 +86,44 @@ def build_stats(sessions: list[PomodoroSession], mode: str) -> StatsResponse:
         total_focus_minutes=sum(i.focus_minutes for i in items),
         current_streak_days=_streak_days(sessions),
         best_focus_day=best.label if best and best.focus_minutes > 0 else None,
+    )
+
+def build_task_stats(sessions: list[PomodoroSession]) -> TaskStatsResponse:
+    buckets: dict[int | None, dict[str, int | str | None]] = {}
+
+    for session in sessions:
+        if not session.completed or session.phase_type != "work":
+            continue
+
+        task_id = session.task_id
+        task_title = session.task.title if session.task is not None else "Ohne Aufgabe"
+
+        if task_id not in buckets:
+            buckets[task_id] = {
+                "task_id": task_id,
+                "task_title": task_title,
+                "pomodoros": 0,
+                "focus_minutes": 0,
+            }
+
+        buckets[task_id]["pomodoros"] = int(buckets[task_id]["pomodoros"]) + 1
+        buckets[task_id]["focus_minutes"] = int(buckets[task_id]["focus_minutes"]) + session.duration_minutes
+
+    items = [
+        TaskStatsItem(
+            task_id=data["task_id"],
+            task_title=str(data["task_title"]),
+            pomodoros=int(data["pomodoros"]),
+            focus_minutes=int(data["focus_minutes"]),
+            focus_hours=round(int(data["focus_minutes"]) / 60, 2),
+        )
+        for data in buckets.values()
+    ]
+
+    items.sort(key=lambda item: item.focus_minutes, reverse=True)
+
+    return TaskStatsResponse(
+        items=items,
+        total_pomodoros=sum(item.pomodoros for item in items),
+        total_focus_minutes=sum(item.focus_minutes for item in items),
     )

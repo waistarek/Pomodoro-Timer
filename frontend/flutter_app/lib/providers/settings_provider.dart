@@ -30,7 +30,8 @@ class SettingsProvider extends ChangeNotifier {
         await _localStorage.setJsonObject('settings', settings.toJson());
         notifyListeners();
       } catch (e) {
-        error = 'Einstellungen lokal gespeichert, aber noch nicht synchronisiert.';
+        error =
+            'Einstellungen lokal gespeichert, aber noch nicht synchronisiert.';
       }
     }
   }

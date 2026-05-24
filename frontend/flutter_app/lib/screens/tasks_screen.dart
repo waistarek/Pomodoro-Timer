@@ -8,7 +8,8 @@ class TasksScreen extends StatelessWidget {
   const TasksScreen({super.key});
 
   Future<void> _openEditor(BuildContext context, {TaskItem? task}) async {
-    final result = await showDialog<TaskItem>(context: context, builder: (_) => TaskEditorDialog(task: task));
+    final result = await showDialog<TaskItem>(
+        context: context, builder: (_) => TaskEditorDialog(task: task));
     if (result == null || !context.mounted) return;
     final provider = context.read<TaskProvider>();
     if (task == null) {
@@ -52,10 +53,12 @@ class TasksScreen extends StatelessWidget {
                 child: ListTile(
                   leading: Checkbox(
                     value: task.completed,
-                    onChanged: (value) => provider.updateTask(task.copyWith(completed: value ?? false)),
+                    onChanged: (value) => provider
+                        .updateTask(task.copyWith(completed: value ?? false)),
                   ),
                   title: Text(task.title),
-                  subtitle: Text('Priorität: ${task.priority} · Pomodoros: ${task.completedPomodoros} · Tags: ${task.tags}'),
+                  subtitle: Text(
+                      'Priorität: ${task.priority} · Pomodoros: ${task.completedPomodoros} · Tags: ${task.tags}'),
                   selected: selected,
                   trailing: Wrap(
                     spacing: 4,
@@ -63,10 +66,16 @@ class TasksScreen extends StatelessWidget {
                       IconButton(
                         tooltip: 'Für Timer auswählen',
                         onPressed: () => provider.selectTask(task),
-                        icon: Icon(selected ? Icons.radio_button_checked : Icons.radio_button_unchecked),
+                        icon: Icon(selected
+                            ? Icons.radio_button_checked
+                            : Icons.radio_button_unchecked),
                       ),
-                      IconButton(onPressed: () => _openEditor(context, task: task), icon: const Icon(Icons.edit)),
-                      IconButton(onPressed: () => provider.deleteTask(task), icon: const Icon(Icons.delete_outline)),
+                      IconButton(
+                          onPressed: () => _openEditor(context, task: task),
+                          icon: const Icon(Icons.edit)),
+                      IconButton(
+                          onPressed: () => provider.deleteTask(task),
+                          icon: const Icon(Icons.delete_outline)),
                     ],
                   ),
                 ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/app_settings.dart';
 import '../providers/settings_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -20,56 +19,65 @@ class SettingsScreen extends StatelessWidget {
                 title: 'Arbeitszeit',
                 value: settings.workMinutes,
                 suffix: 'Minuten',
-                onChanged: (v) => provider.save(settings.copyWith(workMinutes: v)),
+                onChanged: (v) =>
+                    provider.save(settings.copyWith(workMinutes: v)),
               ),
               _NumberTile(
                 title: 'Kurze Pause',
                 value: settings.shortBreakMinutes,
                 suffix: 'Minuten',
-                onChanged: (v) => provider.save(settings.copyWith(shortBreakMinutes: v)),
+                onChanged: (v) =>
+                    provider.save(settings.copyWith(shortBreakMinutes: v)),
               ),
               _NumberTile(
                 title: 'Lange Pause',
                 value: settings.longBreakMinutes,
                 suffix: 'Minuten',
-                onChanged: (v) => provider.save(settings.copyWith(longBreakMinutes: v)),
+                onChanged: (v) =>
+                    provider.save(settings.copyWith(longBreakMinutes: v)),
               ),
               _NumberTile(
                 title: 'Lange Pause nach',
                 value: settings.longBreakAfter,
                 suffix: 'Pomodoros',
-                onChanged: (v) => provider.save(settings.copyWith(longBreakAfter: v)),
+                onChanged: (v) =>
+                    provider.save(settings.copyWith(longBreakAfter: v)),
               ),
               SwitchListTile(
                 title: const Text('Nächste Phase automatisch starten'),
                 value: settings.autoStart,
-                onChanged: (v) => provider.save(settings.copyWith(autoStart: v)),
+                onChanged: (v) =>
+                    provider.save(settings.copyWith(autoStart: v)),
               ),
               SwitchListTile(
                 title: const Text('Sound aktivieren'),
                 value: settings.soundEnabled,
-                onChanged: (v) => provider.save(settings.copyWith(soundEnabled: v)),
+                onChanged: (v) =>
+                    provider.save(settings.copyWith(soundEnabled: v)),
               ),
               SwitchListTile(
                 title: const Text('Vibration aktivieren'),
-                subtitle: const Text('Die konkrete mobile Vibration wird später über ein Plugin angebunden.'),
+                subtitle: const Text(
+                    'Die konkrete mobile Vibration wird später über ein Plugin angebunden.'),
                 value: settings.vibrationEnabled,
-                onChanged: (v) => provider.save(settings.copyWith(vibrationEnabled: v)),
+                onChanged: (v) =>
+                    provider.save(settings.copyWith(vibrationEnabled: v)),
               ),
               const Divider(),
               DropdownButtonFormField<String>(
-                value: settings.theme,
+                initialValue: settings.theme,
                 decoration: const InputDecoration(labelText: 'Darstellung'),
                 items: const [
                   DropdownMenuItem(value: 'system', child: Text('System')),
                   DropdownMenuItem(value: 'light', child: Text('Light Mode')),
                   DropdownMenuItem(value: 'dark', child: Text('Dark Mode')),
                 ],
-                onChanged: (value) => provider.save(settings.copyWith(theme: value ?? 'system')),
+                onChanged: (value) =>
+                    provider.save(settings.copyWith(theme: value ?? 'system')),
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: settings.colorName,
+                initialValue: settings.colorName,
                 decoration: const InputDecoration(labelText: 'Theme-Farbe'),
                 items: const [
                   DropdownMenuItem(value: 'red', child: Text('Rot')),
@@ -77,7 +85,8 @@ class SettingsScreen extends StatelessWidget {
                   DropdownMenuItem(value: 'green', child: Text('Grün')),
                   DropdownMenuItem(value: 'purple', child: Text('Lila')),
                 ],
-                onChanged: (value) => provider.save(settings.copyWith(colorName: value ?? 'red')),
+                onChanged: (value) =>
+                    provider.save(settings.copyWith(colorName: value ?? 'red')),
               ),
               const SizedBox(height: 24),
               FilledButton.icon(
@@ -94,7 +103,11 @@ class SettingsScreen extends StatelessWidget {
 }
 
 class _NumberTile extends StatelessWidget {
-  const _NumberTile({required this.title, required this.value, required this.suffix, required this.onChanged});
+  const _NumberTile(
+      {required this.title,
+      required this.value,
+      required this.suffix,
+      required this.onChanged});
 
   final String title;
   final int value;

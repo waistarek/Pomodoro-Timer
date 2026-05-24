@@ -23,6 +23,8 @@ class TimerProvider extends ChangeNotifier {
   late TimerEngine engine;
   Timer? _timer;
   DateTime? _phaseStartedAt;
+  DateTime? _phaseEndsAt;
+  TaskItem? _phaseTask;
   bool running = false;
 
   int get remainingSeconds => engine.remainingSeconds;
@@ -46,36 +48,58 @@ class TimerProvider extends ChangeNotifier {
 
   void startOrResume() {
     if (running || _finishingPhase) return;
+
+    final now = DateTime.now();
+
     running = true;
-    _phaseStartedAt ??= DateTime.now();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
+    _phaseStartedAt ??= now;
+    _phaseTask ??= _selectedTask;
+
+    _phaseEndsAt = now.add(
+      Duration(seconds: engine.remainingSeconds),
+    );
+
+    _timer?.cancel();
+    _timer = Timer.periodic(
+      const Duration(milliseconds: 250),
+      (_) => _tick(),
+    );
+
     notifyListeners();
   }
 
   void pause() {
     if (_finishingPhase) return;
+
+    _syncRemainingSecondsWithClock();
+
     running = false;
     _timer?.cancel();
     _timer = null;
+    _phaseEndsAt = null;
+
     notifyListeners();
   }
 
   void reset() {
     if (_finishingPhase) return;
+
     pause();
     _phaseStartedAt = null;
+    _phaseEndsAt = null;
+    _phaseTask = null;
     engine.reset();
+
     notifyListeners();
   }
 
- 
-  // here is the fix of the multipe rings at the end of a period 
+  // here is the fix of the multipe rings at the end of a period
   bool _finishingPhase = false;
 
   Future<void> _tick() async {
     if (_finishingPhase) return;
 
-    engine.tickOneSecond();
+    _syncRemainingSecondsWithClock();
 
     if (engine.isFinished) {
       await _finishPhaseOnce();
@@ -83,6 +107,14 @@ class TimerProvider extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  void _syncRemainingSecondsWithClock() {
+    final end = _phaseEndsAt;
+    if (end == null) return;
+
+    final remaining = end.difference(DateTime.now()).inSeconds;
+    engine.remainingSeconds = remaining > 0 ? remaining : 0;
   }
 
   Future<void> _finishPhaseOnce() async {
@@ -95,36 +127,54 @@ class TimerProvider extends ChangeNotifier {
 
     final finishedPhase = engine.phase;
     final startedAt = _phaseStartedAt ?? DateTime.now();
-    final endedAt = DateTime.now();
+    final endedAt = _phaseEndsAt ?? DateTime.now();
+
+    final durationMinutes = (engine.totalPhaseSeconds / 60).round();
 
     try {
       if (finishedPhase == PomodoroPhase.work) {
         await _localStorage.setJsonObject('last_completed_work', {
           'at': endedAt.toIso8601String(),
         });
+
+        await _sessionService.createSession(
+          PomodoroSession(
+            taskId: _phaseTask?.remoteId,
+            localTaskId: _phaseTask?.localId,
+            taskTitle: _phaseTask?.title,
+            phaseType: finishedPhase.apiValue,
+            durationMinutes: durationMinutes,
+            completed: true,
+            startedAt: startedAt,
+            endedAt: endedAt,
+          ),
+        );
+      } else {
+        await _sessionService.createSession(
+          PomodoroSession(
+            taskId: null,
+            phaseType: finishedPhase.apiValue,
+            durationMinutes: durationMinutes,
+            completed: true,
+            startedAt: startedAt,
+            endedAt: endedAt,
+          ),
+        );
       }
 
       if (_settings.soundEnabled) {
         await _soundService.playPhaseFinishedSound();
       }
-
-      await _sessionService.createSession(
-        PomodoroSession(
-          taskId: _selectedTask?.remoteId,
-          phaseType: finishedPhase.apiValue,
-          durationMinutes: _durationForPhase(finishedPhase),
-          completed: true,
-          startedAt: startedAt,
-          endedAt: endedAt,
-        ),
-      );
     } catch (_) {
       // Offline oder Fehler beim Speichern/Sound:
       // Die App läuft trotzdem weiter.
       // Später kann hier eine Sync-Queue ergänzt werden.
     } finally {
       engine.switchToNextPhase();
+
       _phaseStartedAt = DateTime.now();
+      _phaseEndsAt = null;
+      _phaseTask = _selectedTask;
 
       _finishingPhase = false;
       running = false;
@@ -137,19 +187,7 @@ class TimerProvider extends ChangeNotifier {
     }
   }
 
-  // the end 
-  
-
-  int _durationForPhase(PomodoroPhase phase) {
-    switch (phase) {
-      case PomodoroPhase.work:
-        return _settings.workMinutes;
-      case PomodoroPhase.shortBreak:
-        return _settings.shortBreakMinutes;
-      case PomodoroPhase.longBreak:
-        return _settings.longBreakMinutes;
-    }
-  }
+  // the end
 
   void _rebuildEngine({bool keepPomodoros = false}) {
     final oldPomodoros = keepPomodoros ? (engine.completedPomodoros) : 0;

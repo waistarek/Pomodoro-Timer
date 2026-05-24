@@ -37,19 +37,14 @@ class TimerEngine {
     return (done / totalPhaseSeconds).clamp(0.0, 1.0);
   }
 
-  void tickOneSecond() {
-    if (remainingSeconds > 0) {
-      remainingSeconds -= 1;
-    }
-  }
-
   bool get isFinished => remainingSeconds <= 0;
 
   PomodoroPhase switchToNextPhase() {
     if (phase == PomodoroPhase.work) {
       completedPomodoros += 1;
       final shouldLongBreak = completedPomodoros % longBreakAfter == 0;
-      phase = shouldLongBreak ? PomodoroPhase.longBreak : PomodoroPhase.shortBreak;
+      phase =
+          shouldLongBreak ? PomodoroPhase.longBreak : PomodoroPhase.shortBreak;
     } else {
       phase = PomodoroPhase.work;
     }

@@ -17,7 +17,8 @@ class TaskService {
 
   Future<TaskItem> updateTask(TaskItem task) async {
     if (task.remoteId == null) return task;
-    final data = await apiClient.put('/tasks/${task.remoteId}', task.toApiJson());
+    final data =
+        await apiClient.put('/tasks/${task.remoteId}', task.toApiJson());
     return TaskItem.fromJson(data);
   }
 
