@@ -171,18 +171,30 @@ def _user_sessions(db: Session, user_id: int) -> list[PomodoroSession]:
 
 
 @app.get("/stats/daily", response_model=StatsResponse)
-def stats_daily(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> StatsResponse:
-    return build_stats(_user_sessions(db, current_user.id), "daily")
+def stats_daily(
+    tz: str = "Europe/Berlin",
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> StatsResponse:
+    return build_stats(_user_sessions(db, current_user.id), "daily", tz)
 
 
 @app.get("/stats/weekly", response_model=StatsResponse)
-def stats_weekly(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> StatsResponse:
-    return build_stats(_user_sessions(db, current_user.id), "weekly")
+def stats_weekly(
+    tz: str = "Europe/Berlin",
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> StatsResponse:
+    return build_stats(_user_sessions(db, current_user.id), "weekly", tz)
 
 
 @app.get("/stats/monthly", response_model=StatsResponse)
-def stats_monthly(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> StatsResponse:
-    return build_stats(_user_sessions(db, current_user.id), "monthly")
+def stats_monthly(
+    tz: str = "Europe/Berlin",
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> StatsResponse:
+    return build_stats(_user_sessions(db, current_user.id), "monthly", tz)
 
 @app.get("/stats/tasks", response_model=TaskStatsResponse)
 def stats_tasks(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> TaskStatsResponse:

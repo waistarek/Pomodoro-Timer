@@ -181,3 +181,39 @@ def test_tasks_include_completed_pomodoros():
     tasks = tasks_response.json()
     assert tasks[0]["id"] == task_id
     assert tasks[0]["completed_pomodoros"] == 1
+
+
+def test_daily_stats_uses_berlin_timezone():
+    headers = register_and_login()
+
+    response = client.post(
+        "/sessions",
+        headers=headers,
+        json={
+            "task_id": None,
+            "phase_type": "work",
+            "duration_minutes": 25,
+            "completed": True,
+            "started_at": "2026-05-24T21:30:00Z",
+            "ended_at": "2026-05-24T22:30:00Z",
+        },
+    )
+    assert response.status_code == 201
+
+    response = client.get("/stats/daily", headers=headers)
+    assert response.status_code == 200
+
+    data = response.json()
+    labels = {item["label"]: item for item in data["items"]}
+
+    # 22:30 UTC ist in Deutschland 00:30 am Folgetag.
+    assert labels["2026-05-25"]["pomodoros"] == 1
+
+from datetime import datetime, timezone
+from app.stats import _local_date
+
+
+def test_local_date_converts_utc_to_berlin_date():
+    dt = datetime(2026, 5, 24, 22, 30, tzinfo=timezone.utc)
+
+    assert _local_date(dt, "Europe/Berlin").isoformat() == "2026-05-25"

@@ -1,43 +1,70 @@
 from collections import defaultdict
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone 
+from zoneinfo import ZoneInfo 
 from .models import PomodoroSession
 from .schemas import StatsItem, StatsResponse, TaskStatsItem, TaskStatsResponse
 
 
-def _date_range(days: int) -> list[date]:
-    today = datetime.utcnow().date()
+DEFAULT_TIMEZONE = "Europe/Berlin"
+
+
+def _as_utc(dt: datetime) -> datetime:
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone.utc)
+
+
+def _local_date(dt: datetime, tz: str = DEFAULT_TIMEZONE) -> date:
+    return _as_utc(dt).astimezone(ZoneInfo(tz)).date()
+
+
+def _today(tz: str = DEFAULT_TIMEZONE) -> date:
+    return datetime.now(timezone.utc).astimezone(ZoneInfo(tz)).date()
+
+def _date_range(days: int, tz: str = DEFAULT_TIMEZONE) -> list[date]:
+    today = _today(tz)
     start = today - timedelta(days=days - 1)
     return [start + timedelta(days=i) for i in range(days)]
 
 
-def _streak_days(sessions: list[PomodoroSession]) -> int:
+def _streak_days(
+    sessions: list[PomodoroSession],
+    tz: str = DEFAULT_TIMEZONE,
+) -> int:
     work_days = {
-        s.ended_at.date()
+        _local_date(s.ended_at, tz)
         for s in sessions
         if s.completed and s.phase_type == "work"
     }
+
     streak = 0
-    day = datetime.utcnow().date()
+    day = _today(tz)
+
     while day in work_days:
         streak += 1
         day -= timedelta(days=1)
+
     return streak
 
 
-def build_stats(sessions: list[PomodoroSession], mode: str) -> StatsResponse:
+def build_stats(
+    sessions: list[PomodoroSession],
+    mode: str,
+    tz: str = DEFAULT_TIMEZONE,
+) -> StatsResponse:
     if mode == "daily":
-        labels = _date_range(14)
+        labels = _date_range(14, tz)
         label_for = lambda d: d.isoformat()
     elif mode == "weekly":
         labels = []
-        today = datetime.utcnow().date()
+        today = _today(tz)
         monday = today - timedelta(days=today.weekday())
         for i in range(7, -1, -1):
             labels.append(monday - timedelta(weeks=i))
         label_for = lambda d: f"{d.isocalendar().year}-KW{d.isocalendar().week:02d}"
     else:
         labels = []
-        today = datetime.utcnow().date().replace(day=1)
+        today = _today(tz).replace(day=1)
         for i in range(11, -1, -1):
             year = today.year
             month = today.month - i
@@ -49,7 +76,7 @@ def build_stats(sessions: list[PomodoroSession], mode: str) -> StatsResponse:
 
     buckets: dict[str, list[PomodoroSession]] = defaultdict(list)
     for session in sessions:
-        ended = session.ended_at.date()
+        ended = _local_date(session.ended_at, tz)
         if mode == "daily":
             key = ended.isoformat()
         elif mode == "weekly":
@@ -84,7 +111,7 @@ def build_stats(sessions: list[PomodoroSession], mode: str) -> StatsResponse:
         items=items,
         total_pomodoros=sum(i.pomodoros for i in items),
         total_focus_minutes=sum(i.focus_minutes for i in items),
-        current_streak_days=_streak_days(sessions),
+        current_streak_days=_streak_days(sessions, tz),
         best_focus_day=best.label if best and best.focus_minutes > 0 else None,
     )
 

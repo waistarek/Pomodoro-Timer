@@ -26,8 +26,8 @@ class PomodoroSession {
         'phase_type': phaseType,
         'duration_minutes': durationMinutes,
         'completed': completed,
-        'started_at': startedAt.toIso8601String(),
-        'ended_at': endedAt.toIso8601String(),
+        'started_at': startedAt.toUtc().toIso8601String(),
+        'ended_at': endedAt.toUtc().toIso8601String(),
       };
   factory PomodoroSession.fromJson(Map<String, dynamic> json) {
     return PomodoroSession(
