@@ -29,8 +29,36 @@ class TaskProvider extends ChangeNotifier {
     loading = true;
     error = null;
     notifyListeners();
+
+    final previousSelectedRemoteId = selectedTask?.remoteId;
+    final previousSelectedLocalId = selectedTask?.localId;
+
     try {
       tasks = await _taskService.getTasks();
+
+      if (tasks.isNotEmpty) {
+        TaskItem? nextSelected;
+
+        for (final task in tasks) {
+          if (previousSelectedRemoteId != null &&
+              task.remoteId == previousSelectedRemoteId) {
+            nextSelected = task;
+            break;
+          }
+
+          if (previousSelectedRemoteId == null &&
+              task.localId == previousSelectedLocalId) {
+            nextSelected = task;
+            break;
+          }
+        }
+
+        selectedTask = nextSelected ??
+            tasks.firstWhere((task) => !task.completed, orElse: () => tasks.first);
+      } else {
+        selectedTask = null;
+      }
+
       await _saveLocal();
     } catch (e) {
       error =
@@ -46,13 +74,19 @@ class TaskProvider extends ChangeNotifier {
     selectedTask ??= task;
     await _saveLocal();
     notifyListeners();
+
     try {
       final remote = await _taskService.createTask(task);
+      final updated = task.copyWith(remoteId: remote.remoteId);
+
       tasks = tasks
-          .map((t) => t.localId == task.localId
-              ? t.copyWith(remoteId: remote.remoteId)
-              : t)
+          .map((t) => t.localId == task.localId ? updated : t)
           .toList();
+
+      if (selectedTask?.localId == task.localId) {
+        selectedTask = updated;
+      }
+
       await _saveLocal();
       notifyListeners();
     } catch (_) {}

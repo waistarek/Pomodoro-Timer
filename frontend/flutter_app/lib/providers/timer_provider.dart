@@ -47,13 +47,22 @@ class TimerProvider extends ChangeNotifier {
   }
 
   void startOrResume() {
-    if (running || _finishingPhase) return;
+    if (running || _finishingPhase) {
+      return;
+    }
 
     final now = DateTime.now();
 
+    final isNewPhase = engine.remainingSeconds == engine.totalPhaseSeconds;
+
     running = true;
-    _phaseStartedAt ??= now;
-    _phaseTask ??= _selectedTask;
+
+    if (isNewPhase) {
+      _phaseStartedAt = now;
+      _phaseTask = _selectedTask;
+    } else {
+      _phaseStartedAt ??= now;
+    }
 
     _phaseEndsAt = now.add(
       Duration(seconds: engine.remainingSeconds),
@@ -172,9 +181,9 @@ class TimerProvider extends ChangeNotifier {
     } finally {
       engine.switchToNextPhase();
 
-      _phaseStartedAt = DateTime.now();
+      _phaseStartedAt = null;
       _phaseEndsAt = null;
-      _phaseTask = _selectedTask;
+      _phaseTask = null;
 
       _finishingPhase = false;
       running = false;
