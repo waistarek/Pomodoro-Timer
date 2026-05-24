@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/task_provider.dart';
+import '../services/session_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -125,6 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _submit(BuildContext context) async {
     if (!_formKey.currentState!.validate()) return;
 
+    final sessionService = context.read<SessionService>();
     final authProvider = context.read<AuthProvider>();
     final taskProvider = context.read<TaskProvider>();
     final messenger = ScaffoldMessenger.of(context);
@@ -139,6 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     if (ok) {
+      await sessionService.syncPendingSessions();
       await taskProvider.loadRemoteTasks();
 
       if (!mounted) return;

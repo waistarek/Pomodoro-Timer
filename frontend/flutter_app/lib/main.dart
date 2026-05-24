@@ -29,6 +29,7 @@ Future<void> main() async {
     apiClient: apiClient,
     localStorage: localStorage,
   );
+  await sessionService.syncPendingSessions();
   final settingsService = SettingsService(apiClient: apiClient);
   final statsService = StatsService(
     apiClient: apiClient,
@@ -39,6 +40,7 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
+        Provider<SessionService>.value(value: sessionService),
         ChangeNotifierProvider(
             create: (_) => AuthProvider(authService)..loadLocalSession()),
         ChangeNotifierProvider(
