@@ -51,6 +51,7 @@ class TaskRead(TaskBase):
     id: int
     user_id: int
     created_at: datetime
+    completed_pomodoros: int = 0
 
 
 class SessionCreate(BaseModel):

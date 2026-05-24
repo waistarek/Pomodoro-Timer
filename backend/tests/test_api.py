@@ -139,3 +139,45 @@ def test_task_stats_grouped_by_task():
     assert data["items"][0]["task_id"] == task_id
     assert data["items"][0]["task_title"] == "Mathe lernen"
     assert data["items"][0]["focus_minutes"] == 60
+
+
+def test_tasks_include_completed_pomodoros():
+    headers = register_and_login()
+
+    task_response = client.post(
+        "/tasks",
+        headers=headers,
+        json={
+            "title": "Mathe lernen",
+            "description": "",
+            "priority": "medium",
+            "tags": "",
+            "completed": False,
+        },
+    )
+    assert task_response.status_code == 201
+    task_id = task_response.json()["id"]
+
+    start = datetime.utcnow() - timedelta(minutes=25)
+    end = datetime.utcnow()
+
+    session_response = client.post(
+        "/sessions",
+        headers=headers,
+        json={
+            "task_id": task_id,
+            "phase_type": "work",
+            "duration_minutes": 25,
+            "completed": True,
+            "started_at": start.isoformat(),
+            "ended_at": end.isoformat(),
+        },
+    )
+    assert session_response.status_code == 201
+
+    tasks_response = client.get("/tasks", headers=headers)
+    assert tasks_response.status_code == 200
+
+    tasks = tasks_response.json()
+    assert tasks[0]["id"] == task_id
+    assert tasks[0]["completed_pomodoros"] == 1

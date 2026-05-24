@@ -4,14 +4,37 @@ import '../models/task_item.dart';
 import '../providers/task_provider.dart';
 import '../widgets/task_editor_dialog.dart';
 
-class TasksScreen extends StatelessWidget {
+class TasksScreen extends StatefulWidget  {
   const TasksScreen({super.key});
+
+    @override
+  State<TasksScreen> createState() => _TasksScreenState();
+}
+
+class _TasksScreenState extends State<TasksScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      if (mounted) {
+        context.read<TaskProvider>().refreshTaskPomodoroCounts();
+      }
+    });
+  }
 
   Future<void> _openEditor(BuildContext context, {TaskItem? task}) async {
     final result = await showDialog<TaskItem>(
-        context: context, builder: (_) => TaskEditorDialog(task: task));
-    if (result == null || !context.mounted) return;
+      context: context,
+      builder: (_) => TaskEditorDialog(task: task),
+    );
+
+    if (result == null || !context.mounted) {
+      return;
+    }
+
     final provider = context.read<TaskProvider>();
+
     if (task == null) {
       await provider.addTask(result);
     } else {
@@ -27,7 +50,7 @@ class TasksScreen extends StatelessWidget {
         actions: [
           IconButton(
             tooltip: 'Vom Backend laden',
-            onPressed: () => context.read<TaskProvider>().loadRemoteTasks(),
+            onPressed: () => context.read<TaskProvider>().refreshTaskPomodoroCounts(),
             icon: const Icon(Icons.sync),
           ),
         ],

@@ -15,10 +15,13 @@ class TaskProvider extends ChangeNotifier {
 
   Future<void> loadLocalTasks() async {
     tasks = _localStorage.getJsonList('tasks').map(TaskItem.fromJson).toList();
+    _applyLocalPomodoroCounts();
+
     if (tasks.isNotEmpty) {
       selectedTask =
           tasks.firstWhere((t) => !t.completed, orElse: () => tasks.first);
     }
+
     notifyListeners();
   }
 
@@ -54,6 +57,16 @@ class TaskProvider extends ChangeNotifier {
       notifyListeners();
     } catch (_) {}
   }
+  Future<void> refreshTaskPomodoroCounts() async {
+    if (_localStorage.token != null) {
+      await loadRemoteTasks();
+      return;
+    }
+
+    _applyLocalPomodoroCounts();
+    await _saveLocal();
+    notifyListeners();
+  }
 
   Future<void> updateTask(TaskItem task) async {
     tasks = tasks.map((t) => t.localId == task.localId ? task : t).toList();
@@ -85,18 +98,38 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> incrementPomodoroForSelectedTask() async {
-    final task = selectedTask;
-    if (task == null) {
-      return;
-    }
-    final updated =
-        task.copyWith(completedPomodoros: task.completedPomodoros + 1);
-    await updateTask(updated);
-  }
 
   Future<void> _saveLocal() {
     return _localStorage.setJsonList(
         'tasks', tasks.map((t) => t.toJson()).toList());
   }
+
+  void _applyLocalPomodoroCounts() {
+    final sessions = _localStorage.getJsonList('guest_sessions');
+    final counts = <String, int>{};
+
+    for (final session in sessions) {
+      if (session['completed'] != true || session['phase_type'] != 'work') {
+        continue;
+      }
+
+      final localTaskId = session['local_task_id']?.toString();
+
+      if (localTaskId == null) {
+        continue;
+      }
+
+      counts[localTaskId] = (counts[localTaskId] ?? 0) + 1;
+    }
+
+    tasks = tasks
+        .map(
+          (task) => task.copyWith(
+            completedPomodoros: counts[task.localId] ?? 0,
+          ),
+        )
+        .toList();
+  }
 }
+
+

@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from .database import Base, engine, get_db
 from .deps import get_current_user
+from sqlalchemy import func
 from .models import PomodoroSession, Setting, Task, User
 from .schemas import (
     SessionCreate,
@@ -81,9 +82,40 @@ def get_me(current_user: User = Depends(get_current_user)) -> User:
 
 
 @app.get("/tasks", response_model=list[TaskRead])
-def list_tasks(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> list[Task]:
-    return db.query(Task).filter(Task.user_id == current_user.id).order_by(Task.created_at.desc()).all()
+def list_tasks(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> list[dict]:
+    tasks = (
+        db.query(Task)
+        .filter(Task.user_id == current_user.id)
+        .order_by(Task.created_at.desc())
+        .all()
+    )
 
+    pomodoro_counts = dict(
+        db.query(PomodoroSession.task_id, func.count(PomodoroSession.id))
+        .filter(
+            PomodoroSession.user_id == current_user.id,
+            PomodoroSession.completed.is_(True),
+            PomodoroSession.phase_type == "work",
+            PomodoroSession.task_id.isnot(None),
+        )
+        .group_by(PomodoroSession.task_id)
+        .all()
+    )
+
+    return [
+        {
+            "id": task.id,
+            "user_id": task.user_id,
+            "title": task.title,
+            "description": task.description,
+            "priority": task.priority,
+            "tags": task.tags,
+            "completed": task.completed,
+            "created_at": task.created_at,
+            "completed_pomodoros": int(pomodoro_counts.get(task.id, 0)),
+        }
+        for task in tasks
+    ]
 
 @app.post("/tasks", response_model=TaskRead, status_code=201)
 def create_task(data: TaskCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> Task:
