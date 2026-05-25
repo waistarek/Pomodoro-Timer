@@ -37,6 +37,14 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
+      - name: Debug: python, pip, PATH, alembic
+        run: |
+          python --version
+          python -m pip --version
+          python -m pip show alembic || echo "alembic not installed"
+          which alembic || echo "alembic not in PATH"
+          python -m site
+          echo "PATH=$PATH"
       - name: Show current migration
         env:
           DATABASE_URL: ${{ secrets.NEON_DATABASE_URL_DIRECT }}
