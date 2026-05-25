@@ -14,6 +14,15 @@ class StatsProvider extends ChangeNotifier {
   bool taskStatsLoading = false;
   String? error;
   String? taskStatsError;
+  void clear() {
+    stats = StatsResponse.empty();
+    taskStats = TaskStatsResponse.empty();
+    loading = false;
+    taskStatsLoading = false;
+    error = null;
+    taskStatsError = null;
+    notifyListeners();
+  }
 
   Future<void> loadDaily() async => _load(_statsService.daily);
   Future<void> loadWeekly() async => _load(_statsService.weekly);

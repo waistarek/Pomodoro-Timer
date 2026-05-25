@@ -12,6 +12,13 @@ class SettingsProvider extends ChangeNotifier {
   bool loading = false;
   String? error;
 
+  Future<void> resetLocal() async {
+    settings = const AppSettings();
+    loading = false;
+    error = null;
+    notifyListeners();
+  }
+
   Future<void> load() async {
     final local = _localStorage.getJsonObject('settings');
     if (local != null) {

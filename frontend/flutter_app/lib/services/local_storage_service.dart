@@ -33,4 +33,17 @@ class LocalStorageService {
   Future<void> setJsonList(String key, List<Map<String, dynamic>> value) {
     return _prefs.setString(key, jsonEncode(value));
   }
+
+  Future<void> remove(String key) => _prefs.remove(key);
+
+  Future<void> clearUserData() async {
+    await Future.wait([
+      _prefs.remove('tasks'),
+      _prefs.remove('settings'),
+      _prefs.remove('guest_sessions'),
+      _prefs.remove('pending_sessions'),
+      _prefs.remove('last_completed_work'),
+    ]);
+  }
 }
+

@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/task_provider.dart';
 import '../services/session_service.dart';
+import '../providers/settings_provider.dart';
+import '../providers/stats_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -40,9 +42,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         Text(provider.user!.email),
                         const SizedBox(height: 24),
                         FilledButton.icon(
-                          onPressed: provider.logout,
+                          onPressed: () async {
+                            await context.read<AuthProvider>().logout();
+
+                            if (!context.mounted) {
+                              return;
+                            }
+
+                            context.read<TaskProvider>().clear();
+                            await context.read<SettingsProvider>().resetLocal();
+                            context.read<StatsProvider>().clear();
+                          },
                           icon: const Icon(Icons.logout),
-                          label: const Text('Logout'),
+                          label: const Text('Ausloggen'),
                         ),
                       ],
                     ),

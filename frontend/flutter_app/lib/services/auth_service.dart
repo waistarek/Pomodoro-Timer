@@ -29,5 +29,8 @@ class AuthService {
     return UserProfile.fromJson(data);
   }
 
-  Future<void> logout() => localStorage.clearToken();
+  Future<void> logout() async {
+    await localStorage.clearToken();
+    await localStorage.clearUserData();
+  }
 }

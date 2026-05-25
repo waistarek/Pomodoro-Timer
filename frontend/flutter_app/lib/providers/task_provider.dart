@@ -24,6 +24,14 @@ class TaskProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+  void clear() {
+    tasks = [];
+    selectedTask = null;
+    loading = false;
+    error = null;
+    notifyListeners();
+  }
+  
 
   Future<void> loadRemoteTasks() async {
     loading = true;
