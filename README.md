@@ -1,267 +1,384 @@
-# Pomodoro App
+# Pomodoro Timer
 
-Professionelle Pomodoro-App als Flutter-Frontend mit Python/FastAPI-Backend.
+Professionelle Pomodoro-App mit Flutter Web, FastAPI, SQLAlchemy, Alembic und PostgreSQL/Neon.
 
-## Ziel
+## 1. Projektüberblick
 
-Die alte HTML/CSS/JavaScript-App wurde in eine moderne Projektstruktur überführt:
+Diese Anwendung ist ein Pomodoro-Timer mit Benutzerkonto, Aufgabenverwaltung, Statistik, lokalen Offline-Daten und Backend-Synchronisation.
 
-- Flutter für Web, Android und iOS
-- FastAPI als Python-Backend
-- SQLite als einfache lokale Backend-Datenbank
-- REST-API für Login, Aufgaben, Sessions, Einstellungen und Statistiken
-- Vorbereitung für Netlify, Backend-Hosting, Google Play Store und Apple App Store
-
-## Projektstruktur
+Die App besteht aus zwei Hauptteilen:
 
 ```text
-pomodoro_app/
-  frontend/
-    flutter_app/
-      lib/
-      assets/
-      test/
-      pubspec.yaml
-      netlify.toml
-  backend/
-    app/
-    tests/
-    requirements.txt
-    main.py
-  docs/
-    deployment/
-    store/
-  README.md
+Pomodoro-Timer/
+├── backend/                 # FastAPI-Backend
+└── frontend/
+    └── flutter_app/          # echte Flutter-App
 ```
 
-## Begriffe einfach erklärt
+Wichtig: Das gültige Frontend-Projekt liegt unter:
+
+```text
+frontend/flutter_app/
+```
+
+Nicht im Ordner `frontend/` direkt.
+
+## 2. Funktionen
+
+- Registrierung und Login
+- Pomodoro-Timer mit Arbeitsphase, kurzer Pause und langer Pause
+- Aufgabenverwaltung
+- Auswahl einer Aufgabe für eine Pomodoro-Session
+- Speicherung abgeschlossener Sessions im Backend
+- Offline-Warteschlange für Sessions
+- Statistik für Tag, Woche, Monat und Aufgaben
+- Lokale Einstellungen
+- Theme-Auswahl inklusive Farbauswahl
+- Backend-Synchronisation
+- Deployment über Render und Netlify
+
+## 3. Technologie-Stack
 
 ### Frontend
 
-Frontend bedeutet: der sichtbare Teil der App. Dazu gehören Buttons, Timer-Anzeige, Aufgabenliste, Einstellungen und Statistikseiten. In diesem Projekt ist Flutter das Frontend.
+- Flutter
+- Dart
+- Provider für State Management
+- SharedPreferences für lokale Speicherung
+- Netlify für Deployment
 
 ### Backend
 
-Backend bedeutet: der unsichtbare Serverteil. Das Backend speichert Benutzer, Aufgaben, Pomodoro-Sessions und Einstellungen. In diesem Projekt ist FastAPI das Backend.
+- Python
+- FastAPI
+- SQLAlchemy
+- Alembic für Datenbankmigrationen
+- PostgreSQL/Neon als Datenbank
+- Render für Deployment
 
-### API
+## 4. Projektstruktur
 
-API (Application Programming Interface – Programmierschnittstelle zwischen Softwareteilen) bedeutet: eine klare Schnittstelle, über die Flutter mit dem Backend spricht. Beispiel: Flutter sendet eine Login-Anfrage an `POST /auth/login`.
+```text
+Pomodoro-Timer/
+├── backend/
+│   ├── app/
+│   │   ├── main.py
+│   │   ├── models.py
+│   │   ├── schemas.py
+│   │   ├── database.py
+│   │   ├── auth.py
+│   │   └── security.py
+│   ├── alembic/
+│   │   └── versions/
+│   ├── tests/
+│   ├── requirements.txt
+│   └── alembic.ini
+│
+└── frontend/
+    └── flutter_app/
+        ├── lib/
+        │   ├── main.dart
+        │   ├── models/
+        │   ├── providers/
+        │   ├── screens/
+        │   ├── services/
+        │   └── theme/
+        ├── test/
+        ├── pubspec.yaml
+        ├── netlify.toml
+        └── netlify_build.sh
+```
 
-### REST-API
+## 5. Lokale Backend-Ausführung
 
-REST-API (Representational State Transfer Application Programming Interface – HTTP-Schnittstelle für Datenzugriff) bedeutet: Das Frontend ruft URLs mit HTTP-Methoden auf, z. B. `GET /tasks`, `POST /tasks` oder `DELETE /tasks/1`.
-
-### Warum brauchen wir ein Backend?
-
-Ohne Backend bleiben Daten nur auf einem Gerät. Mit Backend können Benutzer sich anmelden und ihre Aufgaben, Einstellungen und Pomodoro-Daten später zwischen Web, Android und iOS synchronisieren.
-
-### Was wird lokal gespeichert?
-
-In der Flutter-App werden lokal gespeichert:
-
-- Einstellungen
-- Aufgaben als Offline-Kopie
-- Login-Token
-- Timer-Zustand nur während der Nutzung
-
-### Was wird im Backend gespeichert?
-
-Im Backend werden gespeichert:
-
-- Benutzerkonto
-- Aufgaben
-- abgeschlossene Pomodoro-Sessions
-- Einstellungen
-- berechnete Statistiken
-
-## Lokale Installation
-
-### 1. Backend starten
+In den Backend-Ordner wechseln:
 
 ```bash
 cd backend
+```
+
+Virtuelle Umgebung erstellen:
+
+```bash
 python3 -m venv .venv
+```
+
+Virtuelle Umgebung aktivieren:
+
+```bash
 source .venv/bin/activate
+```
+
+Unter Windows PowerShell:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+Abhängigkeiten installieren:
+
+```bash
 pip install -r requirements.txt
-cp .env.example .env
+```
+
+Backend starten:
+
+```bash
 uvicorn app.main:app --reload
 ```
 
-Backend läuft dann unter:
+Standardmäßig ist das Backend danach erreichbar unter:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-API-Dokumentation:
+Swagger-Dokumentation:
 
 ```text
 http://127.0.0.1:8000/docs
 ```
 
-### 2. Flutter-App vorbereiten
+## 6. Umgebungsvariablen für das Backend
 
-Falls die Ordner `android/`, `ios/` und `web/` noch fehlen, zuerst die Flutter-Plattformdateien erzeugen:
+Das Backend benötigt eine Datenbankverbindung, zum Beispiel:
+
+```env
+DATABASE_URL=postgresql+psycopg://USER:PASSWORD@HOST/DBNAME?sslmode=require
+SECRET_KEY=your-secret-key
+```
+
+Die `.env`-Datei darf nicht ins Git-Repository committed werden.
+
+## 7. Datenbankmigrationen
+
+Migrationen werden mit Alembic verwaltet.
+
+Aktuellen Stand prüfen:
+
+```bash
+cd backend
+alembic current
+alembic heads
+```
+
+Migrationen ausführen:
+
+```bash
+alembic upgrade head
+```
+
+Neue Migration erstellen:
+
+```bash
+alembic revision -m "describe change"
+```
+
+SQL-Vorschau erzeugen:
+
+```bash
+alembic upgrade head --sql > migration_preview.sql
+```
+
+## 8. Lokale Frontend-Ausführung
+
+In das echte Flutter-Projekt wechseln:
 
 ```bash
 cd frontend/flutter_app
-flutter create --platforms=android,ios,web .
 ```
 
-Danach Abhängigkeiten installieren:
+Abhängigkeiten installieren:
 
 ```bash
 flutter pub get
 ```
 
-### 3. Flutter lokal starten
-
-Web:
+App im Browser starten:
 
 ```bash
 flutter run -d chrome --dart-define=API_BASE_URL=http://127.0.0.1:8000
 ```
 
-Android:
+Für das produktive Backend:
 
 ```bash
-flutter run -d android --dart-define=API_BASE_URL=http://10.0.2.2:8000
+flutter run -d chrome --dart-define=API_BASE_URL=https://pomodoro-backend-00pe.onrender.com
 ```
 
-Hinweis: `10.0.2.2` ist aus dem Android-Emulator heraus der Zugriff auf den lokalen Rechner.
+## 9. Frontend-Build
 
-## Builds erstellen
-
-### Flutter Web
+Web-Build erstellen:
 
 ```bash
 cd frontend/flutter_app
-flutter build web --release --dart-define=API_BASE_URL=https://dein-backend.example.com
+flutter build web --release --dart-define=API_BASE_URL=https://pomodoro-backend-00pe.onrender.com
 ```
 
-Ausgabeordner:
-
-```text
-frontend/flutter_app/build/web
-```
-
-### Android AAB
-
-AAB (Android App Bundle – Upload-Datei für Google Play):
+Android-Build:
 
 ```bash
-flutter build appbundle --release --dart-define=API_BASE_URL=https://dein-backend.example.com
+cd frontend/flutter_app
+flutter build apk
 ```
 
-Ausgabe:
-
-```text
-build/app/outputs/bundle/release/app-release.aab
-```
-
-### iOS Release
+iOS-Build auf macOS mit Xcode:
 
 ```bash
-flutter build ipa --release --dart-define=API_BASE_URL=https://dein-backend.example.com
+cd frontend/flutter_app
+flutter build ios
 ```
 
-Für iOS werden ein Mac, Xcode und ein Apple Developer Account benötigt.
+## 10. Netlify-Deployment
 
-## Tests
+Das Netlify-Deployment verwendet das echte Flutter-Projekt:
 
-### Backend-Tests
+```toml
+[build]
+  base = "frontend/flutter_app"
+  command = "bash netlify_build.sh"
+  publish = "build/web"
+```
+
+Der Root-Ordner `frontend/` ist nur ein Container-Ordner. Dort darf kein zweites Flutter-Projekt liegen.
+
+## 11. Render-Deployment
+
+Das Backend kann auf Render deployed werden.
+
+Typische Einstellungen:
+
+```text
+Root Directory: backend
+Build Command: pip install -r requirements.txt
+Start Command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+```
+
+Die Umgebungsvariablen müssen in Render gesetzt werden.
+
+## 12. Tests
+
+Backend-Tests:
 
 ```bash
 cd backend
-pytest
+pytest -q
 ```
 
-### Flutter-Tests
+Frontend-Analyse:
+
+```bash
+cd frontend/flutter_app
+flutter analyze
+```
+
+Frontend-Tests:
 
 ```bash
 cd frontend/flutter_app
 flutter test
 ```
 
-## API-Endpunkte
+Formatierung:
 
-### Authentifizierung
+```bash
+cd frontend/flutter_app
+dart format lib test
+```
 
-- `POST /auth/register`
-- `POST /auth/login`
-- `GET /users/me`
+## 13. Wichtige Architekturentscheidungen
 
-### Aufgaben
+### Idempotente Session-Erstellung
 
-- `GET /tasks`
-- `POST /tasks`
-- `PUT /tasks/{id}`
-- `DELETE /tasks/{id}`
+Jede Pomodoro-Session besitzt eine `client_session_id`. Dadurch kann dieselbe Session bei Wiederholung oder Offline-Sync nicht mehrfach gespeichert werden.
 
-### Pomodoro-Sessions
+### Offline-Sessions
 
-- `GET /sessions`
-- `POST /sessions`
+Wenn eine Session nicht sofort ans Backend gesendet werden kann, wird sie lokal in `pending_sessions` gespeichert und später synchronisiert.
 
-### Statistiken
+### Statistik
 
-- `GET /stats/daily`
-- `GET /stats/weekly`
-- `GET /stats/monthly`
+Statistikdaten werden backendseitig aus abgeschlossenen Sessions berechnet. Tages-, Wochen- und Monatsstatistiken berücksichtigen die lokale Zeitzone.
+
+### Aufgaben-Pomodoros
+
+Die Anzahl abgeschlossener Pomodoros pro Aufgabe wird nicht redundant in der Aufgabe gespeichert, sondern aus den Sessions berechnet.
 
 ### Einstellungen
 
-- `GET /settings`
-- `PUT /settings`
+Einstellungen werden lokal und im Backend gespeichert. Dazu gehören Timer-Längen, Auto-Start, Sound, Vibration, Theme und Theme-Farbe.
 
-## Dokumentation
+## 14. Häufige Fehlerquellen
 
-- Netlify: `docs/deployment/netlify.md`
-- Backend: `docs/deployment/backend.md`
-- Google Play Store: `docs/store/google-play.md`
-- Apple App Store: `docs/store/apple-app-store.md`
-- Analyse der alten App: `docs/original-project-analysis.md`
+### Falscher Frontend-Ordner
 
-## Fehlerbehebung
-
-### Flutter findet keine Plattformen
-
-Befehl im Ordner `frontend/flutter_app` ausführen:
+Nicht ausführen:
 
 ```bash
-flutter create --platforms=android,ios,web .
+cd frontend
+flutter build web
 ```
 
-### Backend ist aus Flutter Web nicht erreichbar
+Richtig:
 
-Prüfen:
+```bash
+cd frontend/flutter_app
+flutter build web
+```
 
-1. Läuft FastAPI?
-2. Ist die URL bei `API_BASE_URL` korrekt?
-3. Ist CORS im Backend richtig gesetzt?
+### Migration vergessen
 
-### Android-Emulator erreicht Backend nicht
+Wenn ein Feld im Backend-Modell ergänzt wurde, muss für bestehende Datenbanken eine Alembic-Migration ausgeführt werden.
 
-Im Android-Emulator nicht `127.0.0.1` verwenden, sondern:
+### `.env` versehentlich committen
+
+Dateien mit Geheimnissen wie Datenbank-URL oder Secret-Key dürfen nicht ins Repository.
+
+### Lokale Daten nach Logout
+
+Lokale benutzerbezogene Daten müssen beim Logout gelöscht oder benutzergebunden gespeichert werden.
+
+## 15. Empfohlene Prüfung vor jedem Commit
+
+```bash
+cd backend
+pytest -q
+```
+
+```bash
+cd frontend/flutter_app
+dart format lib test
+flutter analyze
+flutter test
+flutter build web --release --dart-define=API_BASE_URL=https://pomodoro-backend-00pe.onrender.com
+```
+
+## 16. Empfohlene Git-Commit-Konvention
+
+Beispiele:
 
 ```text
-http://10.0.2.2:8000
+fix: prevent duplicate pomodoro sessions
+fix: load daily stats when opening statistics screen
+fix: persist theme color settings in backend
+fix: clear local user data on logout
+fix: remove duplicate root flutter project
 ```
 
-### Login funktioniert nicht
+## 17. Deployment-Checkliste
 
-Prüfen:
+Vor Deployment prüfen:
 
-1. Backend läuft.
-2. `/docs` ist erreichbar.
-3. Benutzer wurde registriert.
-4. `JWT_SECRET` ist in Produktion sicher gesetzt.
+- Backend-Tests erfolgreich
+- Frontend-Tests erfolgreich
+- `flutter analyze` ohne Fehler
+- Alembic-Migrationen auf Neon ausgeführt
+- Netlify zeigt auf `frontend/flutter_app`
+- Render verwendet den Ordner `backend`
+- `API_BASE_URL` zeigt auf das Render-Backend
+- Keine `.env`-Dateien im Repository
+- Kein zweites Flutter-Projekt im Ordner `frontend/`
 
-## Nächste sinnvolle Erweiterungen
+## 18. Lizenz
 
-- echte Push-Benachrichtigungen mit `flutter_local_notifications`
-- SQLite/Hive im Flutter-Frontend statt JSON in SharedPreferences
-- automatische Offline-Synchronisierung mit Konfliktlösung
-- PostgreSQL für Produktion
-- CI/CD mit GitHub Actions oder GitLab CI
+Dieses Projekt ist ein Lern- und Entwicklungsprojekt.
