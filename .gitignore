@@ -31,3 +31,15 @@ ios/.symlinks/
 ios/Flutter/Flutter.framework
 ios/Flutter/Flutter.podspec
 backend.zip
+
+# Local environment files
+backend/.env
+frontend/flutter_app/.env
+
+# Local databases
+backend/*.db
+
+# Local build/cache folders
+backend/.venv/
+frontend/flutter_app/.dart_tool/
+frontend/flutter_app/build/
