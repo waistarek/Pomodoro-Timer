@@ -19,6 +19,9 @@ class SettingsScreen extends StatelessWidget {
                 title: 'Arbeitszeit',
                 value: settings.workMinutes,
                 suffix: 'Minuten',
+                min: 1,
+                max: 180,
+                divisions: 179,
                 onChanged: (v) =>
                     provider.save(settings.copyWith(workMinutes: v)),
               ),
@@ -26,6 +29,9 @@ class SettingsScreen extends StatelessWidget {
                 title: 'Kurze Pause',
                 value: settings.shortBreakMinutes,
                 suffix: 'Minuten',
+                min: 1,
+                max: 120,
+                divisions: 119,
                 onChanged: (v) =>
                     provider.save(settings.copyWith(shortBreakMinutes: v)),
               ),
@@ -33,6 +39,9 @@ class SettingsScreen extends StatelessWidget {
                 title: 'Lange Pause',
                 value: settings.longBreakMinutes,
                 suffix: 'Minuten',
+                min: 1,
+                max: 180,
+                divisions: 179,
                 onChanged: (v) =>
                     provider.save(settings.copyWith(longBreakMinutes: v)),
               ),
@@ -40,6 +49,9 @@ class SettingsScreen extends StatelessWidget {
                 title: 'Lange Pause nach',
                 value: settings.longBreakAfter,
                 suffix: 'Pomodoros',
+                min: 1,
+                max: 20,
+                divisions: 19,
                 onChanged: (v) =>
                     provider.save(settings.copyWith(longBreakAfter: v)),
               ),
@@ -103,16 +115,23 @@ class SettingsScreen extends StatelessWidget {
 }
 
 class _NumberTile extends StatelessWidget {
-  const _NumberTile(
-      {required this.title,
-      required this.value,
-      required this.suffix,
-      required this.onChanged});
+  const _NumberTile({
+    required this.title,
+    required this.value,
+    required this.suffix,
+    required this.onChanged,
+    this.min = 1,
+    this.max = 120,
+    this.divisions,
+  });
 
   final String title;
   final int value;
   final String suffix;
   final ValueChanged<int> onChanged;
+  final double min;
+  final double max;
+  final int? divisions;
 
   @override
   Widget build(BuildContext context) {
@@ -122,10 +141,10 @@ class _NumberTile extends StatelessWidget {
       trailing: SizedBox(
         width: 160,
         child: Slider(
-          value: value.toDouble(),
-          min: 1,
-          max: 120,
-          divisions: 119,
+          value: value.clamp(min.toInt(), max.toInt()).toDouble(),
+          min: min,
+          max: max,
+          divisions: divisions ?? (max - min).round(),
           label: value.toString(),
           onChanged: (v) => onChanged(v.round()),
         ),
