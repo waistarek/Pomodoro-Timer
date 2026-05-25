@@ -66,6 +66,7 @@ def test_sessions_and_stats():
         "/sessions",
         headers=headers,
         json={
+            "client_session_id": "test-session-stats-1",
             "task_id": None,
             "phase_type": "work",
             "duration_minutes": 25,
@@ -120,6 +121,7 @@ def test_task_stats_grouped_by_task():
         "/sessions",
         headers=headers,
         json={
+            "client_session_id": "test-session-task-stats-1",
             "task_id": task_id,
             "phase_type": "work",
             "duration_minutes": 60,
@@ -165,6 +167,7 @@ def test_tasks_include_completed_pomodoros():
         "/sessions",
         headers=headers,
         json={
+            "client_session_id": "test-session-task-count-1",
             "task_id": task_id,
             "phase_type": "work",
             "duration_minutes": 25,
@@ -190,6 +193,7 @@ def test_daily_stats_uses_berlin_timezone():
         "/sessions",
         headers=headers,
         json={
+            "client_session_id": "test-session-timezone-1",
             "task_id": None,
             "phase_type": "work",
             "duration_minutes": 25,
@@ -217,3 +221,28 @@ def test_local_date_converts_utc_to_berlin_date():
     dt = datetime(2026, 5, 24, 22, 30, tzinfo=timezone.utc)
 
     assert _local_date(dt, "Europe/Berlin").isoformat() == "2026-05-25"
+
+def test_create_session_is_idempotent_by_client_session_id():
+    headers = register_and_login()
+
+    payload = {
+        "client_session_id": "test-session-123",
+        "task_id": None,
+        "phase_type": "work",
+        "duration_minutes": 25,
+        "completed": True,
+        "started_at": datetime.utcnow().isoformat(),
+        "ended_at": datetime.utcnow().isoformat(),
+    }
+
+    first = client.post("/sessions", headers=headers, json=payload)
+    assert first.status_code == 201
+
+    second = client.post("/sessions", headers=headers, json=payload)
+    assert second.status_code == 201
+
+    assert first.json()["id"] == second.json()["id"]
+
+    sessions = client.get("/sessions", headers=headers)
+    assert sessions.status_code == 200
+    assert len(sessions.json()) == 1

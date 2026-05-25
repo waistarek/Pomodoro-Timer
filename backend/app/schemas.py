@@ -55,6 +55,7 @@ class TaskRead(TaskBase):
 
 
 class SessionCreate(BaseModel):
+    client_session_id: str = Field(min_length=1, max_length=64)
     task_id: int | None = None
     phase_type: str
     duration_minutes: int = Field(gt=0)

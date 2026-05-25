@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .database import Base
 
@@ -35,9 +35,13 @@ class Task(Base):
 
 class PomodoroSession(Base):
     __tablename__ = "pomodoro_sessions"
+    __table_args__ = (
+        UniqueConstraint("user_id", "client_session_id", name="uq_user_client_session"),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    client_session_id: Mapped[str] = mapped_column(String(64), nullable=False)
     task_id: Mapped[int | None] = mapped_column(ForeignKey("tasks.id"), nullable=True)
     phase_type: Mapped[str] = mapped_column(String(30), nullable=False)
     duration_minutes: Mapped[int] = mapped_column(Integer, nullable=False)
