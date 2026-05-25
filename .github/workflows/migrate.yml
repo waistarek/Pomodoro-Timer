@@ -37,6 +37,14 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
+      - name: Show pip install output and verify
+        run: |
+          python -m pip --version
+          python -m pip show alembic || echo "alembic not installed"
+          python -m pip freeze
+          which alembic || echo "alembic not in PATH"
+          python -m alembic --version || echo "python -m alembic not available"
+
       - name: python, pip, PATH, alembic
         run: |
           python --version
