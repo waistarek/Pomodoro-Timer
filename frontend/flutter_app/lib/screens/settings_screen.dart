@@ -104,7 +104,7 @@ class SettingsScreen extends StatelessWidget {
               FilledButton.icon(
                 onPressed: () => provider.save(provider.settings, sync: true),
                 icon: const Icon(Icons.cloud_upload),
-                label: const Text('Einstellungen mit Backend synchronisieren'),
+                label: const Text('Einstellungen im Konto speichern'),
               ),
             ],
           );

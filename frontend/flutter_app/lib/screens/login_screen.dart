@@ -142,6 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final authProvider = context.read<AuthProvider>();
     final taskProvider = context.read<TaskProvider>();
     final messenger = ScaffoldMessenger.of(context);
+    final settingsProvider = context.read<SettingsProvider>();
 
     final email = _emailController.text.trim();
     final password = _passwordController.text;
@@ -153,6 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     if (ok) {
+      await settingsProvider.loadRemoteSettings();
       await sessionService.syncPendingSessions();
       await taskProvider.loadRemoteTasks();
 

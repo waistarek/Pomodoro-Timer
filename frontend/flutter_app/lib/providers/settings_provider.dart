@@ -8,6 +8,7 @@ class SettingsProvider extends ChangeNotifier {
 
   final LocalStorageService _localStorage;
   final SettingsService _settingsService;
+  
   AppSettings settings = const AppSettings();
   bool loading = false;
   String? error;
@@ -29,17 +30,43 @@ class SettingsProvider extends ChangeNotifier {
 
   Future<void> save(AppSettings newSettings, {bool sync = false}) async {
     settings = newSettings;
+    error = null;
+
     await _localStorage.setJsonObject('settings', settings.toJson());
     notifyListeners();
-    if (sync) {
-      try {
-        settings = await _settingsService.updateSettings(settings);
-        await _localStorage.setJsonObject('settings', settings.toJson());
-        notifyListeners();
-      } catch (e) {
-        error =
-            'Einstellungen lokal gespeichert, aber noch nicht synchronisiert.';
-      }
+
+    final shouldSync = sync || _localStorage.token != null;
+
+    if (!shouldSync) {
+      return;
+    }
+
+    try {
+      settings = await _settingsService.updateSettings(settings);
+      await _localStorage.setJsonObject('settings', settings.toJson());
+    } catch (e) {
+      error =
+          'Einstellungen lokal gespeichert, aber noch nicht synchronisiert.';
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadRemoteSettings() async {
+    loading = true;
+    error = null;
+    notifyListeners();
+
+    try {
+      settings = await _settingsService.getSettings();
+      await _localStorage.setJsonObject('settings', settings.toJson());
+    } catch (e) {
+      error =
+          'Einstellungen konnten nicht vom Backend geladen werden. Lokale Einstellungen werden verwendet.';
+      await load();
+    } finally {
+      loading = false;
+      notifyListeners();
     }
   }
 }
