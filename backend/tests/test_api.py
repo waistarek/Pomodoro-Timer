@@ -246,3 +246,5 @@ def test_create_session_is_idempotent_by_client_session_id():
     sessions = client.get("/sessions", headers=headers)
     assert sessions.status_code == 200
     assert len(sessions.json()) == 1
+
+

@@ -6,6 +6,7 @@ from .database import Base, engine, get_db
 from .deps import get_current_user
 from sqlalchemy import func
 from .models import PomodoroSession, Setting, Task, User
+from sqlalchemy.exc import IntegrityError
 from .schemas import (
     SessionCreate,
     SessionRead,
@@ -154,7 +155,11 @@ def list_sessions(current_user: User = Depends(get_current_user), db: Session = 
 
 
 @app.post("/sessions", response_model=SessionRead, status_code=201)
-def create_session(data: SessionCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> PomodoroSession:
+def create_session(
+    data: SessionCreate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> PomodoroSession:
     existing = (
         db.query(PomodoroSession)
         .filter(
@@ -168,15 +173,37 @@ def create_session(data: SessionCreate, current_user: User = Depends(get_current
         return existing
 
     if data.task_id is not None:
-        task = db.query(Task).filter(Task.id == data.task_id, Task.user_id == current_user.id).first()
+        task = (
+            db.query(Task)
+            .filter(Task.id == data.task_id, Task.user_id == current_user.id)
+            .first()
+        )
+
         if task is None:
             raise HTTPException(status_code=404, detail="Aufgabe nicht gefunden")
 
-    session = PomodoroSession(user_id=current_user.id, **data.model_dump())
-    db.add(session)
-    db.commit()
-    db.refresh(session)
-    return session
+    try:
+        session = PomodoroSession(user_id=current_user.id, **data.model_dump())
+        db.add(session)
+        db.commit()
+        db.refresh(session)
+        return session
+    except IntegrityError:
+        db.rollback()
+
+        existing = (
+            db.query(PomodoroSession)
+            .filter(
+                PomodoroSession.user_id == current_user.id,
+                PomodoroSession.client_session_id == data.client_session_id,
+            )
+            .first()
+        )
+
+        if existing is not None:
+            return existing
+
+        raise
 
 
 def _user_sessions(db: Session, user_id: int) -> list[PomodoroSession]:
