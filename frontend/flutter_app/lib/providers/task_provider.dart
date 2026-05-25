@@ -54,7 +54,8 @@ class TaskProvider extends ChangeNotifier {
         }
 
         selectedTask = nextSelected ??
-            tasks.firstWhere((task) => !task.completed, orElse: () => tasks.first);
+            tasks.firstWhere((task) => !task.completed,
+                orElse: () => tasks.first);
       } else {
         selectedTask = null;
       }
@@ -79,9 +80,8 @@ class TaskProvider extends ChangeNotifier {
       final remote = await _taskService.createTask(task);
       final updated = task.copyWith(remoteId: remote.remoteId);
 
-      tasks = tasks
-          .map((t) => t.localId == task.localId ? updated : t)
-          .toList();
+      tasks =
+          tasks.map((t) => t.localId == task.localId ? updated : t).toList();
 
       if (selectedTask?.localId == task.localId) {
         selectedTask = updated;
@@ -91,6 +91,7 @@ class TaskProvider extends ChangeNotifier {
       notifyListeners();
     } catch (_) {}
   }
+
   Future<void> refreshTaskPomodoroCounts() async {
     if (_localStorage.token != null) {
       await loadRemoteTasks();
@@ -132,7 +133,6 @@ class TaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
   Future<void> _saveLocal() {
     return _localStorage.setJsonList(
         'tasks', tasks.map((t) => t.toJson()).toList());
@@ -165,5 +165,3 @@ class TaskProvider extends ChangeNotifier {
         .toList();
   }
 }
-
-

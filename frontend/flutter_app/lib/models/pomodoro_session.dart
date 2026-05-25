@@ -1,5 +1,8 @@
+import 'package:uuid/uuid.dart';
+
 class PomodoroSession {
   PomodoroSession({
+    String? clientSessionId,
     this.taskId,
     this.localTaskId,
     this.taskTitle,
@@ -8,8 +11,9 @@ class PomodoroSession {
     required this.completed,
     required this.startedAt,
     required this.endedAt,
-  });
+  }) : clientSessionId = clientSessionId ?? const Uuid().v4();
 
+  final String clientSessionId;
   final int? taskId;
   final String? localTaskId;
   final String? taskTitle;
@@ -20,6 +24,7 @@ class PomodoroSession {
   final DateTime endedAt;
 
   Map<String, dynamic> toJson() => {
+        'client_session_id': clientSessionId,
         'task_id': taskId,
         'local_task_id': localTaskId,
         'task_title': taskTitle,
@@ -31,6 +36,7 @@ class PomodoroSession {
       };
   factory PomodoroSession.fromJson(Map<String, dynamic> json) {
     return PomodoroSession(
+      clientSessionId: json['client_session_id']?.toString(),
       taskId: json['task_id'],
       localTaskId: json['local_task_id']?.toString(),
       taskTitle: json['task_title']?.toString(),

@@ -8,6 +8,7 @@ import '../services/session_service.dart';
 import '../services/sound_service.dart';
 import '../timer/pomodoro_phase.dart';
 import '../timer/timer_engine.dart';
+import 'package:uuid/uuid.dart';
 
 class TimerProvider extends ChangeNotifier {
   TimerProvider(this._localStorage, this._sessionService, this._soundService) {
@@ -17,6 +18,7 @@ class TimerProvider extends ChangeNotifier {
   final LocalStorageService _localStorage;
   final SessionService _sessionService;
   final SoundService _soundService;
+  String? _phaseClientSessionId;
 
   AppSettings _settings = const AppSettings();
   TaskItem? _selectedTask;
@@ -60,6 +62,7 @@ class TimerProvider extends ChangeNotifier {
     if (isNewPhase) {
       _phaseStartedAt = now;
       _phaseTask = _selectedTask;
+      _phaseClientSessionId = const Uuid().v4();
     } else {
       _phaseStartedAt ??= now;
     }
@@ -98,6 +101,7 @@ class TimerProvider extends ChangeNotifier {
     _phaseEndsAt = null;
     _phaseTask = null;
     engine.reset();
+    _phaseClientSessionId = null;
 
     notifyListeners();
   }
@@ -148,6 +152,7 @@ class TimerProvider extends ChangeNotifier {
 
         await _sessionService.createSession(
           PomodoroSession(
+            clientSessionId: _phaseClientSessionId,
             taskId: _phaseTask?.remoteId,
             localTaskId: _phaseTask?.localId,
             taskTitle: _phaseTask?.title,
@@ -161,6 +166,7 @@ class TimerProvider extends ChangeNotifier {
       } else {
         await _sessionService.createSession(
           PomodoroSession(
+            clientSessionId: _phaseClientSessionId,
             taskId: null,
             phaseType: finishedPhase.apiValue,
             durationMinutes: durationMinutes,
@@ -181,6 +187,7 @@ class TimerProvider extends ChangeNotifier {
     } finally {
       engine.switchToNextPhase();
 
+      _phaseClientSessionId = null;
       _phaseStartedAt = null;
       _phaseEndsAt = null;
       _phaseTask = null;

@@ -12,6 +12,16 @@ class StatsScreen extends StatefulWidget {
 
 class _StatsScreenState extends State<StatsScreen> {
   int _tabIndex = 0;
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      if (mounted) {
+        context.read<StatsProvider>().loadDaily();
+      }
+    });
+  }
 
   void _loadForTab(BuildContext context, int index) {
     final provider = context.read<StatsProvider>();

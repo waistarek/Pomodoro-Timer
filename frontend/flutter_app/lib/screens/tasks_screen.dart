@@ -4,10 +4,10 @@ import '../models/task_item.dart';
 import '../providers/task_provider.dart';
 import '../widgets/task_editor_dialog.dart';
 
-class TasksScreen extends StatefulWidget  {
+class TasksScreen extends StatefulWidget {
   const TasksScreen({super.key});
 
-    @override
+  @override
   State<TasksScreen> createState() => _TasksScreenState();
 }
 
@@ -50,7 +50,8 @@ class _TasksScreenState extends State<TasksScreen> {
         actions: [
           IconButton(
             tooltip: 'Vom Backend laden',
-            onPressed: () => context.read<TaskProvider>().refreshTaskPomodoroCounts(),
+            onPressed: () =>
+                context.read<TaskProvider>().refreshTaskPomodoroCounts(),
             icon: const Icon(Icons.sync),
           ),
         ],
