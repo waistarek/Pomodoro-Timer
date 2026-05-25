@@ -72,4 +72,34 @@ void main() {
     expect(engine.phase, PomodoroPhase.work);
     expect(engine.remainingSeconds, 1500);
   });
+
+  test('skipBreak switches short break to work without increasing pomodoros',
+      () {
+    final engine = createEngine(
+      phase: PomodoroPhase.shortBreak,
+      remainingSeconds: 120,
+      completedPomodoros: 1,
+    );
+
+    engine.skipBreak();
+
+    expect(engine.phase, PomodoroPhase.work);
+    expect(engine.remainingSeconds, 1500);
+    expect(engine.completedPomodoros, 1);
+  });
+
+  test('skipBreak switches long break to work without increasing pomodoros',
+      () {
+    final engine = createEngine(
+      phase: PomodoroPhase.longBreak,
+      remainingSeconds: 600,
+      completedPomodoros: 4,
+    );
+
+    engine.skipBreak();
+
+    expect(engine.phase, PomodoroPhase.work);
+    expect(engine.remainingSeconds, 1500);
+    expect(engine.completedPomodoros, 4);
+  });
 }

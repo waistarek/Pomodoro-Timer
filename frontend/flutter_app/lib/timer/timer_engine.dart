@@ -39,6 +39,19 @@ class TimerEngine {
 
   bool get isFinished => remainingSeconds <= 0;
 
+  bool get isBreak => phase != PomodoroPhase.work;
+
+  PomodoroPhase skipBreak() {
+    if (!isBreak) {
+      return phase;
+    }
+
+    phase = PomodoroPhase.work;
+    remainingSeconds = workSeconds;
+
+    return phase;
+  }
+
   PomodoroPhase switchToNextPhase() {
     if (phase == PomodoroPhase.work) {
       completedPomodoros += 1;

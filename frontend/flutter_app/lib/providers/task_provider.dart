@@ -24,6 +24,7 @@ class TaskProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
   void clear() {
     tasks = [];
     selectedTask = null;
@@ -31,7 +32,6 @@ class TaskProvider extends ChangeNotifier {
     error = null;
     notifyListeners();
   }
-  
 
   Future<void> loadRemoteTasks() async {
     loading = true;

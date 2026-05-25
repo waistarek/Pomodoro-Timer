@@ -8,7 +8,7 @@ class SettingsProvider extends ChangeNotifier {
 
   final LocalStorageService _localStorage;
   final SettingsService _settingsService;
-  
+
   AppSettings settings = const AppSettings();
   bool loading = false;
   String? error;

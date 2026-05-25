@@ -69,6 +69,12 @@ class TimerCard extends StatelessWidget {
                       filled: false,
                       onPressed: timer.reset,
                     ),
+                    BigButton(
+                      label: 'Überspringen',
+                      icon: Icons.skip_next,
+                      filled: false,
+                      onPressed: timer.canSkipPause ? timer.skipPause : null,
+                    ),
                   ],
                 ),
               ],

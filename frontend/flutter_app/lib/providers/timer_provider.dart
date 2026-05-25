@@ -32,6 +32,8 @@ class TimerProvider extends ChangeNotifier {
   int get remainingSeconds => engine.remainingSeconds;
   String get formattedTime => TimerEngine.formatMMSS(engine.remainingSeconds);
   PomodoroPhase get phase => engine.phase;
+  bool get isBreak => engine.isBreak;
+  bool get canSkipPause => engine.isBreak && !_finishingPhase;
   double get progress => engine.progress;
   int get completedPomodoros => engine.completedPomodoros;
 
@@ -102,6 +104,30 @@ class TimerProvider extends ChangeNotifier {
     _phaseTask = null;
     engine.reset();
     _phaseClientSessionId = null;
+
+    notifyListeners();
+  }
+
+  void skipPause() {
+    if (!canSkipPause) {
+      return;
+    }
+
+    _timer?.cancel();
+    _timer = null;
+
+    running = false;
+    _phaseStartedAt = null;
+    _phaseEndsAt = null;
+    _phaseTask = null;
+    _phaseClientSessionId = null;
+
+    engine.skipBreak();
+
+    if (_settings.autoStart) {
+      startOrResume();
+      return;
+    }
 
     notifyListeners();
   }
