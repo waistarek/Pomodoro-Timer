@@ -248,3 +248,29 @@ def test_create_session_is_idempotent_by_client_session_id():
     assert len(sessions.json()) == 1
 
 
+def test_settings_persist_color_name():
+    headers = register_and_login()
+
+    response = client.put(
+        "/settings",
+        headers=headers,
+        json={
+            "work_minutes": 25,
+            "short_break_minutes": 5,
+            "long_break_minutes": 15,
+            "long_break_after": 4,
+            "auto_start": False,
+            "sound_enabled": True,
+            "vibration_enabled": True,
+            "theme": "dark",
+            "color_name": "blue",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["color_name"] == "blue"
+
+    response = client.get("/settings", headers=headers)
+
+    assert response.status_code == 200
+    assert response.json()["color_name"] == "blue"

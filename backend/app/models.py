@@ -66,5 +66,6 @@ class Setting(Base):
     sound_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     vibration_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     theme: Mapped[str] = mapped_column(String(50), default="system")
+    color_name: Mapped[str] = mapped_column(String(50), default="red")
 
     user: Mapped[User] = relationship(back_populates="settings")

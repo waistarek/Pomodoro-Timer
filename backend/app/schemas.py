@@ -80,6 +80,7 @@ class SettingsBase(BaseModel):
     sound_enabled: bool = True
     vibration_enabled: bool = True
     theme: str = "system"
+    color_name: str = "red"
 
 
 class SettingsRead(SettingsBase):
