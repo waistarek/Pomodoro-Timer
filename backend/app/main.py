@@ -326,14 +326,18 @@ def stats_tasks(
     return build_task_stats(_user_sessions(db, current_user.id))
 
 
-
+# Alte Endpunkte bleiben für Tests und alte Frontend-Versionen kompatibel.
 @app.get("/stats/daily", response_model=StatsResponse)
 def stats_daily(
     tz: str = "Europe/Berlin",
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> StatsResponse:
-    return build_stats(_user_sessions(db, current_user.id), "daily", tz)
+    return build_week_stats(
+        _user_sessions(db, current_user.id),
+        None,
+        tz,
+    )
 
 
 @app.get("/stats/weekly", response_model=StatsResponse)
@@ -342,7 +346,12 @@ def stats_weekly(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> StatsResponse:
-    return build_stats(_user_sessions(db, current_user.id), "weekly", tz)
+    return build_month_stats(
+        _user_sessions(db, current_user.id),
+        None,
+        None,
+        tz,
+    )
 
 
 @app.get("/stats/monthly", response_model=StatsResponse)
@@ -351,7 +360,11 @@ def stats_monthly(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> StatsResponse:
-    return build_stats(_user_sessions(db, current_user.id), "monthly", tz)
+    return build_year_stats(
+        _user_sessions(db, current_user.id),
+        None,
+        tz,
+    )
 
 @app.get("/stats/tasks", response_model=TaskStatsResponse)
 def stats_tasks(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> TaskStatsResponse:
