@@ -29,13 +29,42 @@ class TimerProvider extends ChangeNotifier {
   TaskItem? _phaseTask;
   bool running = false;
 
-  int get remainingSeconds => engine.remainingSeconds;
-  String get formattedTime => TimerEngine.formatMMSS(engine.remainingSeconds);
-  PomodoroPhase get phase => engine.phase;
-  bool get isBreak => engine.isBreak;
-  bool get canSkipPause => engine.isBreak && !_finishingPhase;
-  double get progress => engine.progress;
-  int get completedPomodoros => engine.completedPomodoros;
+  
+ int get remainingSeconds => engine.remainingSeconds;
+ String get formattedTime => TimerEngine.formatMMSS(engine.remainingSeconds);
+ PomodoroPhase get phase => engine.phase;
+ bool get isBreak => engine.isBreak;
+ bool get canSkipPause => engine.isBreak && !_finishingPhase;
+ double get progress => engine.progress;
+ int get completedPomodoros => engine.completedPomodoros;
+
+ bool get isReady {
+  return !running &&
+      !_finishingPhase &&
+      engine.remainingSeconds == engine.totalPhaseSeconds;
+ }
+
+ bool get isPaused {
+  return !running &&
+      !_finishingPhase &&
+      engine.remainingSeconds < engine.totalPhaseSeconds;
+ }
+
+ String get statusLabel {
+  if (_finishingPhase) {
+    return 'Speichern ...';
+  }
+
+  if (running) {
+    return 'Läuft';
+  }
+
+  if (isPaused) {
+    return 'Pausiert';
+  }
+
+  return 'Bereit';
+ }
 
   void updateSettings(AppSettings settings) {
     final changed = _settings != settings;
