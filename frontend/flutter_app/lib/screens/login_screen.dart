@@ -180,6 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
+    final wasRegisterMode = _registerMode;
     final ok = _registerMode
         ? await authProvider.register(email, password)
         : await authProvider.login(email, password);
@@ -189,6 +190,19 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     if (ok) {
+       if (wasRegisterMode) {
+        setState(() => _registerMode = false);
+
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Registrierung erfolgreich. Bitte bestätige deine E-Mail-Adresse und logge dich danach ein.',
+            ),
+          ),
+        );
+
+        return;
+      }
       await settingsProvider.loadRemoteSettings();
       await sessionService.syncPendingSessions();
       await taskProvider.loadRemoteTasks();

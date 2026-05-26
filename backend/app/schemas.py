@@ -23,6 +23,7 @@ class UserRead(BaseModel):
     id: int
     email: EmailStr
     created_at: datetime
+    is_email_verified: bool
 
 
 class TaskBase(BaseModel):

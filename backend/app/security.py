@@ -3,6 +3,8 @@ from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from dotenv import load_dotenv
+import hashlib
+import secrets
 
 load_dotenv()
 
@@ -34,3 +36,10 @@ def decode_access_token(token: str) -> str | None:
         return str(subject) if subject is not None else None
     except JWTError:
         return None
+    
+def create_email_verification_token() -> str:
+    return secrets.token_urlsafe(32)
+
+
+def hash_email_verification_token(token: str) -> str:
+    return hashlib.sha256(token.encode("utf-8")).hexdigest()

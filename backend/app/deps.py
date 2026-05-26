@@ -19,4 +19,9 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     user = db.get(User, int(user_id))
     if user is None:
         raise HTTPException(status_code=401, detail="Benutzer nicht gefunden")
+    if not user.is_email_verified:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Bitte bestätige zuerst deine E-Mail-Adresse.",
+        )
     return user

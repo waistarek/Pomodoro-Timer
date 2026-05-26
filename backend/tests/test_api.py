@@ -274,3 +274,18 @@ def test_settings_persist_color_name():
 
     assert response.status_code == 200
     assert response.json()["color_name"] == "blue"
+
+
+def test_login_requires_verified_email():
+    response = client.post(
+        "/auth/register",
+        json={"email": "verify@example.com", "password": "12345678"},
+    )
+    assert response.status_code == 201
+    assert response.json()["is_email_verified"] is False
+
+    login = client.post(
+        "/auth/login",
+        json={"email": "verify@example.com", "password": "12345678"},
+    )
+    assert login.status_code == 403

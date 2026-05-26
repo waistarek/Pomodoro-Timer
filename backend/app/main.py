@@ -7,6 +7,10 @@ from .deps import get_current_user
 from sqlalchemy import func
 from .models import PomodoroSession, Setting, Task, User
 from sqlalchemy.exc import IntegrityError
+from datetime import datetime, timedelta
+from fastapi import BackgroundTasks
+from fastapi.responses import RedirectResponse
+from .email_service import send_verification_email
 from .schemas import (
     SessionCreate,
     SessionRead,
@@ -22,7 +26,13 @@ from .schemas import (
     UserRead,
     TaskStatsResponse,
 )
-from .security import create_access_token, hash_password, verify_password
+from .security import (
+    create_access_token,
+    create_email_verification_token,
+    hash_email_verification_token,
+    hash_password,
+    verify_password,
+)
 from .stats import build_stats, build_task_stats
 
 Base.metadata.create_all(bind=engine)
@@ -57,15 +67,34 @@ def _get_or_create_settings(db: Session, user_id: int) -> Setting:
 
 
 @app.post("/auth/register", response_model=UserRead, status_code=201)
-def register(data: UserCreate, db: Session = Depends(get_db)) -> User:
+def register(
+    data: UserCreate,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+) -> User:
     existing = db.query(User).filter(User.email == data.email.lower()).first()
     if existing:
         raise HTTPException(status_code=409, detail="E-Mail ist bereits registriert")
-    user = User(email=data.email.lower(), password_hash=hash_password(data.password))
+
+    verification_token = create_email_verification_token()
+    verification_token_hash = hash_email_verification_token(verification_token)
+
+    user = User(
+        email=data.email.lower(),
+        password_hash=hash_password(data.password),
+        is_email_verified=False,
+        email_verification_token_hash=verification_token_hash,
+        email_verification_expires_at=datetime.utcnow() + timedelta(hours=24),
+    )
+
     db.add(user)
     db.commit()
     db.refresh(user)
+
     _get_or_create_settings(db, user.id)
+
+    background_tasks.add_task(send_verification_email, user.email, verification_token)
+
     return user
 
 
@@ -74,8 +103,43 @@ def login(data: UserLogin, db: Session = Depends(get_db)) -> Token:
     user = db.query(User).filter(User.email == data.email.lower()).first()
     if user is None or not verify_password(data.password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Falsche E-Mail oder falsches Passwort")
+
+    if not user.is_email_verified:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Bitte bestätige zuerst deine E-Mail-Adresse.",
+        )
+
     return Token(access_token=create_access_token(str(user.id)))
 
+@app.get("/auth/verify-email")
+def verify_email(token: str, db: Session = Depends(get_db)):
+    token_hash = hash_email_verification_token(token)
+
+    user = (
+        db.query(User)
+        .filter(User.email_verification_token_hash == token_hash)
+        .first()
+    )
+
+    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:8080")
+
+    if user is None:
+        return RedirectResponse(f"{frontend_url}?email_verified=invalid")
+
+    if user.email_verification_expires_at is None:
+        return RedirectResponse(f"{frontend_url}?email_verified=invalid")
+
+    if user.email_verification_expires_at < datetime.utcnow():
+        return RedirectResponse(f"{frontend_url}?email_verified=expired")
+
+    user.is_email_verified = True
+    user.email_verification_token_hash = None
+    user.email_verification_expires_at = None
+
+    db.commit()
+
+    return RedirectResponse(f"{frontend_url}?email_verified=success")
 
 @app.get("/users/me", response_model=UserRead)
 def get_me(current_user: User = Depends(get_current_user)) -> User:

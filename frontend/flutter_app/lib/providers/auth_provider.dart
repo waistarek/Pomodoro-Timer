@@ -26,10 +26,9 @@ class AuthProvider extends ChangeNotifier {
     loading = true;
     error = null;
     notifyListeners();
+
     try {
       await _authService.register(email, password);
-      await _authService.login(email, password);
-      user = await _authService.me();
       return true;
     } catch (e) {
       error = e.toString();
