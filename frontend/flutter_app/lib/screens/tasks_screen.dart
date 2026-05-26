@@ -1,8 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../models/task_item.dart';
 import '../providers/task_provider.dart';
 import '../widgets/task_editor_dialog.dart';
+
+enum _TaskFilter {
+  all,
+  open,
+  completed,
+}
+
+enum _TaskSort {
+  newest,
+  priority,
+  pomodoros,
+}
 
 class TasksScreen extends StatefulWidget {
   const TasksScreen({super.key});
@@ -12,15 +25,33 @@ class TasksScreen extends StatefulWidget {
 }
 
 class _TasksScreenState extends State<TasksScreen> {
+  final TextEditingController _searchController = TextEditingController();
+
+  _TaskFilter _filter = _TaskFilter.all;
+  _TaskSort _sort = _TaskSort.newest;
+  String _searchQuery = '';
+
   @override
   void initState() {
     super.initState();
+
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text.trim().toLowerCase();
+      });
+    });
 
     Future.microtask(() {
       if (mounted) {
         context.read<TaskProvider>().refreshTaskPomodoroCounts();
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   Future<void> _openEditor(BuildContext context, {TaskItem? task}) async {
@@ -42,17 +73,98 @@ class _TasksScreenState extends State<TasksScreen> {
     }
   }
 
+  Future<void> _confirmDelete(
+    BuildContext context,
+    TaskProvider provider,
+    TaskItem task,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Aufgabe löschen?'),
+        content: Text(
+          'Möchtest du die Aufgabe „${task.title}“ wirklich löschen?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Abbrechen'),
+          ),
+          FilledButton.tonalIcon(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            icon: const Icon(Icons.delete_outline),
+            label: const Text('Löschen'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await provider.deleteTask(task);
+    }
+  }
+
+  List<TaskItem> _visibleTasks(List<TaskItem> tasks) {
+    final filtered = tasks.where((task) {
+      final matchesFilter = switch (_filter) {
+        _TaskFilter.all => true,
+        _TaskFilter.open => !task.completed,
+        _TaskFilter.completed => task.completed,
+      };
+
+      if (!matchesFilter) {
+        return false;
+      }
+
+      if (_searchQuery.isEmpty) {
+        return true;
+      }
+
+      final haystack = [
+        task.title,
+        task.description,
+        task.priority,
+        task.tags,
+      ].join(' ').toLowerCase();
+
+      return haystack.contains(_searchQuery);
+    }).toList();
+
+    filtered.sort((a, b) {
+      return switch (_sort) {
+        _TaskSort.newest => b.createdAt.compareTo(a.createdAt),
+        _TaskSort.priority => _priorityWeight(b.priority)
+            .compareTo(_priorityWeight(a.priority)),
+        _TaskSort.pomodoros =>
+          b.completedPomodoros.compareTo(a.completedPomodoros),
+      };
+    });
+
+    return filtered;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Aufgaben'),
         actions: [
-          IconButton(
-            tooltip: 'Vom Backend laden',
-            onPressed: () =>
-                context.read<TaskProvider>().refreshTaskPomodoroCounts(),
-            icon: const Icon(Icons.sync),
+          Consumer<TaskProvider>(
+            builder: (context, provider, _) {
+              return IconButton(
+                tooltip: 'Aufgaben aktualisieren',
+                onPressed: provider.loading
+                    ? null
+                    : () => provider.refreshTaskPomodoroCounts(),
+                icon: provider.loading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.sync),
+              );
+            },
           ),
         ],
       ),
@@ -63,51 +175,491 @@ class _TasksScreenState extends State<TasksScreen> {
       ),
       body: Consumer<TaskProvider>(
         builder: (context, provider, _) {
-          if (provider.tasks.isEmpty) {
-            return const Center(child: Text('Noch keine Aufgaben vorhanden.'));
-          }
-          return ListView.separated(
-            padding: const EdgeInsets.all(16),
-            itemCount: provider.tasks.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 8),
-            itemBuilder: (context, index) {
-              final task = provider.tasks[index];
-              final selected = provider.selectedTask?.localId == task.localId;
-              return Card(
-                child: ListTile(
-                  leading: Checkbox(
-                    value: task.completed,
-                    onChanged: (value) => provider
-                        .updateTask(task.copyWith(completed: value ?? false)),
+          final visibleTasks = _visibleTasks(provider.tasks);
+
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1100),
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  if (provider.error != null) ...[
+                    _ErrorBanner(
+                      message: provider.error!,
+                      onClose: provider.clearError,
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                  _TaskToolbar(
+                    searchController: _searchController,
+                    filter: _filter,
+                    sort: _sort,
+                    onFilterChanged: (value) {
+                      setState(() {
+                        _filter = value;
+                      });
+                    },
+                    onSortChanged: (value) {
+                      setState(() {
+                        _sort = value;
+                      });
+                    },
                   ),
-                  title: Text(task.title),
-                  subtitle: Text(
-                      'Priorität: ${task.priority} · Pomodoros: ${task.completedPomodoros} · Tags: ${task.tags}'),
-                  selected: selected,
-                  trailing: Wrap(
-                    spacing: 4,
-                    children: [
-                      IconButton(
-                        tooltip: 'Für Timer auswählen',
-                        onPressed: () => provider.selectTask(task),
-                        icon: Icon(selected
-                            ? Icons.radio_button_checked
-                            : Icons.radio_button_unchecked),
-                      ),
-                      IconButton(
-                          onPressed: () => _openEditor(context, task: task),
-                          icon: const Icon(Icons.edit)),
-                      IconButton(
-                          onPressed: () => provider.deleteTask(task),
-                          icon: const Icon(Icons.delete_outline)),
-                    ],
-                  ),
-                ),
-              );
-            },
+                  const SizedBox(height: 16),
+                  if (provider.loading && provider.tasks.isEmpty)
+                    const _StatusCard(
+                      icon: Icons.hourglass_empty,
+                      message: 'Aufgaben werden geladen ...',
+                      showProgress: true,
+                    )
+                  else if (provider.tasks.isEmpty)
+                    const _StatusCard(
+                      icon: Icons.task_alt_outlined,
+                      message:
+                          'Noch keine Aufgaben vorhanden. Erstelle deine erste Aufgabe.',
+                    )
+                  else if (visibleTasks.isEmpty)
+                    const _StatusCard(
+                      icon: Icons.search_off,
+                      message:
+                          'Keine Aufgaben gefunden. Passe Suche oder Filter an.',
+                    )
+                  else
+                    ...visibleTasks.map(
+                      (task) {
+                        final selected =
+                            provider.selectedTask?.localId == task.localId;
+
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: _TaskCard(
+                            task: task,
+                            selected: selected,
+                            onCompletedChanged: (value) {
+                              provider.updateTask(
+                                task.copyWith(completed: value),
+                              );
+                            },
+                            onSelectForTimer: () {
+                              provider.selectTask(task);
+                            },
+                            onEdit: () => _openEditor(context, task: task),
+                            onDelete: () =>
+                                _confirmDelete(context, provider, task),
+                          ),
+                        );
+                      },
+                    ),
+                  const SizedBox(height: 80),
+                ],
+              ),
+            ),
           );
         },
       ),
     );
   }
+}
+
+class _TaskToolbar extends StatelessWidget {
+  const _TaskToolbar({
+    required this.searchController,
+    required this.filter,
+    required this.sort,
+    required this.onFilterChanged,
+    required this.onSortChanged,
+  });
+
+  final TextEditingController searchController;
+  final _TaskFilter filter;
+  final _TaskSort sort;
+  final ValueChanged<_TaskFilter> onFilterChanged;
+  final ValueChanged<_TaskSort> onSortChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            SizedBox(
+              width: 320,
+              child: TextField(
+                controller: searchController,
+                decoration: InputDecoration(
+                  labelText: 'Aufgaben suchen',
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: searchController.text.isEmpty
+                      ? null
+                      : IconButton(
+                          tooltip: 'Suche löschen',
+                          onPressed: searchController.clear,
+                          icon: const Icon(Icons.close),
+                        ),
+                  border: const OutlineInputBorder(),
+                  isDense: true,
+                ),
+              ),
+            ),
+            SegmentedButton<_TaskFilter>(
+              selected: {filter},
+              onSelectionChanged: (selection) {
+                onFilterChanged(selection.first);
+              },
+              segments: const [
+                ButtonSegment(
+                  value: _TaskFilter.all,
+                  label: Text('Alle'),
+                ),
+                ButtonSegment(
+                  value: _TaskFilter.open,
+                  label: Text('Offen'),
+                ),
+                ButtonSegment(
+                  value: _TaskFilter.completed,
+                  label: Text('Erledigt'),
+                ),
+              ],
+            ),
+            DropdownMenu<_TaskSort>(
+              initialSelection: sort,
+              label: const Text('Sortierung'),
+              onSelected: (value) {
+                if (value != null) {
+                  onSortChanged(value);
+                }
+              },
+              dropdownMenuEntries: const [
+                DropdownMenuEntry(
+                  value: _TaskSort.newest,
+                  label: 'Neueste zuerst',
+                ),
+                DropdownMenuEntry(
+                  value: _TaskSort.priority,
+                  label: 'Priorität',
+                ),
+                DropdownMenuEntry(
+                  value: _TaskSort.pomodoros,
+                  label: 'Pomodoros',
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TaskCard extends StatelessWidget {
+  const _TaskCard({
+    required this.task,
+    required this.selected,
+    required this.onCompletedChanged,
+    required this.onSelectForTimer,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  final TaskItem task;
+  final bool selected;
+  final ValueChanged<bool> onCompletedChanged;
+  final VoidCallback onSelectForTimer;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final tags = _splitTags(task.tags);
+
+    return Card(
+      elevation: selected ? 2 : 0,
+      color: selected
+          ? Theme.of(context).colorScheme.primaryContainer.withValues(
+                alpha: 0.35,
+              )
+          : null,
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isNarrow = constraints.maxWidth < 720;
+
+            final content = Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Checkbox(
+                  value: task.completed,
+                  onChanged: (value) {
+                    onCompletedChanged(value ?? false);
+                  },
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _TaskContent(
+                    task: task,
+                    selected: selected,
+                    tags: tags,
+                  ),
+                ),
+              ],
+            );
+
+            final actions = _TaskActions(
+              selected: selected,
+              onSelectForTimer: onSelectForTimer,
+              onEdit: onEdit,
+              onDelete: onDelete,
+            );
+
+            if (isNarrow) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  content,
+                  const SizedBox(height: 12),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: actions,
+                  ),
+                ],
+              );
+            }
+
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(child: content),
+                const SizedBox(width: 16),
+                actions,
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _TaskContent extends StatelessWidget {
+  const _TaskContent({
+    required this.task,
+    required this.selected,
+    required this.tags,
+  });
+
+  final TaskItem task;
+  final bool selected;
+  final List<String> tags;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: 8,
+          runSpacing: 6,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Text(
+              task.title,
+              style: textTheme.titleMedium?.copyWith(
+                decoration:
+                    task.completed ? TextDecoration.lineThrough : null,
+              ),
+            ),
+            if (selected)
+              Chip(
+                visualDensity: VisualDensity.compact,
+                avatar: const Icon(Icons.play_arrow, size: 18),
+                label: const Text('Aktiv'),
+              ),
+            if (task.completed)
+              const Chip(
+                visualDensity: VisualDensity.compact,
+                avatar: Icon(Icons.check, size: 18),
+                label: Text('Erledigt'),
+              ),
+          ],
+        ),
+        if (task.description.trim().isNotEmpty) ...[
+          const SizedBox(height: 6),
+          Text(
+            task.description.trim(),
+            style: textTheme.bodyMedium,
+          ),
+        ],
+        const SizedBox(height: 10),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            Chip(
+              visualDensity: VisualDensity.compact,
+              avatar: const Icon(Icons.flag_outlined, size: 18),
+              label: Text(_priorityLabel(task.priority)),
+            ),
+            Chip(
+              visualDensity: VisualDensity.compact,
+              avatar: const Icon(Icons.timer_outlined, size: 18),
+              label: Text('${task.completedPomodoros} Pomodoros'),
+            ),
+            for (final tag in tags)
+              Chip(
+                visualDensity: VisualDensity.compact,
+                avatar: const Icon(Icons.sell_outlined, size: 18),
+                label: Text(tag),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _TaskActions extends StatelessWidget {
+  const _TaskActions({
+    required this.selected,
+    required this.onSelectForTimer,
+    required this.onEdit,
+    required this.onDelete,
+  });
+
+  final bool selected;
+  final VoidCallback onSelectForTimer;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        selected
+            ? FilledButton.tonalIcon(
+                onPressed: null,
+                icon: const Icon(Icons.check_circle),
+                label: const Text('Aktiv'),
+              )
+            : OutlinedButton.icon(
+                onPressed: onSelectForTimer,
+                icon: const Icon(Icons.play_arrow),
+                label: const Text('Für Timer'),
+              ),
+        IconButton.outlined(
+          tooltip: 'Bearbeiten',
+          onPressed: onEdit,
+          icon: const Icon(Icons.edit),
+        ),
+        IconButton.outlined(
+          tooltip: 'Löschen',
+          onPressed: onDelete,
+          icon: const Icon(Icons.delete_outline),
+        ),
+      ],
+    );
+  }
+}
+
+class _ErrorBanner extends StatelessWidget {
+  const _ErrorBanner({
+    required this.message,
+    required this.onClose,
+  });
+
+  final String message;
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Theme.of(context).colorScheme.errorContainer,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            const Icon(Icons.warning_amber_outlined),
+            const SizedBox(width: 12),
+            Expanded(child: Text(message)),
+            IconButton(
+              tooltip: 'Meldung schließen',
+              onPressed: onClose,
+              icon: const Icon(Icons.close),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StatusCard extends StatelessWidget {
+  const _StatusCard({
+    required this.icon,
+    required this.message,
+    this.showProgress = false,
+  });
+
+  final IconData icon;
+  final String message;
+  final bool showProgress;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Row(
+          children: [
+            if (showProgress)
+              const SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            else
+              Icon(icon),
+            const SizedBox(width: 16),
+            Expanded(child: Text(message)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+String _priorityLabel(String priority) {
+  return switch (priority) {
+    'low' => 'Niedrig',
+    'medium' => 'Mittel',
+    'high' => 'Hoch',
+    _ => priority,
+  };
+}
+
+int _priorityWeight(String priority) {
+  return switch (priority) {
+    'high' => 3,
+    'medium' => 2,
+    'low' => 1,
+    _ => 0,
+  };
+}
+
+List<String> _splitTags(String tags) {
+  return tags
+      .split(',')
+      .map((tag) => tag.trim())
+      .where((tag) => tag.isNotEmpty)
+      .toList();
 }

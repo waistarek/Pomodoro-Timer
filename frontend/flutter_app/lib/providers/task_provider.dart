@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import '../models/task_item.dart';
 import '../services/local_storage_service.dart';
 import '../services/task_service.dart';
@@ -8,8 +9,10 @@ class TaskProvider extends ChangeNotifier {
 
   final LocalStorageService _localStorage;
   final TaskService _taskService;
+
   List<TaskItem> tasks = [];
   TaskItem? selectedTask;
+
   bool loading = false;
   String? error;
 
@@ -18,8 +21,10 @@ class TaskProvider extends ChangeNotifier {
     _applyLocalPomodoroCounts();
 
     if (tasks.isNotEmpty) {
-      selectedTask =
-          tasks.firstWhere((t) => !t.completed, orElse: () => tasks.first);
+      selectedTask = tasks.firstWhere(
+        (task) => !task.completed,
+        orElse: () => tasks.first,
+      );
     }
 
     notifyListeners();
@@ -29,6 +34,12 @@ class TaskProvider extends ChangeNotifier {
     tasks = [];
     selectedTask = null;
     loading = false;
+    error = null;
+
+    notifyListeners();
+  }
+
+  void clearError() {
     error = null;
     notifyListeners();
   }
@@ -62,16 +73,18 @@ class TaskProvider extends ChangeNotifier {
         }
 
         selectedTask = nextSelected ??
-            tasks.firstWhere((task) => !task.completed,
-                orElse: () => tasks.first);
+            tasks.firstWhere(
+              (task) => !task.completed,
+              orElse: () => tasks.first,
+            );
       } else {
         selectedTask = null;
       }
 
       await _saveLocal();
-    } catch (e) {
+    } catch (_) {
       error =
-          'Aufgaben konnten nicht vom Backend geladen werden. Offline-Daten werden verwendet.';
+          'Aufgaben konnten nicht vom Backend geladen werden. Lokale Daten werden weiter angezeigt.';
     } finally {
       loading = false;
       notifyListeners();
@@ -79,8 +92,10 @@ class TaskProvider extends ChangeNotifier {
   }
 
   Future<void> addTask(TaskItem task) async {
+    error = null;
     tasks = [task, ...tasks];
     selectedTask ??= task;
+
     await _saveLocal();
     notifyListeners();
 
@@ -88,8 +103,9 @@ class TaskProvider extends ChangeNotifier {
       final remote = await _taskService.createTask(task);
       final updated = task.copyWith(remoteId: remote.remoteId);
 
-      tasks =
-          tasks.map((t) => t.localId == task.localId ? updated : t).toList();
+      tasks = tasks
+          .map((current) => current.localId == task.localId ? updated : current)
+          .toList();
 
       if (selectedTask?.localId == task.localId) {
         selectedTask = updated;
@@ -97,7 +113,11 @@ class TaskProvider extends ChangeNotifier {
 
       await _saveLocal();
       notifyListeners();
-    } catch (_) {}
+    } catch (_) {
+      error =
+          'Aufgabe wurde lokal gespeichert, konnte aber nicht mit dem Konto synchronisiert werden.';
+      notifyListeners();
+    }
   }
 
   Future<void> refreshTaskPomodoroCounts() async {
@@ -108,32 +128,88 @@ class TaskProvider extends ChangeNotifier {
 
     _applyLocalPomodoroCounts();
     await _saveLocal();
+
     notifyListeners();
   }
 
   Future<void> updateTask(TaskItem task) async {
-    tasks = tasks.map((t) => t.localId == task.localId ? task : t).toList();
+    error = null;
+
+    final oldTasks = tasks;
+    final oldSelectedTask = selectedTask;
+
+    tasks = tasks
+        .map((current) => current.localId == task.localId ? task : current)
+        .toList();
+
     if (selectedTask?.localId == task.localId) {
       selectedTask = task;
     }
+
     await _saveLocal();
     notifyListeners();
+
     try {
-      await _taskService.updateTask(task);
-    } catch (_) {}
+      final remote = await _taskService.updateTask(task);
+
+      if (remote.remoteId != null) {
+        final updated = task.copyWith(remoteId: remote.remoteId);
+
+        tasks = tasks
+            .map(
+              (current) =>
+                  current.localId == task.localId ? updated : current,
+            )
+            .toList();
+
+        if (selectedTask?.localId == task.localId) {
+          selectedTask = updated;
+        }
+
+        await _saveLocal();
+        notifyListeners();
+      }
+    } catch (_) {
+      tasks = oldTasks;
+      selectedTask = oldSelectedTask;
+
+      await _saveLocal();
+
+      error =
+          'Aufgabe konnte nicht gespeichert werden. Die letzte Änderung wurde zurückgenommen.';
+
+      notifyListeners();
+    }
   }
 
   Future<void> deleteTask(TaskItem task) async {
-    tasks = tasks.where((t) => t.localId != task.localId).toList();
+    error = null;
+
+    final oldTasks = tasks;
+    final oldSelectedTask = selectedTask;
+
+    tasks = tasks.where((current) => current.localId != task.localId).toList();
+
     if (selectedTask?.localId == task.localId) {
       selectedTask = tasks.isEmpty ? null : tasks.first;
     }
 
     await _saveLocal();
     notifyListeners();
+
     try {
       await _taskService.deleteTask(task);
-    } catch (_) {}
+    } catch (_) {
+      tasks = oldTasks;
+      selectedTask = oldSelectedTask;
+
+      await _saveLocal();
+
+      error =
+          'Aufgabe konnte nicht im Konto gelöscht werden. Die Aufgabe wurde wiederhergestellt.';
+
+      notifyListeners();
+    }
   }
 
   Future<void> selectTask(TaskItem? task) async {
@@ -143,7 +219,9 @@ class TaskProvider extends ChangeNotifier {
 
   Future<void> _saveLocal() {
     return _localStorage.setJsonList(
-        'tasks', tasks.map((t) => t.toJson()).toList());
+      'tasks',
+      tasks.map((task) => task.toJson()).toList(),
+    );
   }
 
   void _applyLocalPomodoroCounts() {
@@ -167,7 +245,7 @@ class TaskProvider extends ChangeNotifier {
     tasks = tasks
         .map(
           (task) => task.copyWith(
-            completedPomodoros: counts[task.localId] ?? 0,
+            completedPomodoros: counts[task.localId] ?? task.completedPomodoros,
           ),
         )
         .toList();
