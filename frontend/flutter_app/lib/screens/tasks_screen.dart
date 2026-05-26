@@ -477,10 +477,10 @@ class _TaskContent extends StatelessWidget {
               ),
             ),
             if (selected)
-              Chip(
+              const Chip(
                 visualDensity: VisualDensity.compact,
-                avatar: const Icon(Icons.play_arrow, size: 18),
-                label: const Text('Aktiv'),
+                avatar: Icon(Icons.play_arrow, size: 18),
+                label: Text('Aktiv'),
               ),
             if (task.completed)
               const Chip(

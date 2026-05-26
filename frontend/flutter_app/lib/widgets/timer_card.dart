@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/task_item.dart';
+import '../providers/task_provider.dart';
 import '../providers/timer_provider.dart';
 import '../timer/pomodoro_phase.dart';
 import 'big_button.dart';
@@ -10,8 +12,8 @@ class TimerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<TimerProvider>(
-      builder: (context, timer, _) {
+    return Consumer2<TimerProvider, TaskProvider>(
+      builder: (context, timer, taskProvider, _) {
         final phaseColor = _phaseColor(context, timer.phase);
 
         return Card(
@@ -20,6 +22,8 @@ class TimerCard extends StatelessWidget {
             padding: const EdgeInsets.all(24),
             child: Column(
               children: [
+                _TaskSelector(taskProvider: taskProvider),
+                const SizedBox(height: 24),
                 _TimerHeader(
                   phaseLabel: timer.phase.label,
                   statusLabel: timer.statusLabel,
@@ -39,6 +43,75 @@ class TimerCard extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _TaskSelector extends StatelessWidget {
+  const _TaskSelector({required this.taskProvider});
+
+  final TaskProvider taskProvider;
+
+  @override
+  Widget build(BuildContext context) {
+    final selected = taskProvider.selectedTask;
+    final openTasks = taskProvider.tasks
+        .where((task) => !task.completed)
+        .toList();
+
+    TaskItem? selectedValue;
+
+    if (selected != null) {
+      for (final task in openTasks) {
+        if (task.localId == selected.localId) {
+          selectedValue = task;
+          break;
+        }
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Icon(Icons.task_alt_outlined),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                selectedValue == null
+                    ? 'Keine Aufgabe ausgewählt'
+                    : 'Aktuelle Aufgabe: ${selectedValue.title}',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        DropdownButtonFormField<TaskItem?>(
+          key: ValueKey(selectedValue?.localId ?? 'no-task'),
+          initialValue: selectedValue,
+          decoration: const InputDecoration(
+            labelText: 'Aufgabe für diese Arbeitsphase',
+            border: OutlineInputBorder(),
+          ),
+          items: [
+            const DropdownMenuItem<TaskItem?>(
+              value: null,
+              child: Text('Ohne Aufgabe'),
+            ),
+            ...openTasks.map(
+              (task) => DropdownMenuItem<TaskItem?>(
+                value: task,
+                child: Text(task.title),
+              ),
+            ),
+          ],
+          onChanged: (task) {
+            taskProvider.selectTask(task);
+          },
+        ),
+      ],
     );
   }
 }
