@@ -517,46 +517,68 @@ class _NumberControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isMinutes = suffix == 'Minuten';
+    final unitLabel = suffix == 'Minuten' ? 'min' : 'Pomodoros';
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IconButton.outlined(
-          tooltip: 'Verringern',
-          onPressed: canDecrease ? onDecrease : null,
-          icon: const Icon(Icons.remove),
-        ),
-        const SizedBox(width: 8),
-        SizedBox(
-          width: isMinutes ? 110 : 150,
-          child: TextField(
-            controller: controller,
-            focusNode: focusNode,
-            textAlign: TextAlign.center,
-            keyboardType: TextInputType.number,
-            textInputAction: TextInputAction.done,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-            ],
-            decoration: InputDecoration(
-              isDense: true,
-              border: const OutlineInputBorder(),
-              suffixText: isMinutes ? 'min' : 'Pomodoros',
+    return SizedBox(
+      width: 300,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          SizedBox(
+            width: 48,
+            height: 48,
+            child: IconButton.outlined(
+              tooltip: 'Verringern',
+              onPressed: canDecrease ? onDecrease : null,
+              icon: const Icon(Icons.remove),
             ),
-            onSubmitted: (_) => onSubmit(),
-            onTapOutside: (_) {
-              focusNode.unfocus();
-            },
           ),
-        ),
-        const SizedBox(width: 8),
-        IconButton.outlined(
-          tooltip: 'Erhöhen',
-          onPressed: canIncrease ? onIncrease : null,
-          icon: const Icon(Icons.add),
-        ),
-      ],
+          const SizedBox(width: 10),
+          SizedBox(
+            width: 76,
+            child: TextField(
+              controller: controller,
+              focusNode: focusNode,
+              textAlign: TextAlign.center,
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.done,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+              ],
+              decoration: const InputDecoration(
+                isDense: true,
+                border: OutlineInputBorder(),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 14,
+                ),
+              ),
+              onSubmitted: (_) => onSubmit(),
+              onTapOutside: (_) {
+                focusNode.unfocus();
+              },
+            ),
+          ),
+          const SizedBox(width: 10),
+          SizedBox(
+            width: 86,
+            child: Text(
+              unitLabel,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ),
+          const SizedBox(width: 10),
+          SizedBox(
+            width: 48,
+            height: 48,
+            child: IconButton.outlined(
+              tooltip: 'Erhöhen',
+              onPressed: canIncrease ? onIncrease : null,
+              icon: const Icon(Icons.add),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
