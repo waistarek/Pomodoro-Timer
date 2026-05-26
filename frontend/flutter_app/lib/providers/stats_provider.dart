@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import '../models/stats.dart';
 import '../services/stats_service.dart';
 
@@ -12,8 +13,10 @@ class StatsProvider extends ChangeNotifier {
 
   bool loading = false;
   bool taskStatsLoading = false;
+
   String? error;
   String? taskStatsError;
+
   void clear() {
     stats = StatsResponse.empty();
     taskStats = TaskStatsResponse.empty();
@@ -24,9 +27,31 @@ class StatsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> loadDaily() async => _load(_statsService.daily);
-  Future<void> loadWeekly() async => _load(_statsService.weekly);
-  Future<void> loadMonthly() async => _load(_statsService.monthly);
+  Future<void> loadWeek(DateTime date) async {
+    await _load(() => _statsService.week(date));
+  }
+
+  Future<void> loadMonth(int year, int month) async {
+    await _load(() => _statsService.month(year, month));
+  }
+
+  Future<void> loadYear(int year) async {
+    await _load(() => _statsService.year(year));
+  }
+
+  Future<void> loadDaily() async {
+    await loadWeek(DateTime.now());
+  }
+
+  Future<void> loadWeekly() async {
+    final now = DateTime.now();
+
+    await loadMonth(now.year, now.month);
+  }
+
+  Future<void> loadMonthly() async {
+    await loadYear(DateTime.now().year);
+  }
 
   Future<void> loadTaskStats() async {
     taskStatsLoading = true;
@@ -50,7 +75,7 @@ class StatsProvider extends ChangeNotifier {
 
     try {
       stats = await loader();
-    } catch (e) {
+    } catch (_) {
       error =
           'Statistiken konnten nicht geladen werden. Bitte anmelden und Internetverbindung prüfen.';
     } finally {

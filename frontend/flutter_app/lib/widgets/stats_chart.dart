@@ -19,22 +19,24 @@ class StatsChart extends StatelessWidget {
   Widget build(BuildContext context) {
     if (items.isEmpty) {
       return const SizedBox(
-        height: 240,
+        height: 280,
         child: Center(
           child: Text('Noch keine Statistikdaten vorhanden.'),
         ),
       );
     }
 
-    final maxValue = items
-        .map((item) => item.focusMinutes)
-        .fold<int>(0, (max, value) => value > max ? value : max);
+    final maxMinutes = items.fold<int>(
+      0,
+      (maxValue, item) =>
+          item.focusMinutes > maxValue ? item.focusMinutes : maxValue,
+    );
 
-    final maxY = _niceMaxY(maxValue);
-    final interval = _intervalForMax(maxY);
+    final maxY = _niceMaxYHours(maxMinutes);
+    final interval = _intervalForMaxHours(maxY);
 
     return SizedBox(
-      height: 280,
+      height: 300,
       child: BarChart(
         BarChartData(
           minY: 0,
@@ -54,19 +56,19 @@ class StatsChart extends StatelessWidget {
                 final label = labelFormatter?.call(item.label) ?? item.label;
 
                 return BarTooltipItem(
-                  '$label\n${item.focusMinutes} min\n${item.pomodoros} Pomodoros',
+                  '$label\n${_formatMinutes(item.focusMinutes)}\n${item.pomodoros} Pomodoros',
                   const TextStyle(color: Colors.white),
                 );
               },
             ),
           ),
           barGroups: [
-            for (var i = 0; i < items.length; i++)
+            for (var index = 0; index < items.length; index++)
               BarChartGroupData(
-                x: i,
+                x: index,
                 barRods: [
                   BarChartRodData(
-                    toY: math.max(0, items[i].focusMinutes).toDouble(),
+                    toY: math.max(0, items[index].focusMinutes / 60),
                     width: 16,
                     borderRadius: BorderRadius.circular(6),
                   ),
@@ -107,7 +109,7 @@ class StatsChart extends StatelessWidget {
                     return const SizedBox.shrink();
                   }
 
-                  final step = items.length > 10 ? 2 : 1;
+                  final step = items.length > 14 ? 3 : 1;
                   final isLast = index == items.length - 1;
 
                   if (index % step != 0 && !isLast) {
@@ -147,90 +149,91 @@ class StatsChart extends StatelessWidget {
   }
 }
 
-double _niceMaxY(int maxValue) {
-  if (maxValue <= 0) {
+double _niceMaxYHours(int maxMinutes) {
+  final maxHours = maxMinutes / 60;
+
+  if (maxHours <= 1) {
+    return 1;
+  }
+
+  if (maxHours <= 2) {
+    return 2;
+  }
+
+  if (maxHours <= 5) {
+    return 5;
+  }
+
+  if (maxHours <= 10) {
     return 10;
   }
 
-  if (maxValue <= 10) {
-    return 10;
+  if (maxHours <= 24) {
+    return 24;
   }
 
-  if (maxValue <= 30) {
-    return 30;
+  if (maxHours <= 50) {
+    return 50;
   }
 
-  if (maxValue <= 60) {
-    return 60;
+  if (maxHours <= 100) {
+    return 100;
   }
 
-  if (maxValue <= 120) {
-    return 120;
-  }
-
-  if (maxValue <= 300) {
-    return 300;
-  }
-
-  if (maxValue <= 600) {
-    return 600;
-  }
-
-  if (maxValue <= 1200) {
-    return 1200;
-  }
-
-  if (maxValue <= 1800) {
-    return 1800;
-  }
-
-  return (maxValue / 500).ceil() * 500;
+  return (maxHours / 50).ceil() * 50;
 }
 
-double _intervalForMax(double maxY) {
+double _intervalForMaxHours(double maxY) {
+  if (maxY <= 1) {
+    return 0.25;
+  }
+
+  if (maxY <= 2) {
+    return 0.5;
+  }
+
+  if (maxY <= 5) {
+    return 1;
+  }
+
   if (maxY <= 10) {
     return 2;
   }
 
-  if (maxY <= 30) {
-    return 5;
+  if (maxY <= 24) {
+    return 4;
   }
 
-  if (maxY <= 60) {
+  if (maxY <= 50) {
     return 10;
   }
 
-  if (maxY <= 120) {
-    return 20;
-  }
-
-  if (maxY <= 300) {
-    return 50;
-  }
-
-  if (maxY <= 600) {
-    return 100;
-  }
-
-  if (maxY <= 1200) {
-    return 200;
-  }
-
-  return 500;
+  return 20;
 }
 
 String _formatYAxisValue(double value) {
-  final rounded = value.round();
-
-  if (rounded >= 1000) {
-    final thousands = rounded / 1000;
-
-    if (rounded % 1000 == 0) {
-      return '${thousands.toStringAsFixed(0)}k';
-    }
-
-    return '${thousands.toStringAsFixed(1)}k';
+  if (value == 0) {
+    return '0 h';
   }
 
-  return rounded.toString();
+  if (value % 1 == 0) {
+    return '${value.toInt()} h';
+  }
+
+  return '${value.toStringAsFixed(1)} h';
+}
+
+String _formatMinutes(int minutes) {
+  final hours = minutes ~/ 60;
+  final rest = minutes % 60;
+
+  if (hours == 0) {
+    return '$rest min';
+  }
+
+  if (rest == 0) {
+    return '$hours h';
+  }
+
+  return '$hours h $rest min';
 }

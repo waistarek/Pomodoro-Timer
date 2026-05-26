@@ -32,6 +32,9 @@ class StatsResponse {
     required this.totalFocusMinutes,
     required this.currentStreakDays,
     this.bestFocusDay,
+    this.periodStart,
+    this.periodEnd,
+    this.periodLabel,
   });
 
   final List<StatsItem> items;
@@ -39,6 +42,9 @@ class StatsResponse {
   final int totalFocusMinutes;
   final int currentStreakDays;
   final String? bestFocusDay;
+  final String? periodStart;
+  final String? periodEnd;
+  final String? periodLabel;
 
   factory StatsResponse.empty() => const StatsResponse(
         items: [],
@@ -55,6 +61,9 @@ class StatsResponse {
         totalFocusMinutes: json['total_focus_minutes'] ?? 0,
         currentStreakDays: json['current_streak_days'] ?? 0,
         bestFocusDay: json['best_focus_day'],
+        periodStart: json['period_start'],
+        periodEnd: json['period_end'],
+        periodLabel: json['period_label'],
       );
 }
 

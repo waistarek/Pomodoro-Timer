@@ -6,9 +6,9 @@ import '../providers/stats_provider.dart';
 import '../widgets/stats_chart.dart';
 
 enum _StatsMode {
-  day,
   week,
   month,
+  year,
   tasks,
 }
 
@@ -20,7 +20,8 @@ class StatsScreen extends StatefulWidget {
 }
 
 class _StatsScreenState extends State<StatsScreen> {
-  _StatsMode _mode = _StatsMode.day;
+  _StatsMode _mode = _StatsMode.week;
+  DateTime _cursor = DateTime.now();
 
   @override
   void initState() {
@@ -28,27 +29,27 @@ class _StatsScreenState extends State<StatsScreen> {
 
     Future.microtask(() {
       if (mounted) {
-        context.read<StatsProvider>().loadDaily();
+        _loadCurrentMode();
       }
     });
   }
 
-  void _loadForMode(BuildContext context, _StatsMode mode) {
+  void _loadCurrentMode() {
     final provider = context.read<StatsProvider>();
 
-    switch (mode) {
-      case _StatsMode.day:
-        provider.loadDaily();
+    switch (_mode) {
       case _StatsMode.week:
-        provider.loadWeekly();
+        provider.loadWeek(_cursor);
       case _StatsMode.month:
-        provider.loadMonthly();
+        provider.loadMonth(_cursor.year, _cursor.month);
+      case _StatsMode.year:
+        provider.loadYear(_cursor.year);
       case _StatsMode.tasks:
         provider.loadTaskStats();
     }
   }
 
-  void _selectMode(BuildContext context, _StatsMode mode) {
+  void _selectMode(_StatsMode mode) {
     if (_mode == mode) {
       return;
     }
@@ -57,7 +58,28 @@ class _StatsScreenState extends State<StatsScreen> {
       _mode = mode;
     });
 
-    _loadForMode(context, mode);
+    _loadCurrentMode();
+  }
+
+  void _changePeriod(int direction) {
+    if (_mode == _StatsMode.tasks) {
+      return;
+    }
+
+    setState(() {
+      switch (_mode) {
+        case _StatsMode.week:
+          _cursor = _cursor.add(Duration(days: 7 * direction));
+        case _StatsMode.month:
+          _cursor = DateTime(_cursor.year, _cursor.month + direction, 1);
+        case _StatsMode.year:
+          _cursor = DateTime(_cursor.year + direction, 1, 1);
+        case _StatsMode.tasks:
+          break;
+      }
+    });
+
+    _loadCurrentMode();
   }
 
   bool _isLoading(StatsProvider provider) {
@@ -68,28 +90,22 @@ class _StatsScreenState extends State<StatsScreen> {
     return provider.loading;
   }
 
-  String _chartTitle(_StatsMode mode) {
-    return switch (mode) {
-      _StatsMode.day => 'Fokuszeit pro Tag',
-      _StatsMode.week => 'Fokuszeit pro Woche',
-      _StatsMode.month => 'Fokuszeit pro Monat',
+  String _chartTitle() {
+    return switch (_mode) {
+      _StatsMode.week => 'Fokuszeit pro Tag',
+      _StatsMode.month => 'Fokuszeit pro Tag',
+      _StatsMode.year => 'Fokuszeit pro Monat',
       _StatsMode.tasks => 'Fokuszeit pro Aufgabe',
     };
   }
 
-  String _periodText(List<StatsItem> items, _StatsMode mode) {
-    if (items.isEmpty) {
-      return 'Zeitraum: Keine Daten vorhanden';
-    }
-
-    final first = _formatLabel(items.first.label, mode);
-    final last = _formatLabel(items.last.label, mode);
-
-    if (first == last) {
-      return 'Zeitraum: $first';
-    }
-
-    return 'Zeitraum: $first – $last';
+  String _xAxisText() {
+    return switch (_mode) {
+      _StatsMode.week => 'X-Achse: Tage der Woche',
+      _StatsMode.month => 'X-Achse: Tage im Monat',
+      _StatsMode.year => 'X-Achse: Monate im Jahr',
+      _StatsMode.tasks => 'X-Achse: Aufgaben',
+    };
   }
 
   @override
@@ -105,7 +121,7 @@ class _StatsScreenState extends State<StatsScreen> {
               Padding(
                 padding: const EdgeInsets.only(right: 12),
                 child: TextButton.icon(
-                  onPressed: loading ? null : () => _loadForMode(context, _mode),
+                  onPressed: loading ? null : _loadCurrentMode,
                   icon: loading
                       ? const SizedBox(
                           width: 18,
@@ -129,14 +145,9 @@ class _StatsScreenState extends State<StatsScreen> {
                     child: SegmentedButton<_StatsMode>(
                       selected: {_mode},
                       onSelectionChanged: (selection) {
-                        _selectMode(context, selection.first);
+                        _selectMode(selection.first);
                       },
                       segments: const [
-                        ButtonSegment(
-                          value: _StatsMode.day,
-                          icon: Icon(Icons.today_outlined),
-                          label: Text('Tag'),
-                        ),
                         ButtonSegment(
                           value: _StatsMode.week,
                           icon: Icon(Icons.calendar_view_week_outlined),
@@ -148,6 +159,11 @@ class _StatsScreenState extends State<StatsScreen> {
                           label: Text('Monat'),
                         ),
                         ButtonSegment(
+                          value: _StatsMode.year,
+                          icon: Icon(Icons.date_range_outlined),
+                          label: Text('Jahr'),
+                        ),
+                        ButtonSegment(
                           value: _StatsMode.tasks,
                           icon: Icon(Icons.task_alt_outlined),
                           label: Text('Aufgaben'),
@@ -155,15 +171,22 @@ class _StatsScreenState extends State<StatsScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
+                  if (_mode != _StatsMode.tasks)
+                    _PeriodNavigator(
+                      stats: provider.stats,
+                      onPrevious: () => _changePeriod(-1),
+                      onNext: () => _changePeriod(1),
+                    ),
+                  if (_mode != _StatsMode.tasks) const SizedBox(height: 16),
                   if (_mode == _StatsMode.tasks)
                     _TaskStatsContent(provider: provider)
                   else
                     _GeneralStatsContent(
                       provider: provider,
                       mode: _mode,
-                      chartTitle: _chartTitle(_mode),
-                      periodText: _periodText(provider.stats.items, _mode),
+                      chartTitle: _chartTitle(),
+                      xAxisText: _xAxisText(),
                     ),
                 ],
               ),
@@ -175,18 +198,78 @@ class _StatsScreenState extends State<StatsScreen> {
   }
 }
 
+class _PeriodNavigator extends StatelessWidget {
+  const _PeriodNavigator({
+    required this.stats,
+    required this.onPrevious,
+    required this.onNext,
+  });
+
+  final StatsResponse stats;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
+
+  @override
+  Widget build(BuildContext context) {
+    final periodLabel = stats.periodLabel ?? '-';
+    final periodStart = _formatIsoDate(stats.periodStart);
+    final periodEnd = _formatIsoDate(stats.periodEnd);
+
+    final periodText = periodStart == '-' || periodEnd == '-'
+        ? 'Zeitraum: Keine Daten vorhanden'
+        : 'Zeitraum: $periodStart – $periodEnd';
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        child: Row(
+          children: [
+            IconButton.outlined(
+              tooltip: 'Vorheriger Zeitraum',
+              onPressed: onPrevious,
+              icon: const Icon(Icons.chevron_left),
+            ),
+            Expanded(
+              child: Column(
+                children: [
+                  Text(
+                    periodLabel,
+                    style: Theme.of(context).textTheme.titleMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    periodText,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            IconButton.outlined(
+              tooltip: 'Nächster Zeitraum',
+              onPressed: onNext,
+              icon: const Icon(Icons.chevron_right),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _GeneralStatsContent extends StatelessWidget {
   const _GeneralStatsContent({
     required this.provider,
     required this.mode,
     required this.chartTitle,
-    required this.periodText,
+    required this.xAxisText,
   });
 
   final StatsProvider provider;
   final _StatsMode mode;
   final String chartTitle;
-  final String periodText;
+  final String xAxisText;
 
   @override
   Widget build(BuildContext context) {
@@ -210,18 +293,11 @@ class _GeneralStatsContent extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          periodText,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        const SizedBox(height: 16),
-        Wrap(
-          spacing: 12,
-          runSpacing: 12,
+        _SummaryCards(
           children: [
             _InfoCard(
               icon: Icons.check_circle_outline,
-              title: 'Abgeschlossene Pomodoros',
+              title: 'Pomodoros',
               value: stats.totalPomodoros.toString(),
             ),
             _InfoCard(
@@ -239,7 +315,7 @@ class _GeneralStatsContent extends StatelessWidget {
               title: 'Bester Zeitraum',
               value: stats.bestFocusDay == null
                   ? '-'
-                  : _formatLabel(stats.bestFocusDay!, mode),
+                  : _formatBestLabel(stats.bestFocusDay!, mode),
             ),
           ],
         ),
@@ -256,13 +332,13 @@ class _GeneralStatsContent extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Y-Achse: Fokuszeit in Minuten · X-Achse: Zeitraum',
+                  'Y-Achse: Fokuszeit in Stunden · $xAxisText',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 16),
                 StatsChart(
                   items: stats.items,
-                  labelFormatter: (label) => _formatShortLabel(label, mode),
+                  labelFormatter: (label) => _formatChartLabel(label, mode),
                 ),
               ],
             ),
@@ -305,16 +381,16 @@ class _TaskStatsContent extends StatelessWidget {
       );
     }
 
-    final maxFocusMinutes = stats.items
-        .map((item) => item.focusMinutes)
-        .fold<int>(0, (max, value) => value > max ? value : max);
+    final maxFocusMinutes = stats.items.fold<int>(
+      0,
+      (maxValue, item) =>
+          item.focusMinutes > maxValue ? item.focusMinutes : maxValue,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Wrap(
-          spacing: 12,
-          runSpacing: 12,
+        _SummaryCards(
           children: [
             _InfoCard(
               icon: Icons.check_circle_outline,
@@ -368,7 +444,8 @@ class _TaskStatsContent extends StatelessWidget {
                               Expanded(
                                 child: Text(
                                   item.taskTitle,
-                                  style: Theme.of(context).textTheme.titleMedium,
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
                                 ),
                               ),
                               Text(
@@ -394,6 +471,72 @@ class _TaskStatsContent extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _SummaryCards extends StatelessWidget {
+  const _SummaryCards({required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 12,
+      runSpacing: 12,
+      children: children,
+    );
+  }
+}
+
+class _InfoCard extends StatelessWidget {
+  const _InfoCard({
+    required this.icon,
+    required this.title,
+    required this.value,
+  });
+
+  final IconData icon;
+  final String title;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 260,
+      height: 130,
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Icon(icon, size: 30),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      value,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -433,49 +576,6 @@ class _StatusCard extends StatelessWidget {
   }
 }
 
-class _InfoCard extends StatelessWidget {
-  const _InfoCard({
-    required this.icon,
-    required this.title,
-    required this.value,
-  });
-
-  final IconData icon;
-  final String title;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 230,
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Icon(icon, size: 28),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title),
-                    const SizedBox(height: 8),
-                    Text(
-                      value,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 String _formatMinutes(int minutes) {
   final hours = minutes ~/ 60;
   final rest = minutes % 60;
@@ -491,28 +591,38 @@ String _formatMinutes(int minutes) {
   return '$hours h $rest min';
 }
 
-String _formatLabel(String label, _StatsMode mode) {
+String _formatIsoDate(String? value) {
+  if (value == null || value.isEmpty) {
+    return '-';
+  }
+
+  final date = DateTime.tryParse(value);
+
+  if (date == null) {
+    return value;
+  }
+
+  return '${date.day.toString().padLeft(2, '0')}.'
+      '${date.month.toString().padLeft(2, '0')}.'
+      '${date.year}';
+}
+
+String _formatChartLabel(String label, _StatsMode mode) {
   switch (mode) {
-    case _StatsMode.day:
+    case _StatsMode.week:
+    case _StatsMode.month:
       final date = DateTime.tryParse(label);
+
       if (date == null) {
         return label;
       }
 
       return '${date.day.toString().padLeft(2, '0')}.'
-          '${date.month.toString().padLeft(2, '0')}.'
-          '${date.year}';
+          '${date.month.toString().padLeft(2, '0')}';
 
-    case _StatsMode.week:
-      final match = RegExp(r'^(\d{4})-KW(\d{2})$').firstMatch(label);
-      if (match == null) {
-        return label;
-      }
-
-      return 'KW ${match.group(2)}/${match.group(1)}';
-
-    case _StatsMode.month:
+    case _StatsMode.year:
       final match = RegExp(r'^(\d{4})-(\d{2})$').firstMatch(label);
+
       if (match == null) {
         return label;
       }
@@ -524,35 +634,20 @@ String _formatLabel(String label, _StatsMode mode) {
   }
 }
 
-String _formatShortLabel(String label, _StatsMode mode) {
+String _formatBestLabel(String label, _StatsMode mode) {
   switch (mode) {
-    case _StatsMode.day:
-      final date = DateTime.tryParse(label);
-      if (date == null) {
-        return label;
-      }
-
-      return '${date.day.toString().padLeft(2, '0')}.'
-          '${date.month.toString().padLeft(2, '0')}';
-
     case _StatsMode.week:
-      final match = RegExp(r'^(\d{4})-KW(\d{2})$').firstMatch(label);
-      if (match == null) {
-        return label;
-      }
-
-      return 'KW${match.group(2)}';
-
     case _StatsMode.month:
+      return _formatIsoDate(label);
+
+    case _StatsMode.year:
       final match = RegExp(r'^(\d{4})-(\d{2})$').firstMatch(label);
+
       if (match == null) {
         return label;
       }
 
-      final year = match.group(1)!;
-      final shortYear = year.substring(2);
-
-      return '${match.group(2)}/$shortYear';
+      return '${match.group(2)}.${match.group(1)}';
 
     case _StatsMode.tasks:
       return label;
