@@ -122,16 +122,16 @@ def verify_email(token: str, db: Session = Depends(get_db)):
         .first()
     )
 
-    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:8080")
+    frontend_url = os.getenv("FRONTEND_URL", "https://pomodoro-wise.netlify.app").rstrip("/")
 
     if user is None:
-        return RedirectResponse(f"{frontend_url}?email_verified=invalid")
+        return RedirectResponse(f"{frontend_url}/auth/login?email_verified=invalid")
 
     if user.email_verification_expires_at is None:
-        return RedirectResponse(f"{frontend_url}?email_verified=invalid")
+        return RedirectResponse(f"{frontend_url}/auth/login?email_verified=invalid")
 
     if user.email_verification_expires_at < datetime.utcnow():
-        return RedirectResponse(f"{frontend_url}?email_verified=expired")
+        return RedirectResponse(f"{frontend_url}/auth/login?email_verified=expired")
 
     user.is_email_verified = True
     user.email_verification_token_hash = None
@@ -139,7 +139,7 @@ def verify_email(token: str, db: Session = Depends(get_db)):
 
     db.commit()
 
-    return RedirectResponse(f"{frontend_url}?email_verified=success")
+    return RedirectResponse(f"{frontend_url}/auth/login?email_verified=success")
 
 @app.get("/users/me", response_model=UserRead)
 def get_me(current_user: User = Depends(get_current_user)) -> User:
