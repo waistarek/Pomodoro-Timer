@@ -1,6 +1,8 @@
+import calendar
 from collections import defaultdict
-from datetime import date, datetime, timedelta, timezone 
-from zoneinfo import ZoneInfo 
+from datetime import date, datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
+
 from .models import PomodoroSession
 from .schemas import StatsItem, StatsResponse, TaskStatsItem, TaskStatsResponse
 
@@ -11,6 +13,7 @@ DEFAULT_TIMEZONE = "Europe/Berlin"
 def _as_utc(dt: datetime) -> datetime:
     if dt.tzinfo is None:
         return dt.replace(tzinfo=timezone.utc)
+
     return dt.astimezone(timezone.utc)
 
 
@@ -21,20 +24,15 @@ def _local_date(dt: datetime, tz: str = DEFAULT_TIMEZONE) -> date:
 def _today(tz: str = DEFAULT_TIMEZONE) -> date:
     return datetime.now(timezone.utc).astimezone(ZoneInfo(tz)).date()
 
-def _date_range(days: int, tz: str = DEFAULT_TIMEZONE) -> list[date]:
-    today = _today(tz)
-    start = today - timedelta(days=days - 1)
-    return [start + timedelta(days=i) for i in range(days)]
-
 
 def _streak_days(
     sessions: list[PomodoroSession],
     tz: str = DEFAULT_TIMEZONE,
 ) -> int:
     work_days = {
-        _local_date(s.ended_at, tz)
-        for s in sessions
-        if s.completed and s.phase_type == "work"
+        _local_date(session.ended_at, tz)
+        for session in sessions
+        if session.completed and session.phase_type == "work"
     }
 
     streak = 0
@@ -47,73 +45,155 @@ def _streak_days(
     return streak
 
 
-def build_stats(
+def _build_stats_response(
     sessions: list[PomodoroSession],
-    mode: str,
+    labels: list[date],
+    label_for_date,
+    key_for_session,
+    period_start: date,
+    period_end: date,
+    period_label: str,
     tz: str = DEFAULT_TIMEZONE,
 ) -> StatsResponse:
-    if mode == "daily":
-        labels = _date_range(14, tz)
-        label_for = lambda d: d.isoformat()
-    elif mode == "weekly":
-        labels = []
-        today = _today(tz)
-        monday = today - timedelta(days=today.weekday())
-        for i in range(7, -1, -1):
-            labels.append(monday - timedelta(weeks=i))
-        label_for = lambda d: f"{d.isocalendar().year}-KW{d.isocalendar().week:02d}"
-    else:
-        labels = []
-        today = _today(tz).replace(day=1)
-        for i in range(11, -1, -1):
-            year = today.year
-            month = today.month - i
-            while month <= 0:
-                month += 12
-                year -= 1
-            labels.append(date(year, month, 1))
-        label_for = lambda d: f"{d.year}-{d.month:02d}"
-
     buckets: dict[str, list[PomodoroSession]] = defaultdict(list)
+
     for session in sessions:
-        ended = _local_date(session.ended_at, tz)
-        if mode == "daily":
-            key = ended.isoformat()
-        elif mode == "weekly":
-            key = f"{ended.isocalendar().year}-KW{ended.isocalendar().week:02d}"
-        else:
-            key = f"{ended.year}-{ended.month:02d}"
+        session_date = _local_date(session.ended_at, tz)
+
+        if session_date < period_start or session_date > period_end:
+            continue
+
+        key = key_for_session(session_date)
         buckets[key].append(session)
 
     items: list[StatsItem] = []
+
     for item_date in labels:
-        key = label_for(item_date)
+        key = label_for_date(item_date)
         bucket = buckets.get(key, [])
-        total = len(bucket)
-        completed = sum(1 for s in bucket if s.completed)
-        work_sessions = [s for s in bucket if s.completed and s.phase_type == "work"]
-        focus_minutes = sum(s.duration_minutes for s in work_sessions)
+
+        total_sessions = len(bucket)
+        completed_sessions = sum(1 for session in bucket if session.completed)
+
+        work_sessions = [
+            session
+            for session in bucket
+            if session.completed and session.phase_type == "work"
+        ]
+
+        focus_minutes = sum(session.duration_minutes for session in work_sessions)
         pomodoros = len(work_sessions)
-        success_rate = round((completed / total) * 100, 2) if total else 0.0
+
+        success_rate = (
+            round((completed_sessions / total_sessions) * 100, 2)
+            if total_sessions
+            else 0.0
+        )
+
         items.append(
             StatsItem(
                 label=key,
                 pomodoros=pomodoros,
                 focus_minutes=focus_minutes,
-                completed_sessions=completed,
-                total_sessions=total,
+                completed_sessions=completed_sessions,
+                total_sessions=total_sessions,
                 success_rate=success_rate,
             )
         )
 
-    best = max(items, key=lambda x: x.focus_minutes, default=None)
+    best = max(items, key=lambda item: item.focus_minutes, default=None)
+
     return StatsResponse(
         items=items,
-        total_pomodoros=sum(i.pomodoros for i in items),
-        total_focus_minutes=sum(i.focus_minutes for i in items),
+        total_pomodoros=sum(item.pomodoros for item in items),
+        total_focus_minutes=sum(item.focus_minutes for item in items),
         current_streak_days=_streak_days(sessions, tz),
         best_focus_day=best.label if best and best.focus_minutes > 0 else None,
+        period_start=period_start.isoformat(),
+        period_end=period_end.isoformat(),
+        period_label=period_label,
     )
+
+
+def build_week_stats(
+    sessions: list[PomodoroSession],
+    reference_date: date | None = None,
+    tz: str = DEFAULT_TIMEZONE,
+) -> StatsResponse:
+    selected_date = reference_date or _today(tz)
+
+    monday = selected_date - timedelta(days=selected_date.weekday())
+    sunday = monday + timedelta(days=6)
+
+    labels = [monday + timedelta(days=index) for index in range(7)]
+    iso = monday.isocalendar()
+
+    return _build_stats_response(
+        sessions=sessions,
+        labels=labels,
+        label_for_date=lambda item_date: item_date.isoformat(),
+        key_for_session=lambda session_date: session_date.isoformat(),
+        period_start=monday,
+        period_end=sunday,
+        period_label=f"KW {iso.week:02d} / {iso.year}",
+        tz=tz,
+    )
+
+
+def build_month_stats(
+    sessions: list[PomodoroSession],
+    year: int | None = None,
+    month: int | None = None,
+    tz: str = DEFAULT_TIMEZONE,
+) -> StatsResponse:
+    today = _today(tz)
+
+    selected_year = year if year is not None else today.year
+    selected_month = month if month is not None else today.month
+
+    last_day = calendar.monthrange(selected_year, selected_month)[1]
+
+    start = date(selected_year, selected_month, 1)
+    end = date(selected_year, selected_month, last_day)
+
+    labels = [start + timedelta(days=index) for index in range(last_day)]
+
+    return _build_stats_response(
+        sessions=sessions,
+        labels=labels,
+        label_for_date=lambda item_date: item_date.isoformat(),
+        key_for_session=lambda session_date: session_date.isoformat(),
+        period_start=start,
+        period_end=end,
+        period_label=f"{selected_month:02d}.{selected_year}",
+        tz=tz,
+    )
+
+
+def build_year_stats(
+    sessions: list[PomodoroSession],
+    year: int | None = None,
+    tz: str = DEFAULT_TIMEZONE,
+) -> StatsResponse:
+    today = _today(tz)
+    selected_year = year if year is not None else today.year
+
+    start = date(selected_year, 1, 1)
+    end = date(selected_year, 12, 31)
+
+    labels = [date(selected_year, month, 1) for month in range(1, 13)]
+
+    return _build_stats_response(
+        sessions=sessions,
+        labels=labels,
+        label_for_date=lambda item_date: f"{item_date.year}-{item_date.month:02d}",
+        key_for_session=lambda session_date: f"{session_date.year}-{session_date.month:02d}",
+        period_start=start,
+        period_end=end,
+        period_label=str(selected_year),
+        tz=tz,
+    )
+
 
 def build_task_stats(sessions: list[PomodoroSession]) -> TaskStatsResponse:
     buckets: dict[int | None, dict[str, int | str | None]] = {}
@@ -134,7 +214,9 @@ def build_task_stats(sessions: list[PomodoroSession]) -> TaskStatsResponse:
             }
 
         buckets[task_id]["pomodoros"] = int(buckets[task_id]["pomodoros"]) + 1
-        buckets[task_id]["focus_minutes"] = int(buckets[task_id]["focus_minutes"]) + session.duration_minutes
+        buckets[task_id]["focus_minutes"] = (
+            int(buckets[task_id]["focus_minutes"]) + session.duration_minutes
+        )
 
     items = [
         TaskStatsItem(

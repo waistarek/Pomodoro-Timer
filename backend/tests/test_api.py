@@ -10,8 +10,9 @@ os.environ["JWT_SECRET"] = "test-secret"
 os.environ["CORS_ORIGINS"] = "http://localhost:8080"
 
 from fastapi.testclient import TestClient  # noqa: E402
-from app.database import Base, engine  # noqa: E402
+from app.database import Base, engine, SessionLocal  # noqa: E402
 from app.main import app  # noqa: E402
+from app.models import User  # noqa: E402
 
 client = TestClient(app)
 
@@ -20,12 +21,41 @@ def setup_function():
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 
+def verify_test_user(email: str) -> None:
+    db = SessionLocal()
 
-def register_and_login():
-    client.post("/auth/register", json={"email": "test@example.com", "password": "12345678"})
-    response = client.post("/auth/login", json={"email": "test@example.com", "password": "12345678"})
+    try:
+        user = db.query(User).filter(User.email == email.lower()).first()
+        assert user is not None
+
+        user.is_email_verified = True
+        user.email_verification_token_hash = None
+        user.email_verification_expires_at = None
+
+        db.commit()
+    finally:
+        db.close()
+
+def register_and_login(email: str = "test@example.com"):
+    register_response = client.post(
+        "/auth/register",
+        json={"email": email, "password": "12345678"},
+    )
+
+    assert register_response.status_code == 201
+    assert register_response.json()["is_email_verified"] is False
+
+    verify_test_user(email)
+
+    response = client.post(
+        "/auth/login",
+        json={"email": email, "password": "12345678"},
+    )
+
     assert response.status_code == 200
+
     token = response.json()["access_token"]
+
     return {"Authorization": f"Bearer {token}"}
 
 

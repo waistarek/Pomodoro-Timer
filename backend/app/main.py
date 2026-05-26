@@ -1,5 +1,5 @@
 import os
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from .database import Base, engine, get_db
@@ -7,7 +7,7 @@ from .deps import get_current_user
 from sqlalchemy import func
 from .models import PomodoroSession, Setting, Task, User
 from sqlalchemy.exc import IntegrityError
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from fastapi import BackgroundTasks
 from fastapi.responses import RedirectResponse
 from .email_service import send_verification_email
@@ -33,7 +33,7 @@ from .security import (
     hash_password,
     verify_password,
 )
-from .stats import build_stats, build_task_stats
+from .stats import build_month_stats, build_task_stats, build_week_stats, build_year_stats
 
 Base.metadata.create_all(bind=engine)
 
@@ -272,6 +272,59 @@ def create_session(
 
 def _user_sessions(db: Session, user_id: int) -> list[PomodoroSession]:
     return db.query(PomodoroSession).filter(PomodoroSession.user_id == user_id).all()
+
+
+@app.get("/stats/week", response_model=StatsResponse)
+def stats_week(
+    reference_date: date | None = Query(default=None, alias="date"),
+    tz: str = "Europe/Berlin",
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> StatsResponse:
+    return build_week_stats(
+        _user_sessions(db, current_user.id),
+        reference_date,
+        tz,
+    )
+
+
+@app.get("/stats/month", response_model=StatsResponse)
+def stats_month(
+    year: int | None = Query(default=None, ge=1970, le=2100),
+    month: int | None = Query(default=None, ge=1, le=12),
+    tz: str = "Europe/Berlin",
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> StatsResponse:
+    return build_month_stats(
+        _user_sessions(db, current_user.id),
+        year,
+        month,
+        tz,
+    )
+
+
+@app.get("/stats/year", response_model=StatsResponse)
+def stats_year(
+    year: int | None = Query(default=None, ge=1970, le=2100),
+    tz: str = "Europe/Berlin",
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> StatsResponse:
+    return build_year_stats(
+        _user_sessions(db, current_user.id),
+        year,
+        tz,
+    )
+
+
+@app.get("/stats/tasks", response_model=TaskStatsResponse)
+def stats_tasks(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> TaskStatsResponse:
+    return build_task_stats(_user_sessions(db, current_user.id))
+
 
 
 @app.get("/stats/daily", response_model=StatsResponse)

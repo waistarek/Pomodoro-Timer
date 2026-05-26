@@ -106,6 +106,9 @@ class StatsResponse(BaseModel):
     total_focus_minutes: int
     current_streak_days: int
     best_focus_day: str | None = None
+    period_start: str | None = None
+    period_end: str | None = None
+    period_label: str | None = None
 
 class TaskStatsItem(BaseModel):
     task_id: int | None = None
