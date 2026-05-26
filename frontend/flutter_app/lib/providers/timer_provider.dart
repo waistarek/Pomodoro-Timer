@@ -65,6 +65,9 @@ class TimerProvider extends ChangeNotifier {
 
   return 'Bereit';
  }
+ bool get canChangeTask {
+    return isReady;
+  }
 
   void updateSettings(AppSettings settings) {
     final changed = _settings != settings;

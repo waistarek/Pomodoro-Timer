@@ -22,7 +22,10 @@ class TimerCard extends StatelessWidget {
             padding: const EdgeInsets.all(24),
             child: Column(
               children: [
-                _TaskSelector(taskProvider: taskProvider),
+                _TaskSelector(
+                  taskProvider: taskProvider,
+                  canChangeTask: timer.canChangeTask,
+                ),
                 const SizedBox(height: 24),
                 _TimerHeader(
                   phaseLabel: timer.phase.label,
@@ -48,9 +51,13 @@ class TimerCard extends StatelessWidget {
 }
 
 class _TaskSelector extends StatelessWidget {
-  const _TaskSelector({required this.taskProvider});
+  const _TaskSelector({
+    required this.taskProvider,
+    required this.canChangeTask,
+  });
 
   final TaskProvider taskProvider;
+  final bool canChangeTask;
 
   @override
   Widget build(BuildContext context) {
@@ -107,10 +114,31 @@ class _TaskSelector extends StatelessWidget {
               ),
             ),
           ],
-          onChanged: (task) {
-            taskProvider.selectTask(task);
-          },
+          onChanged: canChangeTask
+            ? (task) {
+                taskProvider.selectTask(task);
+              }
+            : null,
         ),
+        if (!canChangeTask) ...[
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Icon(
+                Icons.lock_outline,
+                size: 16,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  'Die Aufgabe ist für die laufende Phase gesperrt.',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
+            ],
+          ),
+        ],
       ],
     );
   }
