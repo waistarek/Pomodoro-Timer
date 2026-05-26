@@ -166,28 +166,24 @@ class _StatsScreenState extends State<StatsScreen> {
                         ButtonSegment(
                           value: _StatsMode.tasks,
                           icon: Icon(Icons.task_alt_outlined),
-                          label: Text('Aufgaben'),
+                          label: Text('Aufgabenzeit'),
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 16),
-                  if (_mode != _StatsMode.tasks)
-                    _PeriodNavigator(
-                      stats: provider.stats,
-                      onPrevious: () => _changePeriod(-1),
-                      onNext: () => _changePeriod(1),
-                    ),
-                  if (_mode != _StatsMode.tasks) const SizedBox(height: 16),
+                  
                   if (_mode == _StatsMode.tasks)
                     _TaskStatsContent(provider: provider)
                   else
-                    _GeneralStatsContent(
-                      provider: provider,
-                      mode: _mode,
-                      chartTitle: _chartTitle(),
-                      xAxisText: _xAxisText(),
-                    ),
+                   _GeneralStatsContent(
+                    provider: provider,
+                    mode: _mode,
+                    chartTitle: _chartTitle(),
+                    xAxisText: _xAxisText(),
+                    onPreviousPeriod: () => _changePeriod(-1),
+                    onNextPeriod: () => _changePeriod(1),
+                  ),
                 ],
               ),
             ),
@@ -264,12 +260,16 @@ class _GeneralStatsContent extends StatelessWidget {
     required this.mode,
     required this.chartTitle,
     required this.xAxisText,
+    required this.onPreviousPeriod,
+    required this.onNextPeriod,
   });
 
   final StatsProvider provider;
   final _StatsMode mode;
   final String chartTitle;
   final String xAxisText;
+  final VoidCallback onPreviousPeriod;
+  final VoidCallback onNextPeriod;
 
   @override
   Widget build(BuildContext context) {
@@ -318,6 +318,12 @@ class _GeneralStatsContent extends StatelessWidget {
                   : _formatBestLabel(stats.bestFocusDay!, mode),
             ),
           ],
+        ),
+        const SizedBox(height: 16),
+        _PeriodNavigator(
+          stats: stats,
+          onPrevious: onPreviousPeriod,
+          onNext: onNextPeriod,
         ),
         const SizedBox(height: 24),
         Card(
