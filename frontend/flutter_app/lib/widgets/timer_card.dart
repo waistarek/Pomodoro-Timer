@@ -32,6 +32,13 @@ class TimerCard extends StatelessWidget {
                   statusLabel: timer.statusLabel,
                   color: phaseColor,
                 ),
+                if (timer.error != null) ...[
+                  const SizedBox(height: 16),
+                  _TimerErrorBanner(
+                    message: timer.error!,
+                    onClose: timer.clearError,
+                  ),
+                ],
                 const SizedBox(height: 24),
                 _ProgressTimer(
                   progress: timer.progress,
@@ -281,6 +288,43 @@ class _TimerActions extends StatelessWidget {
             onPressed: timer.skipPause,
           ),
       ],
+    );
+  }
+}
+class _TimerErrorBanner extends StatelessWidget {
+  const _TimerErrorBanner({
+    required this.message,
+    required this.onClose,
+  });
+
+  final String message;
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Theme.of(context).colorScheme.errorContainer,
+      elevation: 0,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            const Icon(Icons.warning_amber_outlined),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                message,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+            IconButton(
+              tooltip: 'Meldung schließen',
+              onPressed: onClose,
+              icon: const Icon(Icons.close),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

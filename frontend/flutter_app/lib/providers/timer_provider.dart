@@ -37,6 +37,7 @@ class TimerProvider extends ChangeNotifier {
 
   bool running = false;
   bool _finishingPhase = false;
+  String? error;
 
   int get remainingSeconds => engine.remainingSeconds;
   String get formattedTime => TimerEngine.formatMMSS(engine.remainingSeconds);
@@ -77,6 +78,10 @@ class TimerProvider extends ChangeNotifier {
   bool get canChangeTask {
     return isReady;
   }
+  void clearError() {
+    error = null;
+    notifyListeners();
+  }
 
   void updateSettings(AppSettings settings) {
     final changed = _settings != settings;
@@ -107,6 +112,7 @@ class TimerProvider extends ChangeNotifier {
     if (running || _finishingPhase) {
       return;
     }
+    error = null;
 
     final now = DateTime.now();
     final isNewPhase = engine.remainingSeconds == engine.totalPhaseSeconds;
@@ -154,6 +160,7 @@ class TimerProvider extends ChangeNotifier {
     if (_finishingPhase) {
       return;
     }
+    error = null;
 
     pause();
 
@@ -247,64 +254,60 @@ class TimerProvider extends ChangeNotifier {
 
     final durationMinutes = (engine.totalPhaseSeconds / 60).round();
 
+    final session = PomodoroSession(
+      clientSessionId: _phaseClientSessionId,
+      taskId: finishedPhase == PomodoroPhase.work ? _phaseTask?.remoteId : null,
+      localTaskId: finishedPhase == PomodoroPhase.work ? _phaseTask?.localId : null,
+      taskTitle: finishedPhase == PomodoroPhase.work ? _phaseTask?.title : null,
+      phaseType: finishedPhase.apiValue,
+      durationMinutes: durationMinutes,
+      completed: true,
+      startedAt: startedAt,
+      endedAt: endedAt,
+    );
+
     try {
       if (finishedPhase == PomodoroPhase.work) {
         await _localStorage.setJsonObject('last_completed_work', {
           'at': endedAt.toIso8601String(),
         });
-
-        await _sessionService.createSession(
-          PomodoroSession(
-            clientSessionId: _phaseClientSessionId,
-            taskId: _phaseTask?.remoteId,
-            localTaskId: _phaseTask?.localId,
-            taskTitle: _phaseTask?.title,
-            phaseType: finishedPhase.apiValue,
-            durationMinutes: durationMinutes,
-            completed: true,
-            startedAt: startedAt,
-            endedAt: endedAt,
-          ),
-        );
-      } else {
-        await _sessionService.createSession(
-          PomodoroSession(
-            clientSessionId: _phaseClientSessionId,
-            taskId: null,
-            phaseType: finishedPhase.apiValue,
-            durationMinutes: durationMinutes,
-            completed: true,
-            startedAt: startedAt,
-            endedAt: endedAt,
-          ),
-        );
       }
 
-      if (_settings.soundEnabled) {
+      await _sessionService.createSession(session);
+    } catch (exception, stackTrace) {
+      debugPrint('Session konnte nicht gespeichert werden: $exception');
+      debugPrintStack(stackTrace: stackTrace);
+
+      error =
+          'Die abgeschlossene Phase konnte nicht gespeichert werden. '
+          'Die App läuft weiter, aber die Statistik kann unvollständig sein.';
+    }
+
+    if (_settings.soundEnabled) {
+      try {
         await _soundService.playPhaseFinishedSound();
+      } catch (exception, stackTrace) {
+        debugPrint('Sound konnte nicht abgespielt werden: $exception');
+        debugPrintStack(stackTrace: stackTrace);
       }
-    } catch (_) {
-      // Offline oder Fehler beim Speichern/Sound:
-      // Die App läuft trotzdem weiter.
-      // Später kann hier eine Sync-Queue ergänzt werden.
-    } finally {
-      engine.switchToNextPhase();
+    }
 
-      _phaseClientSessionId = null;
-      _phaseStartedAt = null;
-      _phaseEndsAt = null;
-      _phaseTask = null;
+    engine.switchToNextPhase();
 
-      _finishingPhase = false;
-      running = false;
+    _phaseClientSessionId = null;
+    _phaseStartedAt = null;
+    _phaseEndsAt = null;
+    _phaseTask = null;
 
-      await _saveTimerState();
+    _finishingPhase = false;
+    running = false;
 
-      if (_settings.autoStart) {
-        startOrResume();
-      } else {
-        notifyListeners();
-      }
+    await _saveTimerState();
+
+    if (_settings.autoStart) {
+      startOrResume();
+    } else {
+      notifyListeners();
     }
   }
 
