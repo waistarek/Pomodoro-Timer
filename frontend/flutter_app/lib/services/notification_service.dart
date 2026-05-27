@@ -1,7 +1,12 @@
+import 'notification_service_stub.dart'
+    if (dart.library.html) 'notification_service_web.dart' as platform;
+
 class NotificationService {
-  Future<void> showLocalInfo(String title, String body) async {
-    // Einfache Web-/Desktop-sichere Platzhalterklasse.
-    // Für echte lokale Push-Benachrichtigungen auf Android/iOS später
-    // das Paket flutter_local_notifications hinzufügen und hier anbinden.
+  Future<bool> requestPermission() {
+    return platform.requestNotificationPermission();
+  }
+
+  Future<void> showLocalInfo(String title, String body) {
+    return platform.showLocalNotification(title, body);
   }
 }

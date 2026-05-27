@@ -11,11 +11,17 @@ import '../services/session_service.dart';
 import '../services/sound_service.dart';
 import '../timer/pomodoro_phase.dart';
 import '../timer/timer_engine.dart';
+import '../services/notification_service.dart';
 
 const String _timerStateStorageKey = 'active_timer_state';
 
 class TimerProvider extends ChangeNotifier {
-  TimerProvider(this._localStorage, this._sessionService, this._soundService) {
+  TimerProvider(
+    this._localStorage,
+    this._sessionService,
+    this._soundService,
+    this._notificationService,
+  ) {
     _rebuildEngine();
     _restoreTimerState();
   }
@@ -23,6 +29,7 @@ class TimerProvider extends ChangeNotifier {
   final LocalStorageService _localStorage;
   final SessionService _sessionService;
   final SoundService _soundService;
+  final NotificationService _notificationService;
 
   AppSettings _settings = const AppSettings();
   TaskItem? _selectedTask;
@@ -113,6 +120,7 @@ class TimerProvider extends ChangeNotifier {
       return;
     }
     error = null;
+    unawaited(_notificationService.requestPermission());
 
     final now = DateTime.now();
     final isNewPhase = engine.remainingSeconds == engine.totalPhaseSeconds;
@@ -294,6 +302,8 @@ class TimerProvider extends ChangeNotifier {
 
     engine.switchToNextPhase();
 
+    await _showPhaseFinishedNotification(finishedPhase);
+
     _phaseClientSessionId = null;
     _phaseStartedAt = null;
     _phaseEndsAt = null;
@@ -308,6 +318,29 @@ class TimerProvider extends ChangeNotifier {
       startOrResume();
     } else {
       notifyListeners();
+    }
+  }
+
+  Future<void> _showPhaseFinishedNotification(
+    PomodoroPhase finishedPhase,
+  ) async {
+    try {
+      final title = switch (finishedPhase) {
+        PomodoroPhase.work => 'Arbeitsphase beendet',
+        PomodoroPhase.shortBreak => 'Kurze Pause beendet',
+        PomodoroPhase.longBreak => 'Lange Pause beendet',
+      };
+
+      final body = switch (engine.phase) {
+        PomodoroPhase.work => 'Zeit für die nächste Arbeitsphase.',
+        PomodoroPhase.shortBreak => 'Zeit für eine kurze Pause.',
+        PomodoroPhase.longBreak => 'Zeit für eine lange Pause.',
+      };
+
+      await _notificationService.showLocalInfo(title, body);
+    } catch (exception, stackTrace) {
+      debugPrint('Benachrichtigung konnte nicht angezeigt werden: $exception');
+      debugPrintStack(stackTrace: stackTrace);
     }
   }
 
