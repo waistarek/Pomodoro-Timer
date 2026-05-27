@@ -23,40 +23,52 @@ class TimerCard extends StatelessWidget {
           timer: timer,
           child: Card(
             elevation: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  _TaskSelector(
-                    taskProvider: taskProvider,
-                    canChangeTask: timer.canChangeTask,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final isCompact = constraints.maxWidth < 560;
+                final timerDiameter = isCompact ? 220.0 : 270.0;
+                final padding = isCompact ? 16.0 : 24.0;
+
+                return Padding(
+                  padding: EdgeInsets.all(padding),
+                  child: Column(
+                    children: [
+                      _TaskSelector(
+                        taskProvider: taskProvider,
+                        canChangeTask: timer.canChangeTask,
+                      ),
+                      SizedBox(height: isCompact ? 18 : 24),
+                      _TimerHeader(
+                        phaseLabel: timer.phase.label,
+                        statusLabel: timer.statusLabel,
+                        color: phaseColor,
+                      ),
+                      if (timer.error != null) ...[
+                        const SizedBox(height: 16),
+                        _TimerErrorBanner(
+                          message: timer.error!,
+                          onClose: timer.clearError,
+                        ),
+                      ],
+                      SizedBox(height: isCompact ? 18 : 24),
+                      _ProgressTimer(
+                        progress: timer.progress,
+                        formattedTime: timer.formattedTime,
+                        completedPomodoros: timer.completedPomodoros,
+                        color: phaseColor,
+                        diameter: timerDiameter,
+                      ),
+                      SizedBox(height: isCompact ? 22 : 28),
+                      _TimerActions(timer: timer),
+                      const SizedBox(height: 12),
+                      _KeyboardShortcutHelp(
+                        showSkipShortcut: timer.canSkipPause,
+                        isCompact: isCompact,
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 24),
-                  _TimerHeader(
-                    phaseLabel: timer.phase.label,
-                    statusLabel: timer.statusLabel,
-                    color: phaseColor,
-                  ),
-                  if (timer.error != null) ...[
-                    const SizedBox(height: 16),
-                    _TimerErrorBanner(
-                      message: timer.error!,
-                      onClose: timer.clearError,
-                    ),
-                  ],
-                  const SizedBox(height: 24),
-                  _ProgressTimer(
-                    progress: timer.progress,
-                    formattedTime: timer.formattedTime,
-                    completedPomodoros: timer.completedPomodoros,
-                    color: phaseColor,
-                  ),
-                  const SizedBox(height: 28),
-                  _TimerActions(timer: timer),
-                  const SizedBox(height: 12),
-                  _KeyboardShortcutHelp(showSkipShortcut: timer.canSkipPause),
-                ],
-              ),
+                );
+              },
             ),
           ),
         );
@@ -325,28 +337,32 @@ class _ProgressTimer extends StatelessWidget {
     required this.formattedTime,
     required this.completedPomodoros,
     required this.color,
+    required this.diameter,
   });
 
   final double progress;
   final String formattedTime;
   final int completedPomodoros;
   final Color color;
+  final double diameter;
 
   @override
   Widget build(BuildContext context) {
     final backgroundColor =
         Theme.of(context).colorScheme.surfaceContainerHighest;
 
+    final isCompact = diameter < 240;
+
     return SizedBox(
-      width: 270,
-      height: 270,
+      width: diameter,
+      height: diameter,
       child: Stack(
         alignment: Alignment.center,
         children: [
           SizedBox.expand(
             child: CircularProgressIndicator(
               value: 1,
-              strokeWidth: 14,
+              strokeWidth: isCompact ? 12 : 14,
               color: backgroundColor,
               strokeCap: StrokeCap.round,
             ),
@@ -354,7 +370,7 @@ class _ProgressTimer extends StatelessWidget {
           SizedBox.expand(
             child: CircularProgressIndicator(
               value: progress.clamp(0.0, 1.0),
-              strokeWidth: 14,
+              strokeWidth: isCompact ? 12 : 14,
               color: color,
               strokeCap: StrokeCap.round,
             ),
@@ -364,13 +380,18 @@ class _ProgressTimer extends StatelessWidget {
             children: [
               Text(
                 formattedTime,
-                style: Theme.of(context).textTheme.displayLarge,
+                style: isCompact
+                    ? Theme.of(context).textTheme.displayMedium
+                    : Theme.of(context).textTheme.displayLarge,
               ),
               const SizedBox(height: 8),
-              Text(
-                'Diese Sitzung: $completedPomodoros Pomodoros',
-                style: Theme.of(context).textTheme.bodyMedium,
-                textAlign: TextAlign.center,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Text(
+                  'Diese Sitzung: $completedPomodoros Pomodoros',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
               ),
             ],
           ),
@@ -443,17 +464,25 @@ class _TimerActions extends StatelessWidget {
 class _KeyboardShortcutHelp extends StatelessWidget {
   const _KeyboardShortcutHelp({
     required this.showSkipShortcut,
+    required this.isCompact,
   });
 
   final bool showSkipShortcut;
+  final bool isCompact;
 
   @override
   Widget build(BuildContext context) {
-    final shortcuts = [
-      'Leertaste: Start/Pause',
-      'R: Zurücksetzen',
-      if (showSkipShortcut) 'S: Pause überspringen',
-    ];
+    final shortcuts = isCompact
+        ? [
+            'Space: Start/Pause',
+            'R: Reset',
+            if (showSkipShortcut) 'S: Skip',
+          ]
+        : [
+            'Leertaste: Start/Pause',
+            'R: Zurücksetzen',
+            if (showSkipShortcut) 'S: Pause überspringen',
+          ];
 
     return Text(
       shortcuts.join(' · '),
