@@ -85,6 +85,19 @@ class TimerProvider extends ChangeNotifier {
   bool get canChangeTask {
     return isReady;
   }
+
+  bool get isSaving {
+    return _finishingPhase;
+  }
+
+  bool get canStartOrResume {
+    return !running && !_finishingPhase;
+  }
+
+  bool get canReset {
+    return !_finishingPhase;
+  }
+
   void clearError() {
     error = null;
     notifyListeners();
@@ -265,7 +278,8 @@ class TimerProvider extends ChangeNotifier {
     final session = PomodoroSession(
       clientSessionId: _phaseClientSessionId,
       taskId: finishedPhase == PomodoroPhase.work ? _phaseTask?.remoteId : null,
-      localTaskId: finishedPhase == PomodoroPhase.work ? _phaseTask?.localId : null,
+      localTaskId:
+          finishedPhase == PomodoroPhase.work ? _phaseTask?.localId : null,
       taskTitle: finishedPhase == PomodoroPhase.work ? _phaseTask?.title : null,
       phaseType: finishedPhase.apiValue,
       durationMinutes: durationMinutes,
@@ -286,8 +300,7 @@ class TimerProvider extends ChangeNotifier {
       debugPrint('Session konnte nicht gespeichert werden: $exception');
       debugPrintStack(stackTrace: stackTrace);
 
-      error =
-          'Die abgeschlossene Phase konnte nicht gespeichert werden. '
+      error = 'Die abgeschlossene Phase konnte nicht gespeichert werden. '
           'Die App läuft weiter, aber die Statistik kann unvollständig sein.';
     }
 

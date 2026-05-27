@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter/services.dart';
 import '../models/task_item.dart';
 import '../providers/task_provider.dart';
 import '../providers/timer_provider.dart';
 import '../timer/pomodoro_phase.dart';
 import 'big_button.dart';
+import 'dart:async';
 
 class TimerCard extends StatelessWidget {
   const TimerCard({super.key});
@@ -16,44 +17,138 @@ class TimerCard extends StatelessWidget {
       builder: (context, timer, taskProvider, _) {
         final phaseColor = _phaseColor(context, timer.phase);
 
-        return Card(
-          elevation: 2,
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              children: [
-                _TaskSelector(
-                  taskProvider: taskProvider,
-                  canChangeTask: timer.canChangeTask,
-                ),
-                const SizedBox(height: 24),
-                _TimerHeader(
-                  phaseLabel: timer.phase.label,
-                  statusLabel: timer.statusLabel,
-                  color: phaseColor,
-                ),
-                if (timer.error != null) ...[
-                  const SizedBox(height: 16),
-                  _TimerErrorBanner(
-                    message: timer.error!,
-                    onClose: timer.clearError,
+        return _TimerKeyboardShortcuts(
+          timer: timer,
+          child: Card(
+            elevation: 2,
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                children: [
+                  _TaskSelector(
+                    taskProvider: taskProvider,
+                    canChangeTask: timer.canChangeTask,
                   ),
+                  const SizedBox(height: 24),
+                  _TimerHeader(
+                    phaseLabel: timer.phase.label,
+                    statusLabel: timer.statusLabel,
+                    color: phaseColor,
+                  ),
+                  if (timer.error != null) ...[
+                    const SizedBox(height: 16),
+                    _TimerErrorBanner(
+                      message: timer.error!,
+                      onClose: timer.clearError,
+                    ),
+                  ],
+                  const SizedBox(height: 24),
+                  _ProgressTimer(
+                    progress: timer.progress,
+                    formattedTime: timer.formattedTime,
+                    completedPomodoros: timer.completedPomodoros,
+                    color: phaseColor,
+                  ),
+                  const SizedBox(height: 28),
+                  _TimerActions(timer: timer),
+                  const SizedBox(height: 12),
+                  _KeyboardShortcutHelp(showSkipShortcut: timer.canSkipPause),
                 ],
-                const SizedBox(height: 24),
-                _ProgressTimer(
-                  progress: timer.progress,
-                  formattedTime: timer.formattedTime,
-                  completedPomodoros: timer.completedPomodoros,
-                  color: phaseColor,
-                ),
-                const SizedBox(height: 28),
-                _TimerActions(timer: timer),
-              ],
+              ),
             ),
           ),
         );
       },
     );
+  }
+}
+
+class _TimerKeyboardShortcuts extends StatelessWidget {
+  const _TimerKeyboardShortcuts({
+    required this.timer,
+    required this.child,
+  });
+
+  final TimerProvider timer;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Focus(
+      autofocus: true,
+      child: CallbackShortcuts(
+        bindings: <ShortcutActivator, VoidCallback>{
+          const SingleActivator(LogicalKeyboardKey.space): () {
+            _toggleTimer(timer);
+          },
+          const SingleActivator(LogicalKeyboardKey.keyR): () {
+            if (timer.canReset) {
+              unawaited(_confirmResetTimer(context, timer));
+            }
+          },
+          const SingleActivator(LogicalKeyboardKey.keyS): () {
+            if (timer.canSkipPause) {
+              timer.skipPause();
+            }
+          },
+        },
+        child: child,
+      ),
+    );
+  }
+}
+
+void _toggleTimer(TimerProvider timer) {
+  if (timer.isSaving) {
+    return;
+  }
+
+  if (timer.running) {
+    timer.pause();
+    return;
+  }
+
+  if (timer.canStartOrResume) {
+    timer.startOrResume();
+  }
+}
+
+Future<void> _confirmResetTimer(
+  BuildContext context,
+  TimerProvider timer,
+) async {
+  if (!timer.canReset) {
+    return;
+  }
+
+  if (timer.isReady) {
+    timer.reset();
+    return;
+  }
+
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      title: const Text('Timer zurücksetzen?'),
+      content: const Text(
+        'Die aktuelle Phase wird abgebrochen und nicht als abgeschlossene Sitzung gespeichert.',
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(dialogContext, false),
+          child: const Text('Abbrechen'),
+        ),
+        FilledButton.tonalIcon(
+          onPressed: () => Navigator.pop(dialogContext, true),
+          icon: const Icon(Icons.restart_alt),
+          label: const Text('Zurücksetzen'),
+        ),
+      ],
+    ),
+  );
+
+  if (confirmed == true) {
+    timer.reset();
   }
 }
 
@@ -69,9 +164,8 @@ class _TaskSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final selected = taskProvider.selectedTask;
-    final openTasks = taskProvider.tasks
-        .where((task) => !task.completed)
-        .toList();
+    final openTasks =
+        taskProvider.tasks.where((task) => !task.completed).toList();
 
     TaskItem? selectedValue;
 
@@ -122,10 +216,10 @@ class _TaskSelector extends StatelessWidget {
             ),
           ],
           onChanged: canChangeTask
-            ? (task) {
-                taskProvider.selectTask(task);
-              }
-            : null,
+              ? (task) {
+                  taskProvider.selectTask(task);
+                }
+              : null,
         ),
         if (!canChangeTask) ...[
           const SizedBox(height: 8),
@@ -257,6 +351,24 @@ class _TimerActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (timer.isSaving) {
+      return Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 12,
+        runSpacing: 12,
+        children: [
+          FilledButton.icon(
+            onPressed: null,
+            icon: const SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+            label: const Text('Phase wird gespeichert ...'),
+          ),
+        ],
+      );
+    }
     return Wrap(
       alignment: WrapAlignment.center,
       spacing: 12,
@@ -278,7 +390,7 @@ class _TimerActions extends StatelessWidget {
           label: 'Zurücksetzen',
           icon: Icons.restart_alt,
           filled: false,
-          onPressed: timer.reset,
+          onPressed: () => _confirmResetTimer(context, timer),
         ),
         if (timer.canSkipPause)
           BigButton(
@@ -291,6 +403,32 @@ class _TimerActions extends StatelessWidget {
     );
   }
 }
+
+class _KeyboardShortcutHelp extends StatelessWidget {
+  const _KeyboardShortcutHelp({
+    required this.showSkipShortcut,
+  });
+
+  final bool showSkipShortcut;
+
+  @override
+  Widget build(BuildContext context) {
+    final shortcuts = [
+      'Leertaste: Start/Pause',
+      'R: Zurücksetzen',
+      if (showSkipShortcut) 'S: Pause überspringen',
+    ];
+
+    return Text(
+      shortcuts.join(' · '),
+      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+      textAlign: TextAlign.center,
+    );
+  }
+}
+
 class _TimerErrorBanner extends StatelessWidget {
   const _TimerErrorBanner({
     required this.message,
