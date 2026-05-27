@@ -302,7 +302,7 @@ class TimerProvider extends ChangeNotifier {
 
     engine.switchToNextPhase();
 
-    await _showPhaseFinishedNotification(finishedPhase);
+    final nextPhase = engine.phase;
 
     _phaseClientSessionId = null;
     _phaseStartedAt = null;
@@ -314,6 +314,13 @@ class TimerProvider extends ChangeNotifier {
 
     await _saveTimerState();
 
+    unawaited(
+      _showPhaseFinishedNotification(
+        finishedPhase,
+        nextPhase,
+      ),
+    );
+
     if (_settings.autoStart) {
       startOrResume();
     } else {
@@ -323,6 +330,7 @@ class TimerProvider extends ChangeNotifier {
 
   Future<void> _showPhaseFinishedNotification(
     PomodoroPhase finishedPhase,
+    PomodoroPhase nextPhase,
   ) async {
     try {
       final title = switch (finishedPhase) {
@@ -331,7 +339,7 @@ class TimerProvider extends ChangeNotifier {
         PomodoroPhase.longBreak => 'Lange Pause beendet',
       };
 
-      final body = switch (engine.phase) {
+      final body = switch (nextPhase) {
         PomodoroPhase.work => 'Zeit für die nächste Arbeitsphase.',
         PomodoroPhase.shortBreak => 'Zeit für eine kurze Pause.',
         PomodoroPhase.longBreak => 'Zeit für eine lange Pause.',

@@ -19,9 +19,7 @@ Future<bool> requestNotificationPermission() async {
 }
 
 Future<void> showLocalNotification(String title, String body) async {
-  final allowed = await requestNotificationPermission();
-
-  if (!allowed) {
+  if (html.Notification.permission != 'granted') {
     return;
   }
 
