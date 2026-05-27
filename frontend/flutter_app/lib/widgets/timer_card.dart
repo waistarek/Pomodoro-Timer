@@ -1,12 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
 import '../models/task_item.dart';
 import '../providers/task_provider.dart';
 import '../providers/timer_provider.dart';
 import '../timer/pomodoro_phase.dart';
 import 'big_button.dart';
-import 'dart:async';
 
 class TimerCard extends StatelessWidget {
   const TimerCard({super.key});

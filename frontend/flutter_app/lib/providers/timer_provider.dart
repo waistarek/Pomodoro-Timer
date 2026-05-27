@@ -1,27 +1,28 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/app_settings.dart';
 import '../models/pomodoro_session.dart';
 import '../models/task_item.dart';
 import '../services/local_storage_service.dart';
+import '../services/notification_service.dart';
 import '../services/session_service.dart';
 import '../services/sound_service.dart';
 import '../timer/pomodoro_phase.dart';
 import '../timer/timer_engine.dart';
-import '../services/notification_service.dart';
 
 const String _timerStateStorageKey = 'active_timer_state';
 
-class TimerProvider extends ChangeNotifier {
+class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
   TimerProvider(
     this._localStorage,
     this._sessionService,
     this._soundService,
     this._notificationService,
   ) {
+    WidgetsBinding.instance.addObserver(this);
     _rebuildEngine();
     _restoreTimerState();
   }
@@ -100,6 +101,22 @@ class TimerProvider extends ChangeNotifier {
 
   void clearError() {
     error = null;
+    notifyListeners();
+  }
+
+  void syncWithRealTime() {
+    if (!running || _finishingPhase) {
+      return;
+    }
+
+    _syncRemainingSecondsWithClock();
+
+    if (engine.isFinished) {
+      unawaited(_finishPhaseOnce());
+      return;
+    }
+
+    unawaited(_saveTimerState());
     notifyListeners();
   }
 
@@ -496,7 +513,22 @@ class TimerProvider extends ChangeNotifier {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      syncWithRealTime();
+      return;
+    }
+
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused ||
+        state == AppLifecycleState.hidden) {
+      unawaited(_saveTimerState());
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
 
     super.dispose();
