@@ -63,7 +63,7 @@ class TimerCard extends StatelessWidget {
   }
 }
 
-class _TimerKeyboardShortcuts extends StatelessWidget {
+class _TimerKeyboardShortcuts extends StatefulWidget {
   const _TimerKeyboardShortcuts({
     required this.timer,
     required this.child,
@@ -73,26 +73,60 @@ class _TimerKeyboardShortcuts extends StatelessWidget {
   final Widget child;
 
   @override
+  State<_TimerKeyboardShortcuts> createState() =>
+      _TimerKeyboardShortcutsState();
+}
+
+class _TimerKeyboardShortcutsState extends State<_TimerKeyboardShortcuts> {
+  final FocusNode _focusNode = FocusNode(
+    debugLabel: 'timer_keyboard_shortcuts',
+  );
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _focusNode.requestFocus();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Focus(
-      autofocus: true,
-      child: CallbackShortcuts(
-        bindings: <ShortcutActivator, VoidCallback>{
-          const SingleActivator(LogicalKeyboardKey.space): () {
-            _toggleTimer(timer);
-          },
-          const SingleActivator(LogicalKeyboardKey.keyR): () {
-            if (timer.canReset) {
-              unawaited(_confirmResetTimer(context, timer));
-            }
-          },
-          const SingleActivator(LogicalKeyboardKey.keyS): () {
-            if (timer.canSkipPause) {
-              timer.skipPause();
-            }
-          },
+    return CallbackShortcuts(
+      bindings: <ShortcutActivator, VoidCallback>{
+        const SingleActivator(LogicalKeyboardKey.space): () {
+          _toggleTimer(widget.timer);
         },
-        child: child,
+        const SingleActivator(LogicalKeyboardKey.keyR): () {
+          if (widget.timer.canReset) {
+            unawaited(_confirmResetTimer(context, widget.timer));
+          }
+        },
+        const SingleActivator(LogicalKeyboardKey.keyS): () {
+          if (widget.timer.canSkipPause) {
+            widget.timer.skipPause();
+          }
+        },
+      },
+      child: Focus(
+        focusNode: _focusNode,
+        autofocus: true,
+        child: Listener(
+          behavior: HitTestBehavior.translucent,
+          onPointerDown: (_) {
+            _focusNode.requestFocus();
+          },
+          child: widget.child,
+        ),
       ),
     );
   }
