@@ -41,6 +41,8 @@ class TimerCard extends StatelessWidget {
                       _TimerHeader(
                         phaseLabel: timer.phase.label,
                         statusLabel: timer.statusLabel,
+                        phaseDescription: timer.phaseDescriptionLabel,
+                        nextPhaseLabel: timer.nextPhaseLabel,
                         color: phaseColor,
                       ),
                       if (timer.error != null) ...[
@@ -54,6 +56,7 @@ class TimerCard extends StatelessWidget {
                       _ProgressTimer(
                         progress: timer.progress,
                         formattedTime: timer.formattedTime,
+                        progressLabel: timer.phaseProgressLabel,
                         completedPomodoros: timer.completedPomodoros,
                         color: phaseColor,
                         diameter: timerDiameter,
@@ -297,34 +300,50 @@ class _TimerHeader extends StatelessWidget {
   const _TimerHeader({
     required this.phaseLabel,
     required this.statusLabel,
+    required this.phaseDescription,
+    required this.nextPhaseLabel,
     required this.color,
   });
 
   final String phaseLabel;
   final String statusLabel;
+  final String phaseDescription;
+  final String nextPhaseLabel;
   final Color color;
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      alignment: WrapAlignment.center,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      spacing: 12,
-      runSpacing: 8,
+    return Column(
       children: [
-        Text(
-          phaseLabel,
-          style: Theme.of(context).textTheme.headlineSmall,
-          textAlign: TextAlign.center,
+        Wrap(
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 12,
+          runSpacing: 8,
+          children: [
+            Text(
+              phaseLabel,
+              style: Theme.of(context).textTheme.headlineSmall,
+              textAlign: TextAlign.center,
+            ),
+            Chip(
+              avatar: Icon(
+                _statusIcon(statusLabel),
+                size: 18,
+                color: color,
+              ),
+              label: Text(statusLabel),
+              visualDensity: VisualDensity.compact,
+            ),
+          ],
         ),
-        Chip(
-          avatar: Icon(
-            _statusIcon(statusLabel),
-            size: 18,
-            color: color,
-          ),
-          label: Text(statusLabel),
-          visualDensity: VisualDensity.compact,
+        const SizedBox(height: 8),
+        Text(
+          '$phaseDescription · Danach: $nextPhaseLabel',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+          textAlign: TextAlign.center,
         ),
       ],
     );
@@ -335,6 +354,7 @@ class _ProgressTimer extends StatelessWidget {
   const _ProgressTimer({
     required this.progress,
     required this.formattedTime,
+    required this.progressLabel,
     required this.completedPomodoros,
     required this.color,
     required this.diameter,
@@ -342,6 +362,7 @@ class _ProgressTimer extends StatelessWidget {
 
   final double progress;
   final String formattedTime;
+  final String progressLabel;
   final int completedPomodoros;
   final Color color;
   final double diameter;
@@ -375,25 +396,34 @@ class _ProgressTimer extends StatelessWidget {
               strokeCap: StrokeCap.round,
             ),
           ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                formattedTime,
-                style: isCompact
-                    ? Theme.of(context).textTheme.displayMedium
-                    : Theme.of(context).textTheme.displayLarge,
-              ),
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Text(
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  formattedTime,
+                  style: isCompact
+                      ? Theme.of(context).textTheme.displayMedium
+                      : Theme.of(context).textTheme.displayLarge,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  progressLabel,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
                   'Diese Sitzung: $completedPomodoros Pomodoros',
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

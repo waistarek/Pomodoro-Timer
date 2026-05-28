@@ -99,6 +99,43 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
     return !_finishingPhase;
   }
 
+  String get phaseDescriptionLabel {
+    return switch (engine.phase) {
+      PomodoroPhase.work => 'Fokuszeit',
+      PomodoroPhase.shortBreak => 'Kurze Erholung',
+      PomodoroPhase.longBreak => 'Längere Erholung',
+    };
+  }
+
+  String get nextPhaseLabel {
+    return switch (engine.phase) {
+      PomodoroPhase.work => _nextBreakPhaseLabel(),
+      PomodoroPhase.shortBreak => PomodoroPhase.work.label,
+      PomodoroPhase.longBreak => PomodoroPhase.work.label,
+    };
+  }
+
+  String get phaseProgressLabel {
+    final totalSeconds = engine.totalPhaseSeconds;
+    final elapsedSeconds =
+        (totalSeconds - engine.remainingSeconds).clamp(0, totalSeconds).toInt();
+
+    return '${TimerEngine.formatMMSS(elapsedSeconds)} von '
+        '${TimerEngine.formatMMSS(totalSeconds)}';
+  }
+
+  String _nextBreakPhaseLabel() {
+    final nextCompletedPomodoros = engine.completedPomodoros + 1;
+    final shouldUseLongBreak =
+        nextCompletedPomodoros % engine.longBreakAfter == 0;
+
+    if (shouldUseLongBreak) {
+      return PomodoroPhase.longBreak.label;
+    }
+
+    return PomodoroPhase.shortBreak.label;
+  }
+
   void clearError() {
     error = null;
     notifyListeners();
