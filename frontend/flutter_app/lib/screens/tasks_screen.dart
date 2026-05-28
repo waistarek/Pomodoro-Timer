@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/task_item.dart';
 import '../providers/task_provider.dart';
 import '../widgets/task_editor_dialog.dart';
+import '../providers/timer_provider.dart';
 
 enum _TaskFilter {
   all,
@@ -173,9 +174,11 @@ class _TasksScreenState extends State<TasksScreen> {
         icon: const Icon(Icons.add),
         label: const Text('Aufgabe'),
       ),
-      body: Consumer<TaskProvider>(
-        builder: (context, provider, _) {
-          final visibleTasks = _visibleTasks(provider.tasks);
+      body: Consumer2<TaskProvider, TimerProvider>(
+      builder: (context, provider, timerProvider, _) {
+      final visibleTasks = _visibleTasks(provider.tasks);
+      final activeTask =
+        timerProvider.taskForDisplay ?? provider.selectedTask;
 
           return Center(
             child: ConstrainedBox(
@@ -190,22 +193,30 @@ class _TasksScreenState extends State<TasksScreen> {
                     ),
                     const SizedBox(height: 12),
                   ],
-                  _TaskToolbar(
-                    searchController: _searchController,
-                    filter: _filter,
-                    sort: _sort,
-                    onFilterChanged: (value) {
-                      setState(() {
-                        _filter = value;
-                      });
-                    },
-                    onSortChanged: (value) {
-                      setState(() {
-                        _sort = value;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 16),
+                 _TaskToolbar(
+                  searchController: _searchController,
+                  filter: _filter,
+                  sort: _sort,
+                  onFilterChanged: (value) {
+                    setState(() {
+                      _filter = value;
+                    });
+                  },
+                  onSortChanged: (value) {
+                    setState(() {
+                      _sort = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 12),
+                _ActiveTaskBanner(
+                  activeTask: activeTask,
+                  taskSelectionLocked: !timerProvider.canChangeTask,
+                  onClearSelection: timerProvider.canChangeTask
+                      ? () => provider.selectTask(null)
+                      : null,
+                ),
+                const SizedBox(height: 16),
                   if (provider.loading && provider.tasks.isEmpty)
                     const _StatusCard(
                       icon: Icons.hourglass_empty,
@@ -227,15 +238,15 @@ class _TasksScreenState extends State<TasksScreen> {
                   else
                     ...visibleTasks.map(
                       (task) {
-                        final selected =
-                            provider.selectedTask?.localId == task.localId;
+                        final selected = _sameTaskIdentity(activeTask, task);
 
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 12),
                           child: _TaskCard(
-                            task: task,
-                            selected: selected,
-                            onCompletedChanged: (value) {
+                          task: task,
+                          selected: selected,
+                          canSelectForTimer: timerProvider.canChangeTask,
+                          onCompletedChanged: (value) {
                               provider.updateTask(
                                 task.copyWith(completed: value),
                               );
@@ -256,6 +267,78 @@ class _TasksScreenState extends State<TasksScreen> {
             ),
           );
         },
+      ),
+    );
+  }
+}
+class _ActiveTaskBanner extends StatelessWidget {
+  const _ActiveTaskBanner({
+    required this.activeTask,
+    required this.taskSelectionLocked,
+    required this.onClearSelection,
+  });
+
+  final TaskItem? activeTask;
+  final bool taskSelectionLocked;
+  final VoidCallback? onClearSelection;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    final title = activeTask == null
+        ? 'Keine Timer-Aufgabe ausgewählt'
+        : 'Aktive Timer-Aufgabe: ${activeTask!.title}';
+
+    final description = taskSelectionLocked
+        ? 'Eine Timer-Phase läuft oder ist pausiert. Die Aufgabe ist deshalb aktuell gesperrt.'
+        : 'Diese Aufgabe wird für die nächste Arbeitsphase verwendet.';
+
+    return Card(
+      elevation: 0,
+      color: taskSelectionLocked
+          ? colorScheme.surfaceContainerHighest
+          : colorScheme.primaryContainer.withValues(alpha: 0.35),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              taskSelectionLocked
+                  ? Icons.lock_outline
+                  : Icons.play_circle_outline,
+              color: taskSelectionLocked
+                  ? colorScheme.onSurfaceVariant
+                  : colorScheme.primary,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+            if (activeTask != null && onClearSelection != null)
+              TextButton.icon(
+                onPressed: onClearSelection,
+                icon: const Icon(Icons.close),
+                label: const Text('Ohne Aufgabe'),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -360,14 +443,17 @@ class _TaskCard extends StatelessWidget {
   const _TaskCard({
     required this.task,
     required this.selected,
+    required this.canSelectForTimer,
     required this.onCompletedChanged,
     required this.onSelectForTimer,
     required this.onEdit,
     required this.onDelete,
   });
 
+  
   final TaskItem task;
   final bool selected;
+  final bool canSelectForTimer;
   final ValueChanged<bool> onCompletedChanged;
   final VoidCallback onSelectForTimer;
   final VoidCallback onEdit;
@@ -377,13 +463,24 @@ class _TaskCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final tags = _splitTags(task.tags);
 
-    return Card(
-      elevation: selected ? 2 : 0,
-      color: selected
-          ? Theme.of(context).colorScheme.primaryContainer.withValues(
-                alpha: 0.35,
-              )
-          : null,
+    final colorScheme = Theme.of(context).colorScheme;
+
+  return Card(
+    elevation: selected ? 3 : 0,
+    color: selected
+        ? colorScheme.primaryContainer.withValues(alpha: 0.45)
+        : null,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(16),
+      side: selected
+          ? BorderSide(
+              color: colorScheme.primary,
+              width: 1.4,
+            )
+          : BorderSide(
+              color: colorScheme.outlineVariant,
+            ),
+    ),
       child: Padding(
         padding: const EdgeInsets.all(14),
         child: LayoutBuilder(
@@ -412,6 +509,7 @@ class _TaskCard extends StatelessWidget {
 
             final actions = _TaskActions(
               selected: selected,
+              canSelectForTimer: canSelectForTimer,
               onSelectForTimer: onSelectForTimer,
               onEdit: onEdit,
               onDelete: onDelete,
@@ -528,12 +626,14 @@ class _TaskContent extends StatelessWidget {
 class _TaskActions extends StatelessWidget {
   const _TaskActions({
     required this.selected,
+    required this.canSelectForTimer,
     required this.onSelectForTimer,
     required this.onEdit,
     required this.onDelete,
   });
 
   final bool selected;
+  final bool canSelectForTimer;
   final VoidCallback onSelectForTimer;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
@@ -545,17 +645,24 @@ class _TaskActions extends StatelessWidget {
       runSpacing: 8,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        selected
-            ? FilledButton.tonalIcon(
-                onPressed: null,
-                icon: const Icon(Icons.check_circle),
-                label: const Text('Aktiv'),
-              )
-            : OutlinedButton.icon(
-                onPressed: onSelectForTimer,
-                icon: const Icon(Icons.play_arrow),
-                label: const Text('Für Timer'),
-              ),
+      if (selected)
+        FilledButton.tonalIcon(
+          onPressed: null,
+          icon: const Icon(Icons.check_circle),
+          label: const Text('Aktiv'),
+        )
+      else if (!canSelectForTimer)
+        OutlinedButton.icon(
+          onPressed: null,
+          icon: const Icon(Icons.lock_outline),
+          label: const Text('Gesperrt'),
+        )
+      else
+        OutlinedButton.icon(
+          onPressed: onSelectForTimer,
+          icon: const Icon(Icons.play_arrow),
+          label: const Text('Für Timer'),
+        ),
         IconButton.outlined(
           tooltip: 'Bearbeiten',
           onPressed: onEdit,
@@ -636,6 +743,17 @@ class _StatusCard extends StatelessWidget {
       ),
     );
   }
+}
+bool _sameTaskIdentity(TaskItem? first, TaskItem second) {
+  if (first == null) {
+    return false;
+  }
+
+  if (first.remoteId != null && second.remoteId != null) {
+    return first.remoteId == second.remoteId;
+  }
+
+  return first.localId == second.localId;
 }
 
 String _priorityLabel(String priority) {
