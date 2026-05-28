@@ -37,7 +37,7 @@ def send_verification_email(to_email: str, token: str) -> None:
     )
 
     verify_url = (
-        f"{public_backend_url.rstrip()}/auth/verify-email?token={token}"
+        f"{public_backend_url.rstrip('/')}/auth/verify-email?token={token}"
     )
 
     subject = "Bitte bestätige deine E-Mail-Adresse"

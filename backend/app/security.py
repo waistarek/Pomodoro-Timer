@@ -23,18 +23,34 @@ def verify_password(password: str, password_hash: str) -> bool:
     return pwd_context.verify(password, password_hash)
 
 
-def create_access_token(subject: str) -> str:
-    expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    payload = {"sub": subject, "exp": expire}
+def create_access_token(subject: str, auth_version: int) -> str:
+    expire = datetime.now(timezone.utc) + timedelta(
+        minutes=ACCESS_TOKEN_EXPIRE_MINUTES,
+    )
+
+    payload = {
+        "sub": subject,
+        "auth_version": auth_version,
+        "exp": expire,
+    }
+
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
 
-def decode_access_token(token: str) -> str | None:
+def decode_access_token_payload(token: str) -> dict | None:
     try:
         payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         subject = payload.get("sub")
-        return str(subject) if subject is not None else None
-    except JWTError:
+        auth_version = payload.get("auth_version")
+
+        if subject is None or auth_version is None:
+            return None
+
+        return {
+            "sub": str(subject),
+            "auth_version": int(auth_version),
+        }
+    except (JWTError, ValueError, TypeError):
         return None
     
 def create_email_verification_token() -> str:

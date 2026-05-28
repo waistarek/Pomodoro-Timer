@@ -114,7 +114,12 @@ def login(data: UserLogin, db: Session = Depends(get_db)) -> Token:
             detail="Bitte bestätige zuerst deine E-Mail-Adresse.",
         )
 
-    return Token(access_token=create_access_token(str(user.id)))
+    return Token(
+        access_token=create_access_token(
+            str(user.id),
+            user.auth_version,
+        )
+    )
 
 @app.post("/auth/request-password-reset", status_code=202)
 def request_password_reset(
@@ -193,6 +198,9 @@ def reset_password(
     # Der Reset-Link beweist Zugriff auf die E-Mail-Adresse.
     user.is_email_verified = True
 
+    # Alle alten Login-Tokens sofort ungültig machen.
+    user.auth_version += 1
+
     db.commit()
 
     return {"message": "Passwort wurde erfolgreich zurückgesetzt."}
@@ -210,13 +218,18 @@ def verify_email(token: str, db: Session = Depends(get_db)):
     frontend_url = os.getenv("FRONTEND_URL", "https://pomodoro-wise.netlify.app").rstrip("/")
 
     if user is None:
-        return RedirectResponse(f"{frontend_url}/auth/login?email_verified=invalid")
-
+        return RedirectResponse(
+            f"{frontend_url}/?screen=login&email_verified=invalid"
+        )
     if user.email_verification_expires_at is None:
-        return RedirectResponse(f"{frontend_url}/auth/login?email_verified=invalid")
+        return RedirectResponse(
+            f"{frontend_url}/auth/login?email_verified=invalid"
+        )
 
     if user.email_verification_expires_at < datetime.utcnow():
-        return RedirectResponse(f"{frontend_url}/auth/login?email_verified=expired")
+        return RedirectResponse(
+            f"{frontend_url}/auth/login?email_verified=expired"
+        )
 
     user.is_email_verified = True
     user.email_verification_token_hash = None
@@ -224,7 +237,9 @@ def verify_email(token: str, db: Session = Depends(get_db)):
 
     db.commit()
 
-    return RedirectResponse(f"{frontend_url}/auth/login?email_verified=success")
+    return RedirectResponse(
+        f"{frontend_url}/auth/login?email_verified=success"
+    )
 
 @app.get("/users/me", response_model=UserRead)
 def get_me(current_user: User = Depends(get_current_user)) -> User:
@@ -451,9 +466,7 @@ def stats_monthly(
         tz,
     )
 
-@app.get("/stats/tasks", response_model=TaskStatsResponse)
-def stats_tasks(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> TaskStatsResponse:
-    return build_task_stats(_user_sessions(db, current_user.id))
+
 
 @app.get("/settings", response_model=SettingsRead)
 def get_settings(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> Setting:

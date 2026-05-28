@@ -167,6 +167,13 @@ class SessionService {
         return true;
       }
 
+      if (statusCode == 401 ||
+          statusCode == 403 ||
+          statusCode == 408 ||
+          statusCode == 429) {
+        return true;
+      }
+
       return statusCode >= 500;
     }
 

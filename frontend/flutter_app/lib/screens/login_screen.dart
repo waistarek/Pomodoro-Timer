@@ -224,6 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   clearLoginActionQueryParameters();
 
                   setState(() {
+                    _forgotPasswordMode = false;
                     _resetToken = null;
                     _passwordController.clear();
                     _confirmPasswordController.clear();
@@ -298,6 +299,8 @@ class _LoginScreenState extends State<LoginScreen> {
               ? null
               : () {
                   provider.clearError();
+                  clearLoginActionQueryParameters();
+
                   setState(() {
                     _resetToken = null;
                     _passwordController.clear();

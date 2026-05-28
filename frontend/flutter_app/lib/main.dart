@@ -16,7 +16,6 @@ import 'services/sound_service.dart';
 import 'services/stats_service.dart';
 import 'services/task_service.dart';
 import 'services/notification_service.dart';
-import 'dart:async';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
