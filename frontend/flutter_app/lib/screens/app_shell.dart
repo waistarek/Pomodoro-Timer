@@ -9,6 +9,7 @@ import 'stats_screen.dart';
 import 'tasks_screen.dart';
 import '../providers/stats_provider.dart';
 import '../providers/task_provider.dart';
+import '../services/browser_url_service.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key, this.initialIndex = 0});
@@ -21,6 +22,42 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   late int _index;
+  static const List<String> _screenKeys = [
+    'timer',
+    'tasks',
+    'stats',
+    'settings',
+    'login',
+  ];
+
+  int _indexFromUri() {
+    final uri = Uri.base;
+    final screen = uri.queryParameters['screen'];
+    final emailVerificationStatus = uri.queryParameters['email_verified'];
+    final resetToken =
+        uri.queryParameters['reset_token'] ?? uri.queryParameters['set_token'];
+
+    if (emailVerificationStatus != null || resetToken != null) {
+      return 4;
+    }
+
+    return switch (screen) {
+      'tasks' => 1,
+      'stats' => 2,
+      'settings' => 3,
+      'login' => 4,
+      _ => widget.initialIndex.clamp(0, 4).toInt(),
+    };
+  }
+
+  void _selectIndex(int value) {
+    setState(() {
+      _index = value;
+    });
+
+    setAppScreenInUrl(_screenKeys[value]);
+  }
+
   int _lastHandledSessionSyncVersion = 0;
 
   final _screens = const [
@@ -36,15 +73,9 @@ class _AppShellState extends State<AppShell> {
     super.initState();
 
     final uri = Uri.base;
-    final screen = uri.queryParameters['screen'];
     final emailVerificationStatus = uri.queryParameters['email_verified'];
-    final resetToken = uri.queryParameters['reset_token'];
 
-    final shouldOpenLogin = screen == 'login' ||
-        emailVerificationStatus != null ||
-        resetToken != null;
-
-    _index = shouldOpenLogin ? 4 : widget.initialIndex.clamp(0, 4).toInt();
+    _index = _indexFromUri();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (emailVerificationStatus == null || !mounted) {
@@ -64,6 +95,7 @@ class _AppShellState extends State<AppShell> {
           SnackBar(content: Text(message)),
         );
       }
+      clearLoginActionQueryParameters();
     });
   }
 
@@ -128,9 +160,7 @@ class _AppShellState extends State<AppShell> {
           children: [
             NavigationRail(
               selectedIndex: _index,
-              onDestinationSelected: (value) {
-                setState(() => _index = value);
-              },
+              onDestinationSelected: _selectIndex,
               labelType: NavigationRailLabelType.all,
               destinations: const [
                 NavigationRailDestination(
@@ -173,9 +203,7 @@ class _AppShellState extends State<AppShell> {
       body: _ShellContent(child: _screens[_index]),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _index,
-        onDestinationSelected: (value) {
-          setState(() => _index = value);
-        },
+        onDestinationSelected: _selectIndex,
         destinations: destinations,
       ),
     );

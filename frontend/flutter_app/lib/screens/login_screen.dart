@@ -9,6 +9,8 @@ import '../providers/settings_provider.dart';
 import '../providers/stats_provider.dart';
 import '../providers/task_provider.dart';
 
+import '../services/browser_url_service.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -34,7 +36,8 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
 
     final uri = Uri.base;
-    _resetToken = uri.queryParameters['reset_token'];
+    _resetToken =
+        uri.queryParameters['reset_token'] ?? uri.queryParameters['set_token'];
 
     final email = uri.queryParameters['email'];
     if (email != null && email.isNotEmpty) {
@@ -218,8 +221,12 @@ class _LoginScreenState extends State<LoginScreen> {
               ? null
               : () {
                   provider.clearError();
+                  clearLoginActionQueryParameters();
+
                   setState(() {
-                    _forgotPasswordMode = false;
+                    _resetToken = null;
+                    _passwordController.clear();
+                    _confirmPasswordController.clear();
                   });
                 },
           child: const Text('Zurück zum Login'),
@@ -274,9 +281,8 @@ class _LoginScreenState extends State<LoginScreen> {
         SizedBox(
           width: double.infinity,
           child: FilledButton.icon(
-            onPressed: provider.loading
-                ? null
-                : () => _submitResetPassword(context),
+            onPressed:
+                provider.loading ? null : () => _submitResetPassword(context),
             icon: const Icon(Icons.lock_reset),
             label: provider.loading
                 ? const SizedBox(
@@ -417,6 +423,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     if (ok) {
+      clearLoginActionQueryParameters();
       setState(() {
         _resetToken = null;
         _forgotPasswordMode = false;
@@ -493,8 +500,7 @@ class _LoggedInCard extends StatelessWidget {
                 final taskProvider = context.read<TaskProvider>();
                 final settingsProvider = context.read<SettingsProvider>();
                 final statsProvider = context.read<StatsProvider>();
-                final sessionSyncProvider =
-                    context.read<SessionSyncProvider>();
+                final sessionSyncProvider = context.read<SessionSyncProvider>();
 
                 await authProvider.logout();
 
