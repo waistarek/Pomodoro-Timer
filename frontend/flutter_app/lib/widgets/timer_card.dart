@@ -52,6 +52,11 @@ class TimerCard extends StatelessWidget {
                       if (timer.isSaving) ...[
                         const SizedBox(height: 16),
                         const _TimerSavingBanner(),
+                      ] else if (timer.isSessionSyncing) ...[
+                        const SizedBox(height: 16),
+                        _TimerBackgroundSyncBanner(
+                          message: timer.sessionSyncLabel,
+                        ),
                       ] else if (timer.error != null) ...[
                         const SizedBox(height: 16),
                         _TimerErrorBanner(
@@ -531,6 +536,49 @@ class _KeyboardShortcutHelp extends StatelessWidget {
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
       textAlign: TextAlign.center,
+    );
+  }
+}
+
+class _TimerBackgroundSyncBanner extends StatelessWidget {
+  const _TimerBackgroundSyncBanner({
+    required this.message,
+  });
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Card(
+      elevation: 0,
+      color: colorScheme.secondaryContainer.withValues(alpha: 0.45),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          children: [
+            Icon(
+              Icons.sync_outlined,
+              color: colorScheme.secondary,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                message,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurface,
+                    ),
+              ),
+            ),
+            const SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

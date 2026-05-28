@@ -47,6 +47,8 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
 
   bool running = false;
   bool _finishingPhase = false;
+  int _activeSessionSyncs = 0;
+
   String? error;
 
   int get remainingSeconds => engine.remainingSeconds;
@@ -91,6 +93,18 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
 
   bool get isSaving {
     return _finishingPhase;
+  }
+
+  bool get isSessionSyncing {
+    return _activeSessionSyncs > 0;
+  }
+
+  String get sessionSyncLabel {
+    if (_activeSessionSyncs <= 1) {
+      return 'Abgeschlossene Phase wird im Hintergrund gespeichert.';
+    }
+
+    return '$_activeSessionSyncs abgeschlossene Phasen werden im Hintergrund gespeichert.';
   }
 
   bool get canStartOrResume {
@@ -411,6 +425,9 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
     required PomodoroSession session,
     required PomodoroPhase finishedPhase,
   }) async {
+    _activeSessionSyncs++;
+    notifyListeners();
+
     try {
       if (finishedPhase == PomodoroPhase.work) {
         await _localStorage.setJsonObject('last_completed_work', {
@@ -429,6 +446,10 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
 
       error = 'Die abgeschlossene Phase konnte nicht gespeichert werden. '
           'Die App läuft weiter, aber die Statistik kann unvollständig sein.';
+    } finally {
+      if (_activeSessionSyncs > 0) {
+        _activeSessionSyncs--;
+      }
 
       notifyListeners();
     }
