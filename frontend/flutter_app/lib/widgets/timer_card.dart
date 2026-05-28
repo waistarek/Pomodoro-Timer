@@ -206,6 +206,20 @@ Future<void> _confirmResetTimer(
   }
 }
 
+Widget _blockTimerShortcutsForInput(Widget child) {
+  return Shortcuts(
+    shortcuts: const <ShortcutActivator, Intent>{
+      SingleActivator(LogicalKeyboardKey.space):
+          DoNothingAndStopPropagationIntent(),
+      SingleActivator(LogicalKeyboardKey.keyR):
+          DoNothingAndStopPropagationIntent(),
+      SingleActivator(LogicalKeyboardKey.keyS):
+          DoNothingAndStopPropagationIntent(),
+    },
+    child: child,
+  );
+}
+
 class _TaskSelector extends StatelessWidget {
   const _TaskSelector({
     required this.taskProvider,
@@ -253,30 +267,32 @@ class _TaskSelector extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 12),
-        DropdownButtonFormField<TaskItem?>(
-          key: ValueKey(selectedValue?.localId ?? 'no-task'),
-          initialValue: selectedValue,
-          decoration: const InputDecoration(
-            labelText: 'Aufgabe für diese Arbeitsphase',
-            border: OutlineInputBorder(),
-          ),
-          items: [
-            const DropdownMenuItem<TaskItem?>(
-              value: null,
-              child: Text('Ohne Aufgabe'),
+        _blockTimerShortcutsForInput(
+          DropdownButtonFormField<TaskItem?>(
+            key: ValueKey(selectedValue?.localId ?? 'no-task'),
+            initialValue: selectedValue,
+            decoration: const InputDecoration(
+              labelText: 'Aufgabe für diese Arbeitsphase',
+              border: OutlineInputBorder(),
             ),
-            ...dropdownTasks.map(
-              (task) => DropdownMenuItem<TaskItem?>(
-                value: task,
-                child: Text(task.title),
+            items: [
+              const DropdownMenuItem<TaskItem?>(
+                value: null,
+                child: Text('Ohne Aufgabe'),
               ),
-            ),
-          ],
-          onChanged: canChangeTask
-              ? (task) {
-                  taskProvider.selectTask(task);
-                }
-              : null,
+              ...dropdownTasks.map(
+                (task) => DropdownMenuItem<TaskItem?>(
+                  value: task,
+                  child: Text(task.title),
+                ),
+              ),
+            ],
+            onChanged: canChangeTask
+                ? (task) {
+                    taskProvider.selectTask(task);
+                  }
+                : null,
+          ),
         ),
         if (!canChangeTask) ...[
           const SizedBox(height: 8),
