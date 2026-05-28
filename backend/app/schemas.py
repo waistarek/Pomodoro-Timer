@@ -16,6 +16,15 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
+    
+class PasswordResetRequest(BaseModel):
+    email: EmailStr
+
+
+class PasswordResetConfirm(BaseModel):
+    token: str = Field(min_length=20)
+    new_password: str = Field(min_length=8)
+
 
 class UserRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)

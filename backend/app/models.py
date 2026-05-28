@@ -15,6 +15,8 @@ class User(Base):
     is_email_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     email_verification_token_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
     email_verification_expires_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    password_reset_token_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    password_reset_expires_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     tasks: Mapped[list["Task"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     sessions: Mapped[list["PomodoroSession"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     settings: Mapped["Setting"] = relationship(back_populates="user", cascade="all, delete-orphan", uselist=False)

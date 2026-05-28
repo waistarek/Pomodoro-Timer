@@ -10,7 +10,7 @@ from sqlalchemy.exc import IntegrityError
 from datetime import date, datetime, timedelta
 from fastapi import BackgroundTasks
 from fastapi.responses import RedirectResponse
-from .email_service import send_verification_email
+from .email_service import send_password_reset_email, send_verification_email
 from .schemas import (
     SessionCreate,
     SessionRead,
@@ -21,6 +21,8 @@ from .schemas import (
     TaskRead,
     TaskUpdate,
     Token,
+    PasswordResetConfirm,
+    PasswordResetRequest,
     UserCreate,
     UserLogin,
     UserRead,
@@ -29,10 +31,12 @@ from .schemas import (
 from .security import (
     create_access_token,
     create_email_verification_token,
+    create_password_reset_token,
     hash_email_verification_token,
     hash_password,
+    hash_password_reset_token,
     verify_password,
-)
+    )
 from .stats import build_month_stats, build_task_stats, build_week_stats, build_year_stats
 
 Base.metadata.create_all(bind=engine)
@@ -111,6 +115,87 @@ def login(data: UserLogin, db: Session = Depends(get_db)) -> Token:
         )
 
     return Token(access_token=create_access_token(str(user.id)))
+
+@app.post("/auth/request-password-reset", status_code=202)
+def request_password_reset(
+    data: PasswordResetRequest,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+) -> dict[str, str]:
+    user = db.query(User).filter(User.email == data.email.lower()).first()
+
+    response = {
+        "message": (
+            "Falls ein Konto mit dieser E-Mail existiert, wurde ein Link "
+            "zum Zurücksetzen des Passworts versendet."
+        )
+    }
+
+    if user is None:
+        return response
+
+    reset_token = create_password_reset_token()
+    reset_token_hash = hash_password_reset_token(reset_token)
+
+    user.password_reset_token_hash = reset_token_hash
+    user.password_reset_expires_at = datetime.utcnow() + timedelta(minutes=60)
+
+    db.commit()
+
+    background_tasks.add_task(
+        send_password_reset_email,
+        user.email,
+        reset_token,
+    )
+
+    return response
+
+
+@app.post("/auth/reset-password")
+def reset_password(
+    data: PasswordResetConfirm,
+    db: Session = Depends(get_db),
+) -> dict[str, str]:
+    token_hash = hash_password_reset_token(data.token)
+
+    user = (
+        db.query(User)
+        .filter(User.password_reset_token_hash == token_hash)
+        .first()
+    )
+
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Der Link zum Zurücksetzen des Passworts ist ungültig.",
+        )
+
+    if user.password_reset_expires_at is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Der Link zum Zurücksetzen des Passworts ist ungültig.",
+        )
+
+    if user.password_reset_expires_at < datetime.utcnow():
+        user.password_reset_token_hash = None
+        user.password_reset_expires_at = None
+        db.commit()
+
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Der Link zum Zurücksetzen des Passworts ist abgelaufen.",
+        )
+
+    user.password_hash = hash_password(data.new_password)
+    user.password_reset_token_hash = None
+    user.password_reset_expires_at = None
+
+    # Der Reset-Link beweist Zugriff auf die E-Mail-Adresse.
+    user.is_email_verified = True
+
+    db.commit()
+
+    return {"message": "Passwort wurde erfolgreich zurückgesetzt."}
 
 @app.get("/auth/verify-email")
 def verify_email(token: str, db: Session = Depends(get_db)):
