@@ -45,7 +45,10 @@ class TimerCard extends StatelessWidget {
                         nextPhaseLabel: timer.nextPhaseLabel,
                         color: phaseColor,
                       ),
-                      if (timer.error != null) ...[
+                      if (timer.isSaving) ...[
+                        const SizedBox(height: 16),
+                        const _TimerSavingBanner(),
+                      ] else if (timer.error != null) ...[
                         const SizedBox(height: 16),
                         _TimerErrorBanner(
                           message: timer.error!,
@@ -439,22 +442,7 @@ class _TimerActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (timer.isSaving) {
-      return Wrap(
-        alignment: WrapAlignment.center,
-        spacing: 12,
-        runSpacing: 12,
-        children: [
-          FilledButton.icon(
-            onPressed: null,
-            icon: const SizedBox(
-              width: 18,
-              height: 18,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-            label: const Text('Phase wird gespeichert ...'),
-          ),
-        ],
-      );
+      return const SizedBox.shrink();
     }
     return Wrap(
       alignment: WrapAlignment.center,
@@ -524,6 +512,54 @@ class _KeyboardShortcutHelp extends StatelessWidget {
   }
 }
 
+class _TimerSavingBanner extends StatelessWidget {
+  const _TimerSavingBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Card(
+      elevation: 0,
+      color: colorScheme.surfaceContainerHighest,
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.cloud_upload_outlined,
+                  color: colorScheme.primary,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Phase wird gespeichert',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Die abgeschlossene Phase wird gespeichert und der Timer wird vorbereitet.',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+            ),
+            const SizedBox(height: 12),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(999),
+              child: const LinearProgressIndicator(minHeight: 4),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _TimerErrorBanner extends StatelessWidget {
   const _TimerErrorBanner({
     required this.message,
@@ -535,25 +571,48 @@ class _TimerErrorBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Card(
-      color: Theme.of(context).colorScheme.errorContainer,
+      color: colorScheme.errorContainer,
       elevation: 0,
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(14),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(Icons.warning_amber_outlined),
+            Icon(
+              Icons.warning_amber_outlined,
+              color: colorScheme.onErrorContainer,
+            ),
             const SizedBox(width: 12),
             Expanded(
-              child: Text(
-                message,
-                style: Theme.of(context).textTheme.bodySmall,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Speicherproblem',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: colorScheme.onErrorContainer,
+                        ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    message,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onErrorContainer,
+                        ),
+                  ),
+                ],
               ),
             ),
             IconButton(
               tooltip: 'Meldung schließen',
               onPressed: onClose,
-              icon: const Icon(Icons.close),
+              icon: Icon(
+                Icons.close,
+                color: colorScheme.onErrorContainer,
+              ),
             ),
           ],
         ),
