@@ -23,6 +23,29 @@ class AuthService {
         auth: false);
     await localStorage.setToken(data['access_token']);
   }
+  Future<void> requestPasswordReset(String email) async {
+    await apiClient.post(
+      '/auth/request-password-reset',
+      {
+        'email': email.trim().toLowerCase(),
+      },
+      auth: false,
+    );
+  }
+
+  Future<void> resetPassword({
+    required String token,
+    required String newPassword,
+  }) async {
+    await apiClient.post(
+      '/auth/reset-password',
+      {
+        'token': token,
+        'new_password': newPassword,
+      },
+      auth: false,
+    );
+  }
 
   Future<UserProfile> me() async {
     final data = await apiClient.get('/users/me');

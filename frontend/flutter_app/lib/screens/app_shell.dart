@@ -38,9 +38,11 @@ class _AppShellState extends State<AppShell> {
     final uri = Uri.base;
     final screen = uri.queryParameters['screen'];
     final emailVerificationStatus = uri.queryParameters['email_verified'];
+    final resetToken = uri.queryParameters['reset_token'];
 
-    final shouldOpenLogin =
-        screen == 'login' || emailVerificationStatus != null;
+    final shouldOpenLogin = screen == 'login' ||
+        emailVerificationStatus != null ||
+        resetToken != null;
 
     _index = shouldOpenLogin ? 4 : widget.initialIndex.clamp(0, 4).toInt();
 
