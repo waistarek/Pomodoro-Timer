@@ -120,10 +120,6 @@ class SessionService {
     final sessionJson = session.toJson();
     final clientSessionId = session.clientSessionId;
 
-    if (clientSessionId == null) {
-      return [...items, sessionJson];
-    }
-
     final index = items.indexWhere(
       (item) => item['client_session_id']?.toString() == clientSessionId,
     );
