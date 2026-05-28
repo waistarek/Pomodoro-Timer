@@ -35,7 +35,7 @@ class TimerCard extends StatelessWidget {
                     children: [
                       _TaskSelector(
                         taskProvider: taskProvider,
-                        canChangeTask: timer.canChangeTask,
+                        timer: timer,
                       ),
                       SizedBox(height: isCompact ? 18 : 24),
                       _TimerHeader(
@@ -209,28 +209,31 @@ Future<void> _confirmResetTimer(
 class _TaskSelector extends StatelessWidget {
   const _TaskSelector({
     required this.taskProvider,
-    required this.canChangeTask,
+    required this.timer,
   });
 
   final TaskProvider taskProvider;
-  final bool canChangeTask;
+  final TimerProvider timer;
 
   @override
   Widget build(BuildContext context) {
-    final selected = taskProvider.selectedTask;
-    final openTasks =
+    final canChangeTask = timer.canChangeTask;
+    final displayTask = timer.taskForDisplay ?? taskProvider.selectedTask;
+
+    final dropdownTasks =
         taskProvider.tasks.where((task) => !task.completed).toList();
 
-    TaskItem? selectedValue;
-
-    if (selected != null) {
-      for (final task in openTasks) {
-        if (task.localId == selected.localId) {
-          selectedValue = task;
-          break;
-        }
-      }
+    if (displayTask != null &&
+        !dropdownTasks.any((task) => _sameTaskIdentity(task, displayTask))) {
+      dropdownTasks.insert(0, displayTask);
     }
+
+    final selectedValue = displayTask == null
+        ? null
+        : dropdownTasks.firstWhere(
+            (task) => _sameTaskIdentity(task, displayTask),
+            orElse: () => displayTask,
+          );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,7 +265,7 @@ class _TaskSelector extends StatelessWidget {
               value: null,
               child: Text('Ohne Aufgabe'),
             ),
-            ...openTasks.map(
+            ...dropdownTasks.map(
               (task) => DropdownMenuItem<TaskItem?>(
                 value: task,
                 child: Text(task.title),
@@ -287,7 +290,7 @@ class _TaskSelector extends StatelessWidget {
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
-                  'Die Aufgabe ist für die laufende Phase gesperrt.',
+                  'Diese Phase ist fest mit der ausgewählten Aufgabe verbunden.',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
@@ -619,6 +622,14 @@ class _TimerErrorBanner extends StatelessWidget {
       ),
     );
   }
+}
+
+bool _sameTaskIdentity(TaskItem first, TaskItem second) {
+  if (first.remoteId != null && second.remoteId != null) {
+    return first.remoteId == second.remoteId;
+  }
+
+  return first.localId == second.localId;
 }
 
 Color _phaseColor(BuildContext context, PomodoroPhase phase) {

@@ -99,6 +99,18 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
     return !_finishingPhase;
   }
 
+  TaskItem? get activePhaseTask {
+    return _phaseTask;
+  }
+
+  TaskItem? get selectedTask {
+    return _selectedTask;
+  }
+
+  TaskItem? get taskForDisplay {
+    return _phaseTask ?? _selectedTask;
+  }
+
   String get phaseDescriptionLabel {
     return switch (engine.phase) {
       PomodoroPhase.work => 'Fokuszeit',
@@ -175,11 +187,19 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   void updateSelectedTask(TaskItem? task) {
+    if (!canChangeTask) {
+      return;
+    }
+
+    if (_sameTaskSnapshot(_selectedTask, task)) {
+      return;
+    }
+
     _selectedTask = task;
 
-    if (canChangeTask) {
-      unawaited(_saveTimerState());
-    }
+    unawaited(_saveTimerState());
+
+    notifyListeners();
   }
 
   void startOrResume() {
@@ -417,6 +437,26 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
       debugPrint('Benachrichtigung konnte nicht angezeigt werden: $exception');
       debugPrintStack(stackTrace: stackTrace);
     }
+  }
+
+  bool _sameTaskSnapshot(TaskItem? first, TaskItem? second) {
+    if (first == null || second == null) {
+      return first == null && second == null;
+    }
+
+    return _sameTaskIdentity(first, second) &&
+        first.remoteId == second.remoteId &&
+        first.title == second.title &&
+        first.completed == second.completed &&
+        first.completedPomodoros == second.completedPomodoros;
+  }
+
+  bool _sameTaskIdentity(TaskItem first, TaskItem second) {
+    if (first.remoteId != null && second.remoteId != null) {
+      return first.remoteId == second.remoteId;
+    }
+
+    return first.localId == second.localId;
   }
 
   void _rebuildEngine({bool keepPomodoros = false}) {

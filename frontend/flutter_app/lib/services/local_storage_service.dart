@@ -44,6 +44,7 @@ class LocalStorageService {
       _prefs.remove('pending_sessions'),
       _prefs.remove('last_completed_work'),
       _prefs.remove('active_timer_state'),
+      _prefs.remove('selected_task_state'),
     ]);
   }
 }
