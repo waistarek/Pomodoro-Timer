@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'dart:async';
 import '../providers/session_sync_provider.dart';
 import 'home_screen.dart';
 import 'login_screen.dart';
 import 'settings_screen.dart';
 import 'stats_screen.dart';
 import 'tasks_screen.dart';
+import '../providers/stats_provider.dart';
+import '../providers/task_provider.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key, this.initialIndex = 0});
@@ -19,6 +21,7 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   late int _index;
+  int _lastHandledSessionSyncVersion = 0;
 
   final _screens = const [
     HomeScreen(),
@@ -62,8 +65,31 @@ class _AppShellState extends State<AppShell> {
     });
   }
 
+  void _refreshDataAfterSessionSync(BuildContext context) {
+    final syncCompletedVersion = context.select(
+      (SessionSyncProvider provider) => provider.syncCompletedVersion,
+    );
+
+    if (syncCompletedVersion == _lastHandledSessionSyncVersion) {
+      return;
+    }
+
+    _lastHandledSessionSyncVersion = syncCompletedVersion;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      unawaited(context.read<StatsProvider>().refreshCurrent());
+      unawaited(context.read<TaskProvider>().refreshTaskPomodoroCounts());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    _refreshDataAfterSessionSync(context);
+
     final isWide = MediaQuery.sizeOf(context).width >= 900;
 
     final destinations = const [

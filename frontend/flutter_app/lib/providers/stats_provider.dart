@@ -16,6 +16,8 @@ class StatsProvider extends ChangeNotifier {
 
   String? error;
   String? taskStatsError;
+  Future<StatsResponse> Function()? _lastStatsLoader;
+  bool _taskStatsLoadedOnce = false;
 
   void clear() {
     stats = StatsResponse.empty();
@@ -24,19 +26,24 @@ class StatsProvider extends ChangeNotifier {
     taskStatsLoading = false;
     error = null;
     taskStatsError = null;
+    _lastStatsLoader = null;
+    _taskStatsLoadedOnce = false;
     notifyListeners();
   }
 
   Future<void> loadWeek(DateTime date) async {
-    await _load(() => _statsService.week(date));
+    _lastStatsLoader = () => _statsService.week(date);
+    await _load(_lastStatsLoader!);
   }
 
   Future<void> loadMonth(int year, int month) async {
-    await _load(() => _statsService.month(year, month));
+    _lastStatsLoader = () => _statsService.month(year, month);
+    await _load(_lastStatsLoader!);
   }
 
   Future<void> loadYear(int year) async {
-    await _load(() => _statsService.year(year));
+    _lastStatsLoader = () => _statsService.year(year);
+    await _load(_lastStatsLoader!);
   }
 
   Future<void> loadDaily() async {
@@ -54,6 +61,7 @@ class StatsProvider extends ChangeNotifier {
   }
 
   Future<void> loadTaskStats() async {
+    _taskStatsLoadedOnce = true;
     taskStatsLoading = true;
     taskStatsError = null;
     notifyListeners();
@@ -66,6 +74,28 @@ class StatsProvider extends ChangeNotifier {
       taskStatsLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> refreshCurrent() async {
+    final loaders = <Future<void> Function()>[];
+
+    final statsLoader = _lastStatsLoader;
+
+    if (statsLoader != null) {
+      loaders.add(() => _load(statsLoader));
+    }
+
+    if (_taskStatsLoadedOnce) {
+      loaders.add(loadTaskStats);
+    }
+
+    if (loaders.isEmpty) {
+      return;
+    }
+
+    await Future.wait(
+      loaders.map((loader) => loader()),
+    );
   }
 
   Future<void> _load(Future<StatsResponse> Function() loader) async {

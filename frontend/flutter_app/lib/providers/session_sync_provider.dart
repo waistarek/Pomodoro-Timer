@@ -12,6 +12,7 @@ class SessionSyncProvider extends ChangeNotifier {
   bool syncing = false;
   String? error;
   int pendingCount = 0;
+  int syncCompletedVersion = 0;
 
   bool get canSync => _sessionService.canSync;
 
@@ -61,6 +62,7 @@ class SessionSyncProvider extends ChangeNotifier {
     syncing = false;
     error = null;
     pendingCount = 0;
+    syncCompletedVersion = 0;
     notifyListeners();
   }
 
@@ -74,9 +76,10 @@ class SessionSyncProvider extends ChangeNotifier {
       return;
     }
 
-    pendingCount = _sessionService.pendingSessionCount;
+    final pendingBeforeSync = _sessionService.pendingSessionCount;
+    pendingCount = pendingBeforeSync;
 
-    if (!_sessionService.canSync || pendingCount == 0) {
+    if (!_sessionService.canSync || pendingBeforeSync == 0) {
       notifyListeners();
       return;
     }
@@ -91,7 +94,13 @@ class SessionSyncProvider extends ChangeNotifier {
       error =
           'Sitzungen konnten gerade nicht synchronisiert werden. Es wird später erneut versucht.';
     } finally {
-      pendingCount = _sessionService.pendingSessionCount;
+      final pendingAfterSync = _sessionService.pendingSessionCount;
+
+      if (pendingAfterSync < pendingBeforeSync) {
+        syncCompletedVersion++;
+      }
+
+      pendingCount = pendingAfterSync;
       syncing = false;
       notifyListeners();
     }
