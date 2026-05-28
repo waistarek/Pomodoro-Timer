@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import '../models/user_profile.dart';
 import '../services/auth_service.dart';
 
@@ -6,19 +7,32 @@ class AuthProvider extends ChangeNotifier {
   AuthProvider(this._authService);
 
   final AuthService _authService;
+
   UserProfile? user;
   bool loading = false;
   String? error;
 
-  bool get isLoggedIn => user != null || _authService.hasLocalToken;
+  bool get isLoggedIn => user != null;
 
   Future<void> loadLocalSession() async {
-    if (!_authService.hasLocalToken) return;
+    if (!_authService.hasLocalToken) {
+      user = null;
+      notifyListeners();
+      return;
+    }
+
+    loading = true;
+    error = null;
+    notifyListeners();
+
     try {
       user = await _authService.me();
-      notifyListeners();
     } catch (_) {
       await _authService.logout();
+      user = null;
+    } finally {
+      loading = false;
+      notifyListeners();
     }
   }
 
@@ -43,6 +57,7 @@ class AuthProvider extends ChangeNotifier {
     loading = true;
     error = null;
     notifyListeners();
+
     try {
       await _authService.login(email, password);
       user = await _authService.me();
@@ -55,6 +70,7 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
   Future<bool> requestPasswordReset(String email) async {
     loading = true;
     error = null;
@@ -82,6 +98,10 @@ class AuthProvider extends ChangeNotifier {
         token: token,
         newPassword: newPassword,
       );
+
+      await _authService.logout();
+      user = null;
+
       return true;
     } catch (e) {
       error = e.toString();
