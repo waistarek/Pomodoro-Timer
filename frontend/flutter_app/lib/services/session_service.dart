@@ -14,6 +14,13 @@ class SessionService {
   static const String _guestSessionsKey = 'guest_sessions';
   static const String _pendingSessionsKey = 'pending_sessions';
 
+  bool get canSync => localStorage.token != null;
+
+  int get pendingSessionCount {
+    return localStorage.getJsonList(_guestSessionsKey).length +
+        localStorage.getJsonList(_pendingSessionsKey).length;
+  }
+
   Future<void> createSession(PomodoroSession session) async {
     if (localStorage.token == null) {
       await _saveGuestSession(session);
@@ -29,6 +36,15 @@ class SessionService {
         .getJsonList(_guestSessionsKey)
         .map(PomodoroSession.fromJson)
         .toList();
+  }
+
+  Future<void> syncStoredSessions() async {
+    if (localStorage.token == null) {
+      return;
+    }
+
+    await _moveGuestSessionsToPending();
+    await syncPendingSessions();
   }
 
   Future<void> syncPendingSessions() async {
@@ -61,6 +77,28 @@ class SessionService {
     );
   }
 
+  Future<void> _moveGuestSessionsToPending() async {
+    final guestSessions = localStorage.getJsonList(_guestSessionsKey);
+
+    if (guestSessions.isEmpty) {
+      return;
+    }
+
+    var pending = localStorage.getJsonList(_pendingSessionsKey);
+
+    for (final item in guestSessions) {
+      final session = PomodoroSession.fromJson(item);
+      pending = _upsertByClientSessionId(pending, session);
+    }
+
+    await localStorage.setJsonList(
+      _pendingSessionsKey,
+      _deduplicateByClientSessionId(pending),
+    );
+
+    await localStorage.remove(_guestSessionsKey);
+  }
+
   Future<void> _saveGuestSession(PomodoroSession session) async {
     final sessions = localStorage.getJsonList(_guestSessionsKey);
     final updated = _upsertByClientSessionId(sessions, session);
@@ -80,10 +118,14 @@ class SessionService {
     PomodoroSession session,
   ) {
     final sessionJson = session.toJson();
+    final clientSessionId = session.clientSessionId;
+
+    if (clientSessionId == null) {
+      return [...items, sessionJson];
+    }
 
     final index = items.indexWhere(
-      (item) =>
-          item['client_session_id']?.toString() == session.clientSessionId,
+      (item) => item['client_session_id']?.toString() == clientSessionId,
     );
 
     if (index == -1) {
@@ -105,7 +147,12 @@ class SessionService {
     for (final item in items) {
       final clientSessionId = item['client_session_id']?.toString();
 
-      if (clientSessionId == null || seen.contains(clientSessionId)) {
+      if (clientSessionId == null) {
+        result.add(item);
+        continue;
+      }
+
+      if (seen.contains(clientSessionId)) {
         continue;
       }
 

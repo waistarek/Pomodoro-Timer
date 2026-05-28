@@ -5,7 +5,8 @@ import '../providers/auth_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/stats_provider.dart';
 import '../providers/task_provider.dart';
-import '../services/session_service.dart';
+import '../providers/session_sync_provider.dart';
+import 'dart:async';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -59,6 +60,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             final settingsProvider =
                                 context.read<SettingsProvider>();
                             final statsProvider = context.read<StatsProvider>();
+                            final sessionSyncProvider =
+                                context.read<SessionSyncProvider>();
 
                             await authProvider.logout();
 
@@ -69,6 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             taskProvider.clear();
                             await settingsProvider.resetLocal();
                             statsProvider.clear();
+                            sessionSyncProvider.clear();
                           },
                           icon: const Icon(Icons.logout),
                           label: const Text('Ausloggen'),
@@ -171,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    final sessionService = context.read<SessionService>();
+    final sessionSyncProvider = context.read<SessionSyncProvider>();
     final authProvider = context.read<AuthProvider>();
     final taskProvider = context.read<TaskProvider>();
     final settingsProvider = context.read<SettingsProvider>();
@@ -190,7 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     if (ok) {
-       if (wasRegisterMode) {
+      if (wasRegisterMode) {
         setState(() => _registerMode = false);
 
         messenger.showSnackBar(
@@ -204,8 +208,14 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
       await settingsProvider.loadRemoteSettings();
-      await sessionService.syncPendingSessions();
       await taskProvider.loadRemoteTasks();
+
+      unawaited(
+        _syncStoredSessionsAfterLogin(
+          sessionSyncProvider,
+          taskProvider,
+        ),
+      );
 
       if (!mounted) {
         return;
@@ -215,5 +225,18 @@ class _LoginScreenState extends State<LoginScreen> {
         const SnackBar(content: Text('Erfolgreich angemeldet.')),
       );
     }
+  }
+
+  Future<void> _syncStoredSessionsAfterLogin(
+    SessionSyncProvider sessionSyncProvider,
+    TaskProvider taskProvider,
+  ) async {
+    await sessionSyncProvider.syncStoredSessions();
+
+    if (!mounted) {
+      return;
+    }
+
+    await taskProvider.refreshTaskPomodoroCounts();
   }
 }

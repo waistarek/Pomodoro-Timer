@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'providers/session_sync_provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/settings_provider.dart';
 import 'providers/stats_provider.dart';
@@ -31,7 +31,7 @@ Future<void> main() async {
     apiClient: apiClient,
     localStorage: localStorage,
   );
-  unawaited(sessionService.syncPendingSessions());
+
   final settingsService = SettingsService(apiClient: apiClient);
   final statsService = StatsService(
     apiClient: apiClient,
@@ -44,6 +44,9 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         Provider<SessionService>.value(value: sessionService),
+        ChangeNotifierProvider(
+          create: (_) => SessionSyncProvider(sessionService)..init(),
+        ),
         ChangeNotifierProvider(
             create: (_) => AuthProvider(authService)..loadLocalSession()),
         ChangeNotifierProvider(
