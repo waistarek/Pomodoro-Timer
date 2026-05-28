@@ -27,7 +27,13 @@ class TaskProvider extends ChangeNotifier {
 
     _applyLocalPomodoroCounts();
 
-    selectedTask = _resolveStoredSelectedTask() ?? _firstOpenTaskOrFirst();
+    if (_storedSelectedTaskIsNone()) {
+      selectedTask = null;
+    } else if (_hasStoredSelectedTaskState()) {
+      selectedTask = _resolveStoredSelectedTask();
+    } else {
+      selectedTask = _firstOpenTaskOrFirst();
+    }
 
     notifyListeners();
   }
@@ -58,12 +64,16 @@ class TaskProvider extends ChangeNotifier {
     try {
       tasks = await _taskService.getTasks();
 
-      selectedTask = _findMatchingTask(previousSelectedTask) ??
-          _findTaskByIdentity(
-            localId: storedLocalId,
-            remoteId: storedRemoteId,
-          ) ??
-          _firstOpenTaskOrFirst();
+      if (_storedSelectedTaskIsNone()) {
+        selectedTask = null;
+      } else {
+        selectedTask = _findMatchingTask(previousSelectedTask) ??
+            _findTaskByIdentity(
+              localId: storedLocalId,
+              remoteId: storedRemoteId,
+            ) ??
+            (_hasStoredSelectedTaskState() ? null : _firstOpenTaskOrFirst());
+      }
 
       await _saveLocal();
       await _saveSelectedTask();
@@ -222,13 +232,25 @@ class TaskProvider extends ChangeNotifier {
     final task = selectedTask;
 
     if (task == null) {
-      return _localStorage.remove(_selectedTaskStateStorageKey);
+      return _localStorage.setJsonObject(_selectedTaskStateStorageKey, {
+        'mode': 'none',
+      });
     }
 
     return _localStorage.setJsonObject(_selectedTaskStateStorageKey, {
+      'mode': 'task',
       'local_id': task.localId,
       'remote_id': task.remoteId,
     });
+  }
+
+  bool _hasStoredSelectedTaskState() {
+    return _localStorage.getJsonObject(_selectedTaskStateStorageKey) != null;
+  }
+
+  bool _storedSelectedTaskIsNone() {
+    final state = _localStorage.getJsonObject(_selectedTaskStateStorageKey);
+    return state?['mode'] == 'none';
   }
 
   TaskItem? _resolveStoredSelectedTask() {
