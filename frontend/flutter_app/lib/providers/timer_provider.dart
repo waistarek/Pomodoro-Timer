@@ -32,6 +32,8 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
   final SoundService _soundService;
   final NotificationService _notificationService;
 
+  Future<void> Function()? _onWorkPhaseCompleted;
+
   AppSettings _settings = const AppSettings();
   TaskItem? _selectedTask;
 
@@ -151,6 +153,12 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
   void clearError() {
     error = null;
     notifyListeners();
+  }
+
+  void setWorkPhaseCompletedCallback(
+    Future<void> Function() callback,
+  ) {
+    _onWorkPhaseCompleted = callback;
   }
 
   void syncWithRealTime() {
@@ -362,6 +370,8 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
       endedAt: endedAt,
     );
 
+    var sessionSaved = false;
+
     try {
       if (finishedPhase == PomodoroPhase.work) {
         await _localStorage.setJsonObject('last_completed_work', {
@@ -370,6 +380,7 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
       }
 
       await _sessionService.createSession(session);
+      sessionSaved = true;
     } catch (exception, stackTrace) {
       debugPrint('Session konnte nicht gespeichert werden: $exception');
       debugPrintStack(stackTrace: stackTrace);
@@ -401,6 +412,10 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
 
     await _saveTimerState();
 
+    if (finishedPhase == PomodoroPhase.work && sessionSaved) {
+      unawaited(_notifyWorkPhaseCompleted());
+    }
+
     unawaited(
       _showPhaseFinishedNotification(
         finishedPhase,
@@ -412,6 +427,22 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
       startOrResume();
     } else {
       notifyListeners();
+    }
+  }
+
+  Future<void> _notifyWorkPhaseCompleted() async {
+    final callback = _onWorkPhaseCompleted;
+
+    if (callback == null) {
+      return;
+    }
+
+    try {
+      await callback();
+    } catch (exception, stackTrace) {
+      debugPrint(
+          'Aufgaben-Zähler konnten nicht aktualisiert werden: $exception');
+      debugPrintStack(stackTrace: stackTrace);
     }
   }
 

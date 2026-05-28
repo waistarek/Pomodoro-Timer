@@ -19,6 +19,10 @@ class TimerCard extends StatelessWidget {
       builder: (context, timer, taskProvider, _) {
         final phaseColor = _phaseColor(context, timer.phase);
 
+        timer.setWorkPhaseCompletedCallback(
+          taskProvider.refreshTaskPomodoroCounts,
+        );
+
         return _TimerKeyboardShortcuts(
           timer: timer,
           child: Card(
