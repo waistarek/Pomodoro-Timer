@@ -20,18 +20,8 @@ class SessionService {
       return;
     }
 
+    await _queuePendingSession(session);
     await syncPendingSessions();
-
-    try {
-      await apiClient.post('/sessions', session.toJson());
-    } catch (error) {
-      if (_shouldQueue(error)) {
-        await _queuePendingSession(session);
-        return;
-      }
-
-      rethrow;
-    }
   }
 
   Future<List<PomodoroSession>> getGuestSessions() async {
@@ -58,24 +48,72 @@ class SessionService {
       try {
         final session = PomodoroSession.fromJson(item);
         await apiClient.post('/sessions', session.toJson());
-      } catch (_) {
-        remaining.add(item);
+      } catch (error) {
+        if (_shouldQueue(error)) {
+          remaining.add(item);
+        }
       }
     }
 
-    await localStorage.setJsonList(_pendingSessionsKey, remaining);
+    await localStorage.setJsonList(
+      _pendingSessionsKey,
+      _deduplicateByClientSessionId(remaining),
+    );
   }
 
   Future<void> _saveGuestSession(PomodoroSession session) async {
     final sessions = localStorage.getJsonList(_guestSessionsKey);
-    sessions.add(session.toJson());
-    await localStorage.setJsonList(_guestSessionsKey, sessions);
+    final updated = _upsertByClientSessionId(sessions, session);
+
+    await localStorage.setJsonList(_guestSessionsKey, updated);
   }
 
   Future<void> _queuePendingSession(PomodoroSession session) async {
     final pending = localStorage.getJsonList(_pendingSessionsKey);
-    pending.add(session.toJson());
-    await localStorage.setJsonList(_pendingSessionsKey, pending);
+    final updated = _upsertByClientSessionId(pending, session);
+
+    await localStorage.setJsonList(_pendingSessionsKey, updated);
+  }
+
+  List<Map<String, dynamic>> _upsertByClientSessionId(
+    List<Map<String, dynamic>> items,
+    PomodoroSession session,
+  ) {
+    final sessionJson = session.toJson();
+
+    final index = items.indexWhere(
+      (item) =>
+          item['client_session_id']?.toString() == session.clientSessionId,
+    );
+
+    if (index == -1) {
+      return [...items, sessionJson];
+    }
+
+    return [
+      for (var i = 0; i < items.length; i++)
+        if (i == index) sessionJson else items[i],
+    ];
+  }
+
+  List<Map<String, dynamic>> _deduplicateByClientSessionId(
+    List<Map<String, dynamic>> items,
+  ) {
+    final seen = <String>{};
+    final result = <Map<String, dynamic>>[];
+
+    for (final item in items) {
+      final clientSessionId = item['client_session_id']?.toString();
+
+      if (clientSessionId == null || seen.contains(clientSessionId)) {
+        continue;
+      }
+
+      seen.add(clientSessionId);
+      result.add(item);
+    }
+
+    return result;
   }
 
   bool _shouldQueue(Object error) {

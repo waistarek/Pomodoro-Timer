@@ -370,34 +370,6 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
       endedAt: endedAt,
     );
 
-    var sessionSaved = false;
-
-    try {
-      if (finishedPhase == PomodoroPhase.work) {
-        await _localStorage.setJsonObject('last_completed_work', {
-          'at': endedAt.toIso8601String(),
-        });
-      }
-
-      await _sessionService.createSession(session);
-      sessionSaved = true;
-    } catch (exception, stackTrace) {
-      debugPrint('Session konnte nicht gespeichert werden: $exception');
-      debugPrintStack(stackTrace: stackTrace);
-
-      error = 'Die abgeschlossene Phase konnte nicht gespeichert werden. '
-          'Die App läuft weiter, aber die Statistik kann unvollständig sein.';
-    }
-
-    if (_settings.soundEnabled) {
-      try {
-        await _soundService.playPhaseFinishedSound();
-      } catch (exception, stackTrace) {
-        debugPrint('Sound konnte nicht abgespielt werden: $exception');
-        debugPrintStack(stackTrace: stackTrace);
-      }
-    }
-
     engine.switchToNextPhase();
 
     final nextPhase = engine.phase;
@@ -412,9 +384,14 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
 
     await _saveTimerState();
 
-    if (finishedPhase == PomodoroPhase.work && sessionSaved) {
-      unawaited(_notifyWorkPhaseCompleted());
-    }
+    unawaited(
+      _saveFinishedPhaseInBackground(
+        session: session,
+        finishedPhase: finishedPhase,
+      ),
+    );
+
+    unawaited(_playPhaseFinishedSoundInBackground());
 
     unawaited(
       _showPhaseFinishedNotification(
@@ -427,6 +404,46 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
       startOrResume();
     } else {
       notifyListeners();
+    }
+  }
+
+  Future<void> _saveFinishedPhaseInBackground({
+    required PomodoroSession session,
+    required PomodoroPhase finishedPhase,
+  }) async {
+    try {
+      if (finishedPhase == PomodoroPhase.work) {
+        await _localStorage.setJsonObject('last_completed_work', {
+          'at': session.endedAt.toIso8601String(),
+        });
+      }
+
+      await _sessionService.createSession(session);
+
+      if (finishedPhase == PomodoroPhase.work) {
+        await _notifyWorkPhaseCompleted();
+      }
+    } catch (exception, stackTrace) {
+      debugPrint('Session konnte nicht gespeichert werden: $exception');
+      debugPrintStack(stackTrace: stackTrace);
+
+      error = 'Die abgeschlossene Phase konnte nicht gespeichert werden. '
+          'Die App läuft weiter, aber die Statistik kann unvollständig sein.';
+
+      notifyListeners();
+    }
+  }
+
+  Future<void> _playPhaseFinishedSoundInBackground() async {
+    if (!_settings.soundEnabled) {
+      return;
+    }
+
+    try {
+      await _soundService.playPhaseFinishedSound();
+    } catch (exception, stackTrace) {
+      debugPrint('Sound konnte nicht abgespielt werden: $exception');
+      debugPrintStack(stackTrace: stackTrace);
     }
   }
 

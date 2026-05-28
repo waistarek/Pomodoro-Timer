@@ -16,6 +16,7 @@ import 'services/sound_service.dart';
 import 'services/stats_service.dart';
 import 'services/task_service.dart';
 import 'services/notification_service.dart';
+import 'dart:async';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +31,7 @@ Future<void> main() async {
     apiClient: apiClient,
     localStorage: localStorage,
   );
-  await sessionService.syncPendingSessions();
+  unawaited(sessionService.syncPendingSessions());
   final settingsService = SettingsService(apiClient: apiClient);
   final statsService = StatsService(
     apiClient: apiClient,
@@ -53,13 +54,12 @@ Future<void> main() async {
                 TaskProvider(localStorage, taskService)..loadLocalTasks()),
         ChangeNotifierProxyProvider2<SettingsProvider, TaskProvider,
             TimerProvider>(
-          create: (_) =>
-              TimerProvider(
-                localStorage,
-                sessionService,
-                soundService,
-                notificationService,
-              ),
+          create: (_) => TimerProvider(
+            localStorage,
+            sessionService,
+            soundService,
+            notificationService,
+          ),
           update: (_, settingsProvider, taskProvider, timerProvider) {
             final provider = timerProvider ??
                 TimerProvider(
