@@ -10,6 +10,7 @@ import '../providers/stats_provider.dart';
 import '../providers/task_provider.dart';
 
 import '../services/browser_url_service.dart';
+import '../providers/timer_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -504,7 +505,9 @@ class _LoggedInCard extends StatelessWidget {
                 final settingsProvider = context.read<SettingsProvider>();
                 final statsProvider = context.read<StatsProvider>();
                 final sessionSyncProvider = context.read<SessionSyncProvider>();
+                final timerProvider = context.read<TimerProvider>();
 
+                await timerProvider.clearForLogout();
                 await authProvider.logout();
 
                 taskProvider.clear();

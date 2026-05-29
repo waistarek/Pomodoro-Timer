@@ -293,6 +293,28 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
   }
 
+  Future<void> clearForLogout() async {
+    _timer?.cancel();
+    _timer = null;
+
+    running = false;
+    _finishingPhase = false;
+    _activeSessionSyncs = 0;
+    error = null;
+
+    _phaseStartedAt = null;
+    _phaseEndsAt = null;
+    _phaseTask = null;
+    _phaseClientSessionId = null;
+    _selectedTask = null;
+
+    _rebuildEngine();
+
+    await _clearTimerState();
+
+    notifyListeners();
+  }
+
   void skipPause() {
     if (!canSkipPause) {
       return;
