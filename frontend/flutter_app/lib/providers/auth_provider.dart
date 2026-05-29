@@ -16,36 +16,36 @@ class AuthProvider extends ChangeNotifier {
   bool get isLoggedIn => user != null;
 
   Future<void> loadLocalSession() async {
-  if (!_authService.hasLocalToken) {
-    user = null;
-    notifyListeners();
-    return;
-  }
-
-  loading = true;
-  error = null;
-  notifyListeners();
-
-  try {
-    user = await _authService.me();
-  } on ApiException catch (e) {
-    user = null;
-
-    if (e.statusCode == 401 || e.statusCode == 403) {
-      await _authService.clearLocalToken();
-    } else {
-      debugPrint('Lokale Sitzung konnte nicht geprüft werden: $e');
+    if (!_authService.hasLocalToken) {
+      user = null;
+      notifyListeners();
+      return;
     }
-  } catch (e, stackTrace) {
-    user = null;
 
-    debugPrint('Lokale Sitzung konnte nicht geprüft werden: $e');
-    debugPrintStack(stackTrace: stackTrace);
-  } finally {
-    loading = false;
+    loading = true;
+    error = null;
     notifyListeners();
+
+    try {
+      user = await _authService.me();
+    } on ApiException catch (e) {
+      user = null;
+
+      if (e.statusCode == 401 || e.statusCode == 403) {
+        await _authService.clearLocalToken();
+      } else {
+        debugPrint('Lokale Sitzung konnte nicht geprüft werden: $e');
+      }
+    } catch (e, stackTrace) {
+      user = null;
+
+      debugPrint('Lokale Sitzung konnte nicht geprüft werden: $e');
+      debugPrintStack(stackTrace: stackTrace);
+    } finally {
+      loading = false;
+      notifyListeners();
+    }
   }
-}
 
   Future<bool> register(String email, String password) async {
     loading = true;

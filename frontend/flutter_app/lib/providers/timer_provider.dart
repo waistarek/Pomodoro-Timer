@@ -626,25 +626,23 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
       unawaited(_clearTimerState());
     }
   }
+
   void _restoreRunningTimer({
     required DateTime? savedAt,
     required int savedRemainingSeconds,
   }) {
     if (_phaseEndsAt == null) {
-      final elapsedSeconds = savedAt == null
-          ? 0
-          : DateTime.now().difference(savedAt).inSeconds;
+      final elapsedSeconds =
+          savedAt == null ? 0 : DateTime.now().difference(savedAt).inSeconds;
 
-      final normalizedElapsedSeconds = elapsedSeconds
-          .clamp(0, savedRemainingSeconds)
-          .toInt();
+      final normalizedElapsedSeconds =
+          elapsedSeconds.clamp(0, savedRemainingSeconds).toInt();
 
       final recoveredRemainingSeconds =
           savedRemainingSeconds - normalizedElapsedSeconds;
 
-      engine.remainingSeconds = recoveredRemainingSeconds > 0
-          ? recoveredRemainingSeconds
-          : 0;
+      engine.remainingSeconds =
+          recoveredRemainingSeconds > 0 ? recoveredRemainingSeconds : 0;
 
       if (engine.isFinished) {
         _phaseEndsAt = DateTime.now();

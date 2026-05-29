@@ -2,7 +2,6 @@ import os
 from fastapi import Depends, FastAPI, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from .database import Base, engine, get_db
 from .deps import get_current_user
 from sqlalchemy import func
 from .models import PomodoroSession, Setting, Task, User
@@ -36,10 +35,10 @@ from .security import (
     hash_password,
     hash_password_reset_token,
     verify_password,
-    )
+)
 from .stats import build_month_stats, build_task_stats, build_week_stats, build_year_stats
 
-Base.metadata.create_all(bind=engine)
+from .database import get_db
 
 app = FastAPI(title="Pomodoro API", version="1.0.0")
 
@@ -223,12 +222,12 @@ def verify_email(token: str, db: Session = Depends(get_db)):
         )
     if user.email_verification_expires_at is None:
         return RedirectResponse(
-            f"{frontend_url}/auth/login?email_verified=invalid"
+            f"{frontend_url}/?screen=login&email_verified=invalid"
         )
 
     if user.email_verification_expires_at < datetime.utcnow():
         return RedirectResponse(
-            f"{frontend_url}/auth/login?email_verified=expired"
+            f"{frontend_url}/?screen=login&email_verified=expired"
         )
 
     user.is_email_verified = True
@@ -238,7 +237,7 @@ def verify_email(token: str, db: Session = Depends(get_db)):
     db.commit()
 
     return RedirectResponse(
-        f"{frontend_url}/auth/login?email_verified=success"
+        f"{frontend_url}/?screen=login&email_verified=success"
     )
 
 @app.get("/users/me", response_model=UserRead)

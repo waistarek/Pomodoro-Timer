@@ -24,6 +24,7 @@ class AuthService {
         auth: false);
     await localStorage.setToken(data['access_token']);
   }
+
   Future<void> requestPasswordReset(String email) async {
     await apiClient.post(
       '/auth/request-password-reset',
