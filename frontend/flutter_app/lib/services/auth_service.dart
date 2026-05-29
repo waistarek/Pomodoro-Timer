@@ -9,6 +9,7 @@ class AuthService {
   final LocalStorageService localStorage;
 
   bool get hasLocalToken => localStorage.token != null;
+  Future<void> clearLocalToken() => localStorage.clearToken();
 
   Future<UserProfile> register(String email, String password) async {
     final data = await apiClient.post(

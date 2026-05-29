@@ -578,6 +578,7 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
       final shortBreakSeconds = _asInt(state['short_break_seconds']);
       final longBreakSeconds = _asInt(state['long_break_seconds']);
       final longBreakAfter = _asInt(state['long_break_after']);
+      final savedAt = _parseDateTime(state['saved_at']);
 
       if (phase == null ||
           remainingSeconds <= 0 ||
@@ -616,17 +617,60 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
       }
 
       if (running) {
-        _syncRemainingSecondsWithClock();
-
-        if (engine.isFinished) {
-          Future.microtask(_finishPhaseOnce);
-        } else {
-          _startTicker();
-        }
+        _restoreRunningTimer(
+          savedAt: savedAt,
+          savedRemainingSeconds: remainingSeconds,
+        );
       }
     } catch (_) {
       unawaited(_clearTimerState());
     }
+  }
+  void _restoreRunningTimer({
+    required DateTime? savedAt,
+    required int savedRemainingSeconds,
+  }) {
+    if (_phaseEndsAt == null) {
+      final elapsedSeconds = savedAt == null
+          ? 0
+          : DateTime.now().difference(savedAt).inSeconds;
+
+      final normalizedElapsedSeconds = elapsedSeconds
+          .clamp(0, savedRemainingSeconds)
+          .toInt();
+
+      final recoveredRemainingSeconds =
+          savedRemainingSeconds - normalizedElapsedSeconds;
+
+      engine.remainingSeconds = recoveredRemainingSeconds > 0
+          ? recoveredRemainingSeconds
+          : 0;
+
+      if (engine.isFinished) {
+        _phaseEndsAt = DateTime.now();
+      } else {
+        _phaseEndsAt = DateTime.now().add(
+          Duration(seconds: engine.remainingSeconds),
+        );
+      }
+    } else {
+      _syncRemainingSecondsWithClock();
+    }
+
+    if (_phaseStartedAt == null && _phaseEndsAt != null) {
+      _phaseStartedAt = _phaseEndsAt!.subtract(
+        Duration(seconds: engine.totalPhaseSeconds),
+      );
+    }
+
+    _phaseClientSessionId ??= const Uuid().v4();
+
+    if (engine.isFinished) {
+      Future.microtask(_finishPhaseOnce);
+      return;
+    }
+
+    _startTicker();
   }
 
   PomodoroPhase? _phaseFromName(String? value) {
