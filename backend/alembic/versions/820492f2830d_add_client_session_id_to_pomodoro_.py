@@ -1,8 +1,9 @@
 """add client session id to pomodoro sessions
 
-Revision ID: <deine_revision_id>
-Revises: <deine_vorherige_revision_id>
-Create Date: <datum>
+Revision ID: 820492f2830d
+Revises: 0001_initial_schema
+Create Date: 2026-05-25
+
 """
 
 from typing import Sequence, Union
@@ -12,7 +13,7 @@ import sqlalchemy as sa
 
 
 revision: str = "820492f2830d"
-down_revision: Union[str, None] = None
+down_revision: Union[str, None] = "0001_initial_schema"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
