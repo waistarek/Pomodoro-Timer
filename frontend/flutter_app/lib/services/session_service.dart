@@ -113,6 +113,15 @@ class SessionService {
     await localStorage.setJsonList(_pendingSessionsKey, updated);
   }
 
+  Future<void> queueSessionForRetry(PomodoroSession session) async {
+    if (localStorage.token == null) {
+      await _saveGuestSession(session);
+      return;
+    }
+
+    await _queuePendingSession(session);
+  }
+
   List<Map<String, dynamic>> _upsertByClientSessionId(
     List<Map<String, dynamic>> items,
     PomodoroSession session,

@@ -384,6 +384,28 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
       endedAt: endedAt,
     );
 
+    try {
+      if (finishedPhase == PomodoroPhase.work) {
+        await _localStorage.setJsonObject('last_completed_work', {
+          'at': session.endedAt.toIso8601String(),
+        });
+      }
+
+      await _sessionService.queueSessionForRetry(session);
+    } catch (exception, stackTrace) {
+      debugPrint('Session konnte nicht lokal vorgemerkt werden: $exception');
+      debugPrintStack(stackTrace: stackTrace);
+
+      error = 'Die abgeschlossene Phase konnte nicht lokal gespeichert werden.';
+      _finishingPhase = false;
+      running = false;
+
+      await _saveTimerState();
+
+      notifyListeners();
+      return;
+    }
+
     engine.switchToNextPhase();
 
     final nextPhase = engine.phase;
@@ -429,23 +451,17 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
 
     try {
-      if (finishedPhase == PomodoroPhase.work) {
-        await _localStorage.setJsonObject('last_completed_work', {
-          'at': session.endedAt.toIso8601String(),
-        });
-      }
-
-      await _sessionService.createSession(session);
+      await _sessionService.syncPendingSessions();
 
       if (finishedPhase == PomodoroPhase.work) {
         await _notifyWorkPhaseCompleted();
       }
     } catch (exception, stackTrace) {
-      debugPrint('Session konnte nicht gespeichert werden: $exception');
+      debugPrint('Session konnte nicht synchronisiert werden: $exception');
       debugPrintStack(stackTrace: stackTrace);
 
-      error = 'Die abgeschlossene Phase konnte nicht gespeichert werden. '
-          'Die App läuft weiter, aber die Statistik kann unvollständig sein.';
+      error = 'Die abgeschlossene Phase wurde lokal gespeichert, '
+          'aber noch nicht mit dem Backend synchronisiert.';
     } finally {
       if (_activeSessionSyncs > 0) {
         _activeSessionSyncs--;
