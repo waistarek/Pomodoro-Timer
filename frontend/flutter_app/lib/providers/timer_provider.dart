@@ -613,13 +613,24 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
   }) {
     final oldPomodoros = keepPomodoros ? engine.completedPomodoros : 0;
 
+    final workSeconds = _settings.workMinutes * 60;
+    final shortBreakSeconds = _settings.shortBreakMinutes * 60;
+    final longBreakSeconds = _settings.longBreakMinutes * 60;
+
+    final remainingSeconds = switch (phase) {
+      PomodoroPhase.work => workSeconds,
+      PomodoroPhase.shortBreak => shortBreakSeconds,
+      PomodoroPhase.longBreak => longBreakSeconds,
+    };
+
     engine = TimerEngine(
-      workSeconds: _settings.workMinutes * 60,
-      shortBreakSeconds: _settings.shortBreakMinutes * 60,
-      longBreakSeconds: _settings.longBreakMinutes * 60,
+      workSeconds: workSeconds,
+      shortBreakSeconds: shortBreakSeconds,
+      longBreakSeconds: longBreakSeconds,
       longBreakAfter: _settings.longBreakAfter,
       completedPomodoros: oldPomodoros,
       phase: phase,
+      remainingSeconds: remainingSeconds,
     );
   }
 
