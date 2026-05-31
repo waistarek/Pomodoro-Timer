@@ -47,6 +47,7 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
 
   bool running = false;
   bool _finishingPhase = false;
+  bool _hasPendingDurationSettings = false;
   int _activeSessionSyncs = 0;
 
   String? error;
@@ -194,18 +195,55 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
   void updateSettings(AppSettings settings) {
     final changed = _settings != settings;
 
+    if (!changed) {
+      return;
+    }
+
+    final durationSettingsChanged = _durationSettingsChanged(
+      _settings,
+      settings,
+    );
+
     _settings = settings;
 
-    final canRebuildForSettings = !running &&
-        !isPaused &&
-        !_finishingPhase &&
-        engine.phase == PomodoroPhase.work;
+    final canApplyImmediately = !running && !isPaused && !_finishingPhase;
 
-    if (changed && canRebuildForSettings) {
-      _rebuildEngine(keepPomodoros: true);
-      unawaited(_saveTimerState());
-      notifyListeners();
+    if (durationSettingsChanged) {
+      if (canApplyImmediately) {
+        _hasPendingDurationSettings = false;
+
+        _rebuildEngine(
+          keepPomodoros: true,
+          phase: engine.phase,
+        );
+      } else {
+        _hasPendingDurationSettings = true;
+      }
     }
+
+    unawaited(_saveTimerState());
+    notifyListeners();
+  }
+
+  bool _durationSettingsChanged(
+      AppSettings oldSettings, AppSettings newSettings) {
+    return oldSettings.workMinutes != newSettings.workMinutes ||
+        oldSettings.shortBreakMinutes != newSettings.shortBreakMinutes ||
+        oldSettings.longBreakMinutes != newSettings.longBreakMinutes ||
+        oldSettings.longBreakAfter != newSettings.longBreakAfter;
+  }
+
+  void _applyPendingDurationSettingsIfNeeded() {
+    if (!_hasPendingDurationSettings) {
+      return;
+    }
+
+    _hasPendingDurationSettings = false;
+
+    _rebuildEngine(
+      keepPomodoros: true,
+      phase: engine.phase,
+    );
   }
 
   void updateSelectedTask(TaskItem? task) {
@@ -286,7 +324,8 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
     _phaseTask = null;
     _phaseClientSessionId = null;
 
-    engine.reset();
+    _hasPendingDurationSettings = false;
+    _rebuildEngine(keepPomodoros: true);
 
     unawaited(_clearTimerState());
 
@@ -329,6 +368,7 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
     _phaseTask = null;
     _phaseClientSessionId = null;
 
+    _applyPendingDurationSettingsIfNeeded();
     engine.skipBreak();
 
     unawaited(_saveTimerState());
@@ -428,6 +468,7 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
       return;
     }
 
+    _applyPendingDurationSettingsIfNeeded();
     engine.switchToNextPhase();
 
     final nextPhase = engine.phase;
@@ -566,7 +607,10 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
     return first.localId == second.localId;
   }
 
-  void _rebuildEngine({bool keepPomodoros = false}) {
+  void _rebuildEngine({
+    bool keepPomodoros = false,
+    PomodoroPhase phase = PomodoroPhase.work,
+  }) {
     final oldPomodoros = keepPomodoros ? engine.completedPomodoros : 0;
 
     engine = TimerEngine(
@@ -575,6 +619,7 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
       longBreakSeconds: _settings.longBreakMinutes * 60,
       longBreakAfter: _settings.longBreakAfter,
       completedPomodoros: oldPomodoros,
+      phase: phase,
     );
   }
 

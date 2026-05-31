@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+
+
+
+
 class AppSettings {
   const AppSettings({
     this.workMinutes = 25,
@@ -47,6 +51,39 @@ class AppSettings {
     }
   }
 
+
+    @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+
+    return other is AppSettings &&
+        other.workMinutes == workMinutes &&
+        other.shortBreakMinutes == shortBreakMinutes &&
+        other.longBreakMinutes == longBreakMinutes &&
+        other.longBreakAfter == longBreakAfter &&
+        other.autoStart == autoStart &&
+        other.soundEnabled == soundEnabled &&
+        other.vibrationEnabled == vibrationEnabled &&
+        other.theme == theme &&
+        other.colorName == colorName;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(
+      workMinutes,
+      shortBreakMinutes,
+      longBreakMinutes,
+      longBreakAfter,
+      autoStart,
+      soundEnabled,
+      vibrationEnabled,
+      theme,
+      colorName,
+    );
+  }
   AppSettings copyWith({
     int? workMinutes,
     int? shortBreakMinutes,
