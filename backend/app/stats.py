@@ -140,6 +140,30 @@ def build_week_stats(
     )
 
 
+def _month_week_labels(start: date, end: date) -> list[date]:
+    labels = [start]
+
+    days_until_next_monday = (7 - start.weekday()) % 7
+    next_monday = start + timedelta(days=days_until_next_monday)
+
+    if next_monday == start:
+        next_monday += timedelta(days=7)
+
+    current = next_monday
+
+    while current <= end:
+        labels.append(current)
+        current += timedelta(days=7)
+
+    return labels
+
+
+def _iso_week_key(item_date: date) -> str:
+    iso = item_date.isocalendar()
+
+    return f"{iso.year}-W{iso.week:02d}"
+
+
 def build_month_stats(
     sessions: list[PomodoroSession],
     year: int | None = None,
@@ -156,13 +180,13 @@ def build_month_stats(
     start = date(selected_year, selected_month, 1)
     end = date(selected_year, selected_month, last_day)
 
-    labels = [start + timedelta(days=index) for index in range(last_day)]
+    labels = _month_week_labels(start, end)
 
     return _build_stats_response(
         sessions=sessions,
         labels=labels,
-        label_for_date=lambda item_date: item_date.isoformat(),
-        key_for_session=lambda session_date: session_date.isoformat(),
+        label_for_date=_iso_week_key,
+        key_for_session=_iso_week_key,
         period_start=start,
         period_end=end,
         period_label=f"{selected_month:02d}.{selected_year}",

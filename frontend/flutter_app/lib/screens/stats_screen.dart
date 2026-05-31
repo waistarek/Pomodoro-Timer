@@ -93,7 +93,7 @@ class _StatsScreenState extends State<StatsScreen> {
   String _chartTitle() {
     return switch (_mode) {
       _StatsMode.week => 'Fokuszeit pro Tag',
-      _StatsMode.month => 'Fokuszeit pro Tag',
+      _StatsMode.month => 'Fokuszeit pro KW',
       _StatsMode.year => 'Fokuszeit pro Monat',
       _StatsMode.tasks => 'Fokuszeit pro Aufgabe',
     };
@@ -102,7 +102,7 @@ class _StatsScreenState extends State<StatsScreen> {
   String _xAxisText() {
     return switch (_mode) {
       _StatsMode.week => 'X-Achse: Tage der Woche',
-      _StatsMode.month => 'X-Achse: Tage im Monat',
+      _StatsMode.month => 'X-Achse: Kalenderwochen im Monat',
       _StatsMode.year => 'X-Achse: Monate im Jahr',
       _StatsMode.tasks => 'X-Achse: Aufgaben',
     };
@@ -172,18 +172,17 @@ class _StatsScreenState extends State<StatsScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
                   if (_mode == _StatsMode.tasks)
                     _TaskStatsContent(provider: provider)
                   else
-                   _GeneralStatsContent(
-                    provider: provider,
-                    mode: _mode,
-                    chartTitle: _chartTitle(),
-                    xAxisText: _xAxisText(),
-                    onPreviousPeriod: () => _changePeriod(-1),
-                    onNextPeriod: () => _changePeriod(1),
-                  ),
+                    _GeneralStatsContent(
+                      provider: provider,
+                      mode: _mode,
+                      chartTitle: _chartTitle(),
+                      xAxisText: _xAxisText(),
+                      onPreviousPeriod: () => _changePeriod(-1),
+                      onNextPeriod: () => _changePeriod(1),
+                    ),
                 ],
               ),
             ),
@@ -616,7 +615,6 @@ String _formatIsoDate(String? value) {
 String _formatChartLabel(String label, _StatsMode mode) {
   switch (mode) {
     case _StatsMode.week:
-    case _StatsMode.month:
       final date = DateTime.tryParse(label);
 
       if (date == null) {
@@ -625,6 +623,9 @@ String _formatChartLabel(String label, _StatsMode mode) {
 
       return '${date.day.toString().padLeft(2, '0')}.'
           '${date.month.toString().padLeft(2, '0')}';
+
+    case _StatsMode.month:
+      return _formatIsoWeekLabel(label);
 
     case _StatsMode.year:
       final match = RegExp(r'^(\d{4})-(\d{2})$').firstMatch(label);
@@ -643,8 +644,10 @@ String _formatChartLabel(String label, _StatsMode mode) {
 String _formatBestLabel(String label, _StatsMode mode) {
   switch (mode) {
     case _StatsMode.week:
-    case _StatsMode.month:
       return _formatIsoDate(label);
+
+    case _StatsMode.month:
+      return _formatIsoWeekLabel(label, includeYear: true);
 
     case _StatsMode.year:
       final match = RegExp(r'^(\d{4})-(\d{2})$').firstMatch(label);
@@ -658,4 +661,21 @@ String _formatBestLabel(String label, _StatsMode mode) {
     case _StatsMode.tasks:
       return label;
   }
+}
+
+String _formatIsoWeekLabel(String label, {bool includeYear = false}) {
+  final match = RegExp(r'^(\d{4})-W(\d{2})$').firstMatch(label);
+
+  if (match == null) {
+    return label;
+  }
+
+  final year = match.group(1)!;
+  final week = match.group(2)!;
+
+  if (includeYear) {
+    return 'KW $week/$year';
+  }
+
+  return 'KW $week';
 }
