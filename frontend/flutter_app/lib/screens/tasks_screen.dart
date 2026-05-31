@@ -134,8 +134,8 @@ class _TasksScreenState extends State<TasksScreen> {
     filtered.sort((a, b) {
       return switch (_sort) {
         _TaskSort.newest => b.createdAt.compareTo(a.createdAt),
-        _TaskSort.priority => _priorityWeight(b.priority)
-            .compareTo(_priorityWeight(a.priority)),
+        _TaskSort.priority =>
+          _priorityWeight(b.priority).compareTo(_priorityWeight(a.priority)),
         _TaskSort.pomodoros =>
           b.completedPomodoros.compareTo(a.completedPomodoros),
       };
@@ -175,10 +175,10 @@ class _TasksScreenState extends State<TasksScreen> {
         label: const Text('Aufgabe'),
       ),
       body: Consumer2<TaskProvider, TimerProvider>(
-      builder: (context, provider, timerProvider, _) {
-      final visibleTasks = _visibleTasks(provider.tasks);
-      final activeTask =
-        timerProvider.taskForDisplay ?? provider.selectedTask;
+        builder: (context, provider, timerProvider, _) {
+          final visibleTasks = _visibleTasks(provider.tasks);
+          final activeTask =
+              timerProvider.taskForDisplay ?? provider.selectedTask;
 
           return Center(
             child: ConstrainedBox(
@@ -193,30 +193,30 @@ class _TasksScreenState extends State<TasksScreen> {
                     ),
                     const SizedBox(height: 12),
                   ],
-                 _TaskToolbar(
-                  searchController: _searchController,
-                  filter: _filter,
-                  sort: _sort,
-                  onFilterChanged: (value) {
-                    setState(() {
-                      _filter = value;
-                    });
-                  },
-                  onSortChanged: (value) {
-                    setState(() {
-                      _sort = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 12),
-                _ActiveTaskBanner(
-                  activeTask: activeTask,
-                  taskSelectionLocked: !timerProvider.canChangeTask,
-                  onClearSelection: timerProvider.canChangeTask
-                      ? () => provider.selectTask(null)
-                      : null,
-                ),
-                const SizedBox(height: 16),
+                  _TaskToolbar(
+                    searchController: _searchController,
+                    filter: _filter,
+                    sort: _sort,
+                    onFilterChanged: (value) {
+                      setState(() {
+                        _filter = value;
+                      });
+                    },
+                    onSortChanged: (value) {
+                      setState(() {
+                        _sort = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  _ActiveTaskBanner(
+                    activeTask: activeTask,
+                    taskSelectionLocked: !timerProvider.canChangeTask,
+                    onClearSelection: timerProvider.canChangeTask
+                        ? () => provider.selectTask(null)
+                        : null,
+                  ),
+                  const SizedBox(height: 16),
                   if (provider.loading && provider.tasks.isEmpty)
                     const _StatusCard(
                       icon: Icons.hourglass_empty,
@@ -243,10 +243,10 @@ class _TasksScreenState extends State<TasksScreen> {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 12),
                           child: _TaskCard(
-                          task: task,
-                          selected: selected,
-                          canSelectForTimer: timerProvider.canChangeTask,
-                          onCompletedChanged: (value) {
+                            task: task,
+                            selected: selected,
+                            canSelectForTimer: timerProvider.canChangeTask,
+                            onCompletedChanged: (value) {
                               provider.updateTask(
                                 task.copyWith(completed: value),
                               );
@@ -271,6 +271,7 @@ class _TasksScreenState extends State<TasksScreen> {
     );
   }
 }
+
 class _ActiveTaskBanner extends StatelessWidget {
   const _ActiveTaskBanner({
     required this.activeTask,
@@ -450,7 +451,6 @@ class _TaskCard extends StatelessWidget {
     required this.onDelete,
   });
 
-  
   final TaskItem task;
   final bool selected;
   final bool canSelectForTimer;
@@ -465,22 +465,22 @@ class _TaskCard extends StatelessWidget {
 
     final colorScheme = Theme.of(context).colorScheme;
 
-  return Card(
-    elevation: selected ? 3 : 0,
-    color: selected
-        ? colorScheme.primaryContainer.withValues(alpha: 0.45)
-        : null,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(16),
-      side: selected
-          ? BorderSide(
-              color: colorScheme.primary,
-              width: 1.4,
-            )
-          : BorderSide(
-              color: colorScheme.outlineVariant,
-            ),
-    ),
+    return Card(
+      elevation: selected ? 3 : 0,
+      color: selected
+          ? colorScheme.primaryContainer.withValues(alpha: 0.45)
+          : null,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: selected
+            ? BorderSide(
+                color: colorScheme.primary,
+                width: 1.4,
+              )
+            : BorderSide(
+                color: colorScheme.outlineVariant,
+              ),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(14),
         child: LayoutBuilder(
@@ -570,8 +570,7 @@ class _TaskContent extends StatelessWidget {
             Text(
               task.title,
               style: textTheme.titleMedium?.copyWith(
-                decoration:
-                    task.completed ? TextDecoration.lineThrough : null,
+                decoration: task.completed ? TextDecoration.lineThrough : null,
               ),
             ),
             if (selected)
@@ -645,24 +644,24 @@ class _TaskActions extends StatelessWidget {
       runSpacing: 8,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-      if (selected)
-        FilledButton.tonalIcon(
-          onPressed: null,
-          icon: const Icon(Icons.check_circle),
-          label: const Text('Aktiv'),
-        )
-      else if (!canSelectForTimer)
-        OutlinedButton.icon(
-          onPressed: null,
-          icon: const Icon(Icons.lock_outline),
-          label: const Text('Gesperrt'),
-        )
-      else
-        OutlinedButton.icon(
-          onPressed: onSelectForTimer,
-          icon: const Icon(Icons.play_arrow),
-          label: const Text('Für Timer'),
-        ),
+        if (selected)
+          FilledButton.tonalIcon(
+            onPressed: null,
+            icon: const Icon(Icons.check_circle),
+            label: const Text('Aktiv'),
+          )
+        else if (!canSelectForTimer)
+          OutlinedButton.icon(
+            onPressed: null,
+            icon: const Icon(Icons.lock_outline),
+            label: const Text('Gesperrt'),
+          )
+        else
+          OutlinedButton.icon(
+            onPressed: onSelectForTimer,
+            icon: const Icon(Icons.play_arrow),
+            label: const Text('Für Timer'),
+          ),
         IconButton.outlined(
           tooltip: 'Bearbeiten',
           onPressed: onEdit,
@@ -744,6 +743,7 @@ class _StatusCard extends StatelessWidget {
     );
   }
 }
+
 bool _sameTaskIdentity(TaskItem? first, TaskItem second) {
   if (first == null) {
     return false;

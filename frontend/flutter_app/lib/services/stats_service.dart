@@ -45,6 +45,61 @@ class StatsService {
     return year(DateTime.now().year);
   }
 
+  Future<int> todayPomodoros({DateTime? now}) async {
+    final currentDate = now ?? DateTime.now();
+    final todayKey = _formatDate(currentDate);
+    final localPendingPomodoros = _todayPomodorosFromLocalSessions(todayKey);
+
+    if (localStorage.token == null) {
+      return localPendingPomodoros;
+    }
+
+    try {
+      final response = await week(currentDate);
+      final backendPomodoros = response.items
+          .where((item) => item.label == todayKey)
+          .fold<int>(0, (sum, item) => sum + item.pomodoros);
+
+      return backendPomodoros + localPendingPomodoros;
+    } catch (_) {
+      return localPendingPomodoros;
+    }
+  }
+
+  int _todayPomodorosFromLocalSessions(String todayKey) {
+    final localSessions = [
+      ...localStorage.getJsonList('guest_sessions'),
+      ...localStorage.getJsonList('pending_sessions'),
+    ];
+
+    final seenClientSessionIds = <String>{};
+    var count = 0;
+
+    for (final session in localSessions) {
+      final clientSessionId = session['client_session_id']?.toString();
+
+      if (clientSessionId != null &&
+          !seenClientSessionIds.add(clientSessionId)) {
+        continue;
+      }
+
+      final completed = session['completed'] == true;
+      final phaseType = session['phase_type']?.toString();
+      final endedAtRaw = session['ended_at']?.toString();
+      final endedAt = endedAtRaw == null ? null : DateTime.tryParse(endedAtRaw);
+
+      if (!completed || phaseType != 'work' || endedAt == null) {
+        continue;
+      }
+
+      if (_formatDate(endedAt.toLocal()) == todayKey) {
+        count++;
+      }
+    }
+
+    return count;
+  }
+
   Future<TaskStatsResponse> taskStats() async {
     if (localStorage.token != null) {
       return TaskStatsResponse.fromJson(await apiClient.get('/stats/tasks'));

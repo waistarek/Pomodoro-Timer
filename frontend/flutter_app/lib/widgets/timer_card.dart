@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
+import '../providers/stats_provider.dart';
 import '../models/task_item.dart';
 import '../providers/task_provider.dart';
 import '../providers/timer_provider.dart';
@@ -15,14 +15,16 @@ class TimerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<TimerProvider, TaskProvider>(
-      builder: (context, timer, taskProvider, _) {
+    return Consumer3<TimerProvider, TaskProvider, StatsProvider>(
+      builder: (context, timer, taskProvider, statsProvider, _) {
         final phaseColor = _phaseColor(context, timer.phase);
 
-        timer.setWorkPhaseCompletedCallback(
-          taskProvider.refreshTaskPomodoroCounts,
-        );
-
+        timer.setWorkPhaseCompletedCallback(() async {
+          await Future.wait([
+            taskProvider.refreshTaskPomodoroCounts(),
+            statsProvider.loadTodayPomodoros(),
+          ]);
+        });
         return _TimerKeyboardShortcuts(
           timer: timer,
           child: Card(
@@ -69,7 +71,9 @@ class TimerCard extends StatelessWidget {
                         progress: timer.progress,
                         formattedTime: timer.formattedTime,
                         progressLabel: timer.phaseProgressLabel,
-                        completedPomodoros: timer.completedPomodoros,
+                        todayPomodoros: statsProvider.todayPomodoros,
+                        todayPomodorosLoading:
+                            statsProvider.todayPomodorosLoading,
                         color: phaseColor,
                         diameter: timerDiameter,
                       ),
@@ -386,7 +390,8 @@ class _ProgressTimer extends StatelessWidget {
     required this.progress,
     required this.formattedTime,
     required this.progressLabel,
-    required this.completedPomodoros,
+    required this.todayPomodoros,
+    required this.todayPomodorosLoading,
     required this.color,
     required this.diameter,
   });
@@ -394,7 +399,8 @@ class _ProgressTimer extends StatelessWidget {
   final double progress;
   final String formattedTime;
   final String progressLabel;
-  final int completedPomodoros;
+  final int todayPomodoros;
+  final bool todayPomodorosLoading;
   final Color color;
   final double diameter;
 
@@ -449,7 +455,9 @@ class _ProgressTimer extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Diese Sitzung: $completedPomodoros Pomodoros',
+                  todayPomodorosLoading
+                      ? 'Heute: wird geladen ...'
+                      : 'Heute: ${_formatPomodoroCount(todayPomodoros)}',
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -460,6 +468,10 @@ class _ProgressTimer extends StatelessWidget {
       ),
     );
   }
+}
+
+String _formatPomodoroCount(int count) {
+  return count == 1 ? '1 Pomodoro' : '$count Pomodoros';
 }
 
 class _TimerActions extends StatelessWidget {

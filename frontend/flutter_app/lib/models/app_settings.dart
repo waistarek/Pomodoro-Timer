@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 
-
-
-
-
 class AppSettings {
   const AppSettings({
     this.workMinutes = 25,
@@ -51,8 +47,7 @@ class AppSettings {
     }
   }
 
-
-    @override
+  @override
   bool operator ==(Object other) {
     if (identical(this, other)) {
       return true;
@@ -84,6 +79,7 @@ class AppSettings {
       colorName,
     );
   }
+
   AppSettings copyWith({
     int? workMinutes,
     int? shortBreakMinutes,

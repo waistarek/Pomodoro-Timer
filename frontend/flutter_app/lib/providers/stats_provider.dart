@@ -13,19 +13,28 @@ class StatsProvider extends ChangeNotifier {
 
   bool loading = false;
   bool taskStatsLoading = false;
+  bool todayPomodorosLoading = false;
+
+  int todayPomodoros = 0;
 
   String? error;
   String? taskStatsError;
+  String? todayPomodorosError;
+
   Future<StatsResponse> Function()? _lastStatsLoader;
   bool _taskStatsLoadedOnce = false;
 
   void clear() {
     stats = StatsResponse.empty();
     taskStats = TaskStatsResponse.empty();
+
     loading = false;
     taskStatsLoading = false;
+    todayPomodorosLoading = false;
+    todayPomodoros = 0;
     error = null;
     taskStatsError = null;
+    todayPomodorosError = null;
     _lastStatsLoader = null;
     _taskStatsLoadedOnce = false;
     notifyListeners();
@@ -60,6 +69,26 @@ class StatsProvider extends ChangeNotifier {
     await loadYear(DateTime.now().year);
   }
 
+  Future<void> loadTodayPomodoros() async {
+    if (todayPomodorosLoading) {
+      return;
+    }
+
+    todayPomodorosLoading = true;
+    todayPomodorosError = null;
+    notifyListeners();
+
+    try {
+      todayPomodoros = await _statsService.todayPomodoros();
+    } catch (_) {
+      todayPomodorosError =
+          'Die heutige Pomodoro-Anzahl konnte nicht geladen werden.';
+    } finally {
+      todayPomodorosLoading = false;
+      notifyListeners();
+    }
+  }
+
   Future<void> loadTaskStats() async {
     _taskStatsLoadedOnce = true;
     taskStatsLoading = true;
@@ -77,7 +106,7 @@ class StatsProvider extends ChangeNotifier {
   }
 
   Future<void> refreshCurrent() async {
-    final loaders = <Future<void> Function()>[];
+    final loaders = <Future<void> Function()>[loadTodayPomodoros];
 
     final statsLoader = _lastStatsLoader;
 
