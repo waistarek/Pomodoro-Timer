@@ -27,7 +27,7 @@ class _AppShellState extends State<AppShell> {
     'tasks',
     'stats',
     'settings',
-    'login',
+    'account',
   ];
 
   int _indexFromUri() {
@@ -45,7 +45,7 @@ class _AppShellState extends State<AppShell> {
       'tasks' => 1,
       'stats' => 2,
       'settings' => 3,
-      'login' => 4,
+      'account' => 4,
       _ => widget.initialIndex.clamp(0, 4).toInt(),
     };
   }

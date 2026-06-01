@@ -6,7 +6,7 @@ const List<String> _screenKeys = [
   'tasks',
   'stats',
   'settings',
-  'login',
+  'account',
 ];
 
 void setAppScreenInUrl(String screen) {
@@ -29,7 +29,7 @@ void setAppScreenInUrl(String screen) {
 void clearLoginActionQueryParameters() {
   final query = Map<String, String>.from(Uri.base.queryParameters);
 
-  query['screen'] = 'login';
+  query['screen'] = 'account';
   query.remove('reset_token');
   query.remove('set_token');
   query.remove('email_verified');
