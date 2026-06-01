@@ -141,6 +141,37 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> loginWithGoogleIdToken(
+    String idToken, {
+    bool rememberSession = true,
+  }) async {
+    loading = true;
+    error = null;
+    notifyListeners();
+
+    try {
+      await _authService.loginWithGoogleIdToken(
+        idToken,
+        rememberSession: rememberSession,
+      );
+
+      user = await _authService.me();
+      return true;
+    } catch (e) {
+      error = e.toString();
+      return false;
+    } finally {
+      loading = false;
+      notifyListeners();
+    }
+  }
+
+  void setError(String message) {
+    error = message;
+    loading = false;
+    notifyListeners();
+  }
+
   void clearError() {
     error = null;
     notifyListeners();

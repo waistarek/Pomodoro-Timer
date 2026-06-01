@@ -1,7 +1,12 @@
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from typing import Literal
 
 
+class OAuthLogin(BaseModel):
+    provider: Literal["google"] = "google"
+    id_token: str = Field(min_length=20)
+    
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"

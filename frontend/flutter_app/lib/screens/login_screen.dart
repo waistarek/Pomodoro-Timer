@@ -6,11 +6,14 @@ import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../providers/session_sync_provider.dart';
 import '../providers/settings_provider.dart';
-import '../providers/stats_provider.dart';
+
 import '../providers/task_provider.dart';
 
 import '../services/browser_url_service.dart';
-import '../providers/timer_provider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+import '../config/app_config.dart';
+import '../widgets/google_sign_in_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -25,6 +28,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  StreamSubscription<GoogleSignInAuthenticationEvent>?
+      _googleSignInSubscription;
 
   bool _registerMode = false;
   bool _forgotPasswordMode = false;
@@ -32,6 +37,112 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _resetToken;
 
   bool get _resetPasswordMode => _resetToken != null;
+
+  Future<void> _initializeGoogleSignIn() async {
+    if (AppConfig.googleClientId.isEmpty) {
+      return;
+    }
+
+    try {
+      final googleSignIn = GoogleSignIn.instance;
+
+      await googleSignIn.initialize(
+        clientId: AppConfig.googleClientId,
+        serverClientId: AppConfig.googleClientId,
+      );
+
+      _googleSignInSubscription = googleSignIn.authenticationEvents.listen(
+        _handleGoogleAuthenticationEvent,
+        onError: _handleGoogleAuthenticationError,
+      );
+    } catch (e) {
+      if (!mounted) {
+        return;
+      }
+
+      context.read<AuthProvider>().setError(
+            'Google Login konnte nicht vorbereitet werden: $e',
+          );
+    }
+  }
+
+  Future<void> _handleGoogleAuthenticationEvent(
+    GoogleSignInAuthenticationEvent event,
+  ) async {
+    final GoogleSignInAccount? account = switch (event) {
+      GoogleSignInAuthenticationEventSignIn() => event.user,
+      GoogleSignInAuthenticationEventSignOut() => null,
+    };
+
+    if (account == null) {
+      return;
+    }
+
+    final idToken = account.authentication.idToken;
+
+    if (idToken == null || idToken.isEmpty) {
+      if (!mounted) {
+        return;
+      }
+
+      context.read<AuthProvider>().setError(
+            'Google hat keinen gültigen ID-Token zurückgegeben.',
+          );
+      return;
+    }
+
+    final authProvider = context.read<AuthProvider>();
+
+    final ok = await authProvider.loginWithGoogleIdToken(
+      idToken,
+      rememberSession: _rememberSession,
+    );
+
+    if (!mounted) {
+      return;
+    }
+
+    if (ok) {
+      await _loadDataAfterSuccessfulLogin(
+        'Erfolgreich mit Google angemeldet.',
+      );
+    }
+  }
+
+  void _handleGoogleAuthenticationError(Object error) {
+    if (!mounted) {
+      return;
+    }
+
+    context.read<AuthProvider>().setError(
+          'Google Login fehlgeschlagen: $error',
+        );
+  }
+
+  Future<void> _loadDataAfterSuccessfulLogin(String message) async {
+    final taskProvider = context.read<TaskProvider>();
+    final settingsProvider = context.read<SettingsProvider>();
+    final sessionSyncProvider = context.read<SessionSyncProvider>();
+    final messenger = ScaffoldMessenger.of(context);
+
+    await settingsProvider.loadRemoteSettings();
+    await taskProvider.loadRemoteTasks();
+
+    unawaited(
+      _syncStoredSessionsAfterLogin(
+        sessionSyncProvider,
+        taskProvider,
+      ),
+    );
+
+    if (!mounted) {
+      return;
+    }
+
+    messenger.showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
 
   @override
   void initState() {
@@ -45,10 +156,12 @@ class _LoginScreenState extends State<LoginScreen> {
     if (email != null && email.isNotEmpty) {
       _emailController.text = email;
     }
+    unawaited(_initializeGoogleSignIn());
   }
 
   @override
   void dispose() {
+    _googleSignInSubscription?.cancel();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -143,6 +256,23 @@ class _LoginScreenState extends State<LoginScreen> {
             contentPadding: EdgeInsets.zero,
           ),
         const SizedBox(height: 16),
+        if (!_registerMode) ...[
+          const SizedBox(height: 12),
+          const Row(
+            children: [
+              Expanded(child: Divider()),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                child: Text('oder'),
+              ),
+              Expanded(child: Divider()),
+            ],
+          ),
+          const SizedBox(height: 12),
+          GoogleWebSignInButton(
+            enabled: !provider.loading && AppConfig.googleClientId.isNotEmpty,
+          ),
+        ],
         _AuthErrorText(error: provider.error),
         const SizedBox(height: 16),
         SizedBox(
@@ -338,10 +468,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     final authProvider = context.read<AuthProvider>();
-    final taskProvider = context.read<TaskProvider>();
-    final settingsProvider = context.read<SettingsProvider>();
-    final sessionSyncProvider = context.read<SessionSyncProvider>();
-    final messenger = ScaffoldMessenger.of(context);
 
     final email = _emailController.text.trim();
     final password = _passwordController.text;
@@ -374,23 +500,7 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
-      await settingsProvider.loadRemoteSettings();
-      await taskProvider.loadRemoteTasks();
-
-      unawaited(
-        _syncStoredSessionsAfterLogin(
-          sessionSyncProvider,
-          taskProvider,
-        ),
-      );
-
-      if (!mounted) {
-        return;
-      }
-
-      messenger.showSnackBar(
-        const SnackBar(content: Text('Erfolgreich angemeldet.')),
-      );
+      await _loadDataAfterSuccessfulLogin('Erfolgreich angemeldet.');
     }
   }
 

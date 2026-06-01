@@ -9,7 +9,7 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
-    password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+    password_hash: Mapped[str | None] = mapped_column(String(255), nullable=True)
     auth_version: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
@@ -21,7 +21,29 @@ class User(Base):
     tasks: Mapped[list["Task"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     sessions: Mapped[list["PomodoroSession"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     settings: Mapped["Setting"] = relationship(back_populates="user", cascade="all, delete-orphan", uselist=False)
+    auth_identities: Mapped[list["AuthIdentity"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    
+class AuthIdentity(Base):
+    __tablename__ = "auth_identities"
+    __table_args__ = (
+        UniqueConstraint(
+            "provider",
+            "provider_subject",
+            name="uq_auth_identity_provider_subject",
+        ),
+    )
 
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    provider: Mapped[str] = mapped_column(String(50), nullable=False)
+    provider_subject: Mapped[str] = mapped_column(String(255), nullable=False)
+    email: Mapped[str] = mapped_column(String(255), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    user: Mapped[User] = relationship(back_populates="auth_identities")
 
 class Task(Base):
     __tablename__ = "tasks"
@@ -37,6 +59,7 @@ class Task(Base):
 
     user: Mapped[User] = relationship(back_populates="tasks")
     sessions: Mapped[list["PomodoroSession"]] = relationship(back_populates="task")
+
 
 
 class PomodoroSession(Base):

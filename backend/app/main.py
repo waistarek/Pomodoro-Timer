@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from .deps import get_current_user
 from sqlalchemy import func
-from .models import PomodoroSession, Setting, Task, User
+from .models import PomodoroSession, Setting, Task, User, AuthIdentity
 from sqlalchemy.exc import IntegrityError
 from datetime import date, datetime, timedelta
 from fastapi import BackgroundTasks
@@ -26,6 +26,7 @@ from .schemas import (
     UserLogin,
     UserRead,
     TaskStatsResponse,
+    OAuthLogin,
 )
 from .security import (
     create_access_token,
@@ -40,11 +41,114 @@ from .stats import build_month_stats, build_task_stats, build_week_stats, build_
 
 from .database import get_db
 
+from google.auth.transport import requests as google_requests
+from google.oauth2 import id_token as google_id_token
+
+
 app = FastAPI(title="Pomodoro API", version="1.0.0")
 
 origins_raw = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:8080,http://127.0.0.1:8080")
 origins = [origin.strip() for origin in origins_raw.split(",") if origin.strip()]
 
+def _verify_google_login_token(id_token: str) -> dict:
+    google_client_id = os.getenv("GOOGLE_CLIENT_ID")
+
+    if not google_client_id:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Google Login ist serverseitig nicht konfiguriert.",
+        )
+
+    try:
+        claims = google_id_token.verify_oauth2_token(
+            id_token,
+            google_requests.Request(),
+            google_client_id,
+        )
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Ungültiger Google-Token.",
+        )
+
+    email = claims.get("email")
+    subject = claims.get("sub")
+    email_verified = claims.get("email_verified")
+
+    if not email or not subject:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Google-Token enthält keine gültigen Benutzerdaten.",
+        )
+
+    if not email_verified:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Die Google-E-Mail-Adresse ist nicht verifiziert.",
+        )
+
+    return claims
+
+
+@app.post("/auth/oauth-login", response_model=Token)
+def oauth_login(data: OAuthLogin, db: Session = Depends(get_db)) -> Token:
+    if data.provider != "google":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Dieser Login-Anbieter wird noch nicht unterstützt.",
+        )
+
+    claims = _verify_google_login_token(data.id_token)
+
+    provider = "google"
+    provider_subject = claims["sub"]
+    email = claims["email"].lower()
+
+    identity = (
+        db.query(AuthIdentity)
+        .filter(
+            AuthIdentity.provider == provider,
+            AuthIdentity.provider_subject == provider_subject,
+        )
+        .first()
+    )
+
+    if identity is not None:
+        user = identity.user
+    else:
+        user = db.query(User).filter(User.email == email).first()
+
+        if user is None:
+            user = User(
+                email=email,
+                password_hash=None,
+                is_email_verified=True,
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+
+            _get_or_create_settings(db, user.id)
+        else:
+            user.is_email_verified = True
+
+        identity = AuthIdentity(
+            user_id=user.id,
+            provider=provider,
+            provider_subject=provider_subject,
+            email=email,
+        )
+
+        db.add(identity)
+        db.commit()
+        db.refresh(user)
+
+    return Token(
+        access_token=create_access_token(
+            str(user.id),
+            user.auth_version,
+        )
+    )
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -104,8 +208,15 @@ def register(
 @app.post("/auth/login", response_model=Token)
 def login(data: UserLogin, db: Session = Depends(get_db)) -> Token:
     user = db.query(User).filter(User.email == data.email.lower()).first()
-    if user is None or not verify_password(data.password, user.password_hash):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Falsche E-Mail oder falsches Passwort")
+    if (
+        user is None
+        or user.password_hash is None
+        or not verify_password(data.password, user.password_hash)
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Falsche E-Mail oder falsches Passwort",
+        )
 
     if not user.is_email_verified:
         raise HTTPException(
@@ -428,13 +539,14 @@ def stats_tasks(
 # Alte Endpunkte bleiben für Tests und alte Frontend-Versionen kompatibel.
 @app.get("/stats/daily", response_model=StatsResponse)
 def stats_daily(
+    reference_date: date | None = Query(default=None, alias="date"),
     tz: str = "Europe/Berlin",
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> StatsResponse:
     return build_week_stats(
         _user_sessions(db, current_user.id),
-        None,
+        reference_date,
         tz,
     )
 

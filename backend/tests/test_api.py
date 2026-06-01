@@ -234,7 +234,7 @@ def test_daily_stats_uses_berlin_timezone():
     )
     assert response.status_code == 201
 
-    response = client.get("/stats/daily", headers=headers)
+    response = client.get("/stats/daily?date=2026-05-25", headers=headers) 
     assert response.status_code == 200
 
     data = response.json()
@@ -306,6 +306,7 @@ def test_settings_persist_color_name():
     assert response.json()["color_name"] == "blue"
 
 
+
 def test_login_requires_verified_email():
     response = client.post(
         "/auth/register",
@@ -319,3 +320,71 @@ def test_login_requires_verified_email():
         json={"email": "verify@example.com", "password": "12345678"},
     )
     assert login.status_code == 403
+
+
+def test_google_oauth_login_creates_user(monkeypatch):
+    def fake_verify_google_login_token(id_token: str) -> dict:
+        return {
+            "sub": "google-user-123",
+            "email": "googleuser@example.com",
+            "email_verified": True,
+        }
+
+    monkeypatch.setattr(
+        "app.main._verify_google_login_token",
+        fake_verify_google_login_token,
+    )
+
+    response = client.post(
+        "/auth/oauth-login",
+        json={
+            "provider": "google",
+            "id_token": "x" * 30,
+        },
+    )
+
+    assert response.status_code == 200
+    token = response.json()["access_token"]
+
+    me_response = client.get(
+        "/users/me",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert me_response.status_code == 200
+    assert me_response.json()["email"] == "googleuser@example.com"
+    assert me_response.json()["is_email_verified"] is True
+
+
+def test_google_only_user_cannot_login_with_password(monkeypatch):
+    def fake_verify_google_login_token(id_token: str) -> dict:
+        return {
+            "sub": "google-user-456",
+            "email": "nopassword@example.com",
+            "email_verified": True,
+        }
+
+    monkeypatch.setattr(
+        "app.main._verify_google_login_token",
+        fake_verify_google_login_token,
+    )
+
+    oauth_response = client.post(
+        "/auth/oauth-login",
+        json={
+            "provider": "google",
+            "id_token": "x" * 30,
+        },
+    )
+
+    assert oauth_response.status_code == 200
+
+    password_response = client.post(
+        "/auth/login",
+        json={
+            "email": "nopassword@example.com",
+            "password": "12345678",
+        },
+    )
+
+    assert password_response.status_code == 401

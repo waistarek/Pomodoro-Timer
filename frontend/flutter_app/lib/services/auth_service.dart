@@ -2,6 +2,8 @@ import '../models/user_profile.dart';
 import 'api_client.dart';
 import 'local_storage_service.dart';
 
+import '../config/app_config.dart';
+
 class AuthService {
   AuthService({required this.apiClient, required this.localStorage});
 
@@ -70,5 +72,30 @@ class AuthService {
   Future<void> logout() async {
     await localStorage.clearToken();
     await localStorage.clearUserData();
+  }
+
+  Future<void> loginWithGoogleIdToken(
+    String idToken, {
+    bool rememberSession = true,
+  }) async {
+    final trimmedToken = idToken.trim();
+
+    if (trimmedToken.isEmpty) {
+      throw Exception('Google hat keinen gültigen ID-Token zurückgegeben.');
+    }
+
+    final data = await apiClient.post(
+      '/auth/oauth-login',
+      {
+        'provider': 'google',
+        'id_token': trimmedToken,
+      },
+      auth: false,
+    );
+
+    await localStorage.setToken(
+      data['access_token'],
+      persist: rememberSession,
+    );
   }
 }
