@@ -8,11 +8,25 @@ class LocalStorageService {
     _prefs = await SharedPreferences.getInstance();
   }
 
-  String? get token => _prefs.getString('auth_token');
+  String? _memoryToken;
 
-  Future<void> setToken(String token) => _prefs.setString('auth_token', token);
+  String? get token => _memoryToken ?? _prefs.getString('auth_token');
 
-  Future<void> clearToken() => _prefs.remove('auth_token');
+  Future<void> setToken(String token, {bool persist = true}) async {
+    if (persist) {
+      _memoryToken = null;
+      await _prefs.setString('auth_token', token);
+      return;
+    }
+
+    _memoryToken = token;
+    await _prefs.remove('auth_token');
+  }
+
+  Future<void> clearToken() async {
+    _memoryToken = null;
+    await _prefs.remove('auth_token');
+  }
 
   Map<String, dynamic>? getJsonObject(String key) {
     final raw = _prefs.getString(key);

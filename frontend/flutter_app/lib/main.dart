@@ -25,6 +25,9 @@ Future<void> main() async {
   final apiClient = ApiClient(localStorage: localStorage);
   final authService =
       AuthService(apiClient: apiClient, localStorage: localStorage);
+  final authProvider = AuthProvider(authService);
+
+  apiClient.onUnauthorized = authProvider.handleUnauthorizedSession;
   final taskService = TaskService(apiClient: apiClient);
   final sessionService = SessionService(
     apiClient: apiClient,
@@ -46,8 +49,9 @@ Future<void> main() async {
         ChangeNotifierProvider(
           create: (_) => SessionSyncProvider(sessionService)..init(),
         ),
-        ChangeNotifierProvider(
-            create: (_) => AuthProvider(authService)..loadLocalSession()),
+        ChangeNotifierProvider.value(
+          value: authProvider..loadLocalSession(),
+        ),
         ChangeNotifierProvider(
             create: (_) =>
                 SettingsProvider(localStorage, settingsService)..load()),

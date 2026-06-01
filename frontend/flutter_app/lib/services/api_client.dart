@@ -1,10 +1,13 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
+
 import '../config/app_config.dart';
 import 'local_storage_service.dart';
 
 class ApiException implements Exception {
   ApiException(this.message, {this.statusCode});
+
   final String message;
   final int? statusCode;
 
@@ -19,53 +22,111 @@ class ApiClient {
   final LocalStorageService localStorage;
   final http.Client _client;
 
+  Future<void> Function()? onUnauthorized;
+
+  bool _handlingUnauthorized = false;
+
   Uri _uri(String path) => Uri.parse('${AppConfig.apiBaseUrl}$path');
 
   Map<String, String> _headers({bool auth = true}) {
     final headers = {'Content-Type': 'application/json'};
     final token = localStorage.token;
+
     if (auth && token != null) {
       headers['Authorization'] = 'Bearer $token';
     }
+
     return headers;
   }
 
   Future<dynamic> get(String path, {bool auth = true}) async {
-    final response =
-        await _client.get(_uri(path), headers: _headers(auth: auth));
-    return _handle(response);
+    final response = await _client.get(
+      _uri(path),
+      headers: _headers(auth: auth),
+    );
+
+    return _handle(response, auth: auth);
   }
 
-  Future<dynamic> post(String path, Map<String, dynamic> body,
-      {bool auth = true}) async {
-    final response = await _client.post(_uri(path),
-        headers: _headers(auth: auth), body: jsonEncode(body));
-    return _handle(response);
+  Future<dynamic> post(
+    String path,
+    Map<String, dynamic> body, {
+    bool auth = true,
+  }) async {
+    final response = await _client.post(
+      _uri(path),
+      headers: _headers(auth: auth),
+      body: jsonEncode(body),
+    );
+
+    return _handle(response, auth: auth);
   }
 
-  Future<dynamic> put(String path, Map<String, dynamic> body,
-      {bool auth = true}) async {
-    final response = await _client.put(_uri(path),
-        headers: _headers(auth: auth), body: jsonEncode(body));
-    return _handle(response);
+  Future<dynamic> put(
+    String path,
+    Map<String, dynamic> body, {
+    bool auth = true,
+  }) async {
+    final response = await _client.put(
+      _uri(path),
+      headers: _headers(auth: auth),
+      body: jsonEncode(body),
+    );
+
+    return _handle(response, auth: auth);
   }
 
   Future<void> delete(String path, {bool auth = true}) async {
-    final response =
-        await _client.delete(_uri(path), headers: _headers(auth: auth));
-    if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw ApiException(_extractMessage(response),
-          statusCode: response.statusCode);
-    }
+    final response = await _client.delete(
+      _uri(path),
+      headers: _headers(auth: auth),
+    );
+
+    await _handle(response, auth: auth);
   }
 
-  dynamic _handle(http.Response response) {
+  Future<dynamic> _handle(
+    http.Response response, {
+    required bool auth,
+  }) async {
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      if (response.body.isEmpty) return null;
+      if (response.body.isEmpty) {
+        return null;
+      }
+
       return jsonDecode(response.body);
     }
-    throw ApiException(_extractMessage(response),
-        statusCode: response.statusCode);
+
+    if (auth && _isAuthError(response.statusCode)) {
+      await _handleUnauthorized();
+    }
+
+    throw ApiException(
+      _extractMessage(response),
+      statusCode: response.statusCode,
+    );
+  }
+
+  bool _isAuthError(int statusCode) {
+    return statusCode == 401 || statusCode == 403;
+  }
+
+  Future<void> _handleUnauthorized() async {
+    await localStorage.clearToken();
+
+    final callback = onUnauthorized;
+
+    if (callback == null || _handlingUnauthorized) {
+      return;
+    }
+
+    _handlingUnauthorized = true;
+
+    try {
+      await callback();
+    } finally {
+      _handlingUnauthorized = false;
+    }
   }
 
   String _extractMessage(http.Response response) {

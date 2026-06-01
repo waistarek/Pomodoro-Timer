@@ -28,6 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _registerMode = false;
   bool _forgotPasswordMode = false;
+  bool _rememberSession = true;
   String? _resetToken;
 
   bool get _resetPasswordMode => _resetToken != null;
@@ -124,6 +125,24 @@ class _LoginScreenState extends State<LoginScreen> {
           obscureText: true,
           validator: _validatePassword,
         ),
+        if (!_registerMode)
+          CheckboxListTile(
+            value: _rememberSession,
+            onChanged: provider.loading
+                ? null
+                : (value) {
+                    setState(() {
+                      _rememberSession = value ?? true;
+                    });
+                  },
+            title: const Text('Auf diesem Gerät angemeldet bleiben'),
+            subtitle: const Text(
+              'Wenn deaktiviert, bleibt die Anmeldung nur für die aktuelle App-Sitzung aktiv.',
+            ),
+            controlAffinity: ListTileControlAffinity.leading,
+            contentPadding: EdgeInsets.zero,
+          ),
+        const SizedBox(height: 16),
         const SizedBox(height: 16),
         _AuthErrorText(error: provider.error),
         const SizedBox(height: 16),
@@ -331,7 +350,11 @@ class _LoginScreenState extends State<LoginScreen> {
     final wasRegisterMode = _registerMode;
     final ok = _registerMode
         ? await authProvider.register(email, password)
-        : await authProvider.login(email, password);
+        : await authProvider.login(
+            email,
+            password,
+            rememberSession: _rememberSession,
+          );
 
     if (!mounted) {
       return;
@@ -484,6 +507,9 @@ class _LoggedInCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = provider.user!;
+    final sessionSyncProvider = context.watch<SessionSyncProvider>();
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -493,36 +519,234 @@ class _LoggedInCard extends StatelessWidget {
             const Icon(Icons.verified_user, size: 64),
             const SizedBox(height: 16),
             Text(
-              'Angemeldet als',
-              style: Theme.of(context).textTheme.titleMedium,
+              'Benutzerkonto',
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
-            Text(provider.user!.email),
+            const SizedBox(height: 8),
+            Text(
+              'Du bist aktuell angemeldet.',
+              style: Theme.of(context).textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 24),
-            FilledButton.icon(
-              onPressed: () async {
-                final authProvider = context.read<AuthProvider>();
-                final taskProvider = context.read<TaskProvider>();
-                final settingsProvider = context.read<SettingsProvider>();
-                final statsProvider = context.read<StatsProvider>();
-                final sessionSyncProvider = context.read<SessionSyncProvider>();
-                final timerProvider = context.read<TimerProvider>();
-
-                await timerProvider.clearForLogout();
-                await authProvider.logout();
-
-                taskProvider.clear();
-                await settingsProvider.resetLocal();
-                statsProvider.clear();
-                sessionSyncProvider.clear();
-              },
-              icon: const Icon(Icons.logout),
-              label: const Text('Ausloggen'),
+            _AccountInfoRow(
+              icon: Icons.email_outlined,
+              label: 'E-Mail-Adresse',
+              value: _maskEmail(user.email),
+              tooltip: user.email,
+            ),
+            const SizedBox(height: 12),
+            _AccountInfoRow(
+              icon: user.isEmailVerified
+                  ? Icons.mark_email_read_outlined
+                  : Icons.mark_email_unread_outlined,
+              label: 'E-Mail-Status',
+              value:
+                  user.isEmailVerified ? 'Bestätigt' : 'Noch nicht bestätigt',
+            ),
+            const SizedBox(height: 12),
+            _AccountInfoRow(
+              icon: Icons.calendar_today_outlined,
+              label: 'Konto erstellt',
+              value: _formatAccountDate(user.createdAt),
+            ),
+            const SizedBox(height: 12),
+            _AccountInfoRow(
+              icon: Icons.sync_outlined,
+              label: 'Synchronisierung',
+              value: _syncStatusText(sessionSyncProvider),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(Icons.info_outline, size: 20),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Die App kann deine Sitzung automatisch wiederherstellen, '
+                      'wenn ein gültiger Anmeldetoken lokal gespeichert ist. '
+                      'Auf fremden Geräten solltest du dich immer ausloggen.',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            _AuthErrorText(error: provider.error),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: provider.loading
+                    ? null
+                    : () => _sendPasswordResetMail(
+                          context,
+                          provider,
+                          user.email,
+                        ),
+                icon: const Icon(Icons.lock_reset),
+                label: const Text('Passwort ändern'),
+              ),
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: () => _logout(context),
+                icon: const Icon(Icons.logout),
+                label: const Text('Ausloggen'),
+              ),
             ),
           ],
         ),
       ),
     );
   }
+
+  Future<void> _sendPasswordResetMail(
+    BuildContext context,
+    AuthProvider provider,
+    String email,
+  ) async {
+    final messenger = ScaffoldMessenger.of(context);
+
+    final ok = await provider.requestPasswordReset(email);
+
+    if (!context.mounted) {
+      return;
+    }
+
+    if (ok) {
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Wenn das Konto existiert, wurde ein Link zum Zurücksetzen gesendet.',
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _logout(BuildContext context) async {
+    final authProvider = context.read<AuthProvider>();
+    final taskProvider = context.read<TaskProvider>();
+    final settingsProvider = context.read<SettingsProvider>();
+    final statsProvider = context.read<StatsProvider>();
+    final sessionSyncProvider = context.read<SessionSyncProvider>();
+    final timerProvider = context.read<TimerProvider>();
+
+    await timerProvider.clearForLogout();
+    await authProvider.logout();
+
+    taskProvider.clear();
+    await settingsProvider.resetLocal();
+    statsProvider.clear();
+    sessionSyncProvider.clear();
+  }
+}
+
+class _AccountInfoRow extends StatelessWidget {
+  const _AccountInfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.tooltip,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+  final String? tooltip;
+
+  @override
+  Widget build(BuildContext context) {
+    final valueWidget = Text(
+      value,
+      style: Theme.of(context).textTheme.bodyMedium,
+    );
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 20),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
+              tooltip == null
+                  ? valueWidget
+                  : Tooltip(
+                      message: tooltip!,
+                      child: valueWidget,
+                    ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+String _maskEmail(String email) {
+  final parts = email.split('@');
+
+  if (parts.length != 2) {
+    return email;
+  }
+
+  final name = parts[0];
+  final domain = parts[1];
+
+  if (name.length <= 2) {
+    return '${name[0]}***@$domain';
+  }
+
+  final visibleStart = name.substring(0, 2);
+  return '$visibleStart***@$domain';
+}
+
+String _formatAccountDate(DateTime date) {
+  final localDate = date.toLocal();
+
+  final day = localDate.day.toString().padLeft(2, '0');
+  final month = localDate.month.toString().padLeft(2, '0');
+  final year = localDate.year.toString();
+
+  return '$day.$month.$year';
+}
+
+String _syncStatusText(SessionSyncProvider provider) {
+  if (provider.syncing) {
+    return 'Synchronisierung läuft';
+  }
+
+  if (provider.pendingCount == 1) {
+    return '1 Sitzung wartet';
+  }
+
+  if (provider.pendingCount > 1) {
+    return '${provider.pendingCount} Sitzungen warten';
+  }
+
+  if (provider.error != null) {
+    return 'Fehler bei der Synchronisierung';
+  }
+
+  return 'Alles synchronisiert';
 }
 
 class _AuthErrorText extends StatelessWidget {

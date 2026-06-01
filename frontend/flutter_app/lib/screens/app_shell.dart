@@ -162,7 +162,7 @@ class _AppShellState extends State<AppShell> {
               selectedIndex: _index,
               onDestinationSelected: _selectIndex,
               labelType: NavigationRailLabelType.all,
-              minWidth:112,
+              minWidth: 112,
               destinations: const [
                 NavigationRailDestination(
                   icon: Icon(Icons.timer_outlined),

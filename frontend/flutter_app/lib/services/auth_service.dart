@@ -18,11 +18,24 @@ class AuthService {
     return UserProfile.fromJson(data);
   }
 
-  Future<void> login(String email, String password) async {
+  Future<void> login(
+    String email,
+    String password, {
+    bool rememberSession = true,
+  }) async {
     final data = await apiClient.post(
-        '/auth/login', {'email': email, 'password': password},
-        auth: false);
-    await localStorage.setToken(data['access_token']);
+      '/auth/login',
+      {
+        'email': email,
+        'password': password,
+      },
+      auth: false,
+    );
+
+    await localStorage.setToken(
+      data['access_token'],
+      persist: rememberSession,
+    );
   }
 
   Future<void> requestPasswordReset(String email) async {

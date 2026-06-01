@@ -64,13 +64,21 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> login(String email, String password) async {
+  Future<bool> login(
+    String email,
+    String password, {
+    bool rememberSession = true,
+  }) async {
     loading = true;
     error = null;
     notifyListeners();
 
     try {
-      await _authService.login(email, password);
+      await _authService.login(
+        email,
+        password,
+        rememberSession: rememberSession,
+      );
       user = await _authService.me();
       return true;
     } catch (e) {
@@ -121,6 +129,16 @@ class AuthProvider extends ChangeNotifier {
       loading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> handleUnauthorizedSession() async {
+    await _authService.clearLocalToken();
+
+    user = null;
+    loading = false;
+    error = 'Deine Sitzung ist abgelaufen. Bitte logge dich erneut ein.';
+
+    notifyListeners();
   }
 
   void clearError() {
