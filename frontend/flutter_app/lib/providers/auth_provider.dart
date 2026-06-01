@@ -132,7 +132,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> handleUnauthorizedSession() async {
-    await _authService.clearLocalToken();
+    await _authService.logout();
 
     user = null;
     loading = false;

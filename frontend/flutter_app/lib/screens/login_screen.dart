@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import '../services/app_session_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -142,7 +142,6 @@ class _LoginScreenState extends State<LoginScreen> {
             controlAffinity: ListTileControlAffinity.leading,
             contentPadding: EdgeInsets.zero,
           ),
-        const SizedBox(height: 16),
         const SizedBox(height: 16),
         _AuthErrorText(error: provider.error),
         const SizedBox(height: 16),
@@ -637,20 +636,9 @@ class _LoggedInCard extends StatelessWidget {
   }
 
   Future<void> _logout(BuildContext context) async {
-    final authProvider = context.read<AuthProvider>();
-    final taskProvider = context.read<TaskProvider>();
-    final settingsProvider = context.read<SettingsProvider>();
-    final statsProvider = context.read<StatsProvider>();
-    final sessionSyncProvider = context.read<SessionSyncProvider>();
-    final timerProvider = context.read<TimerProvider>();
+    final sessionController = context.read<AppSessionController>();
 
-    await timerProvider.clearForLogout();
-    await authProvider.logout();
-
-    taskProvider.clear();
-    await settingsProvider.resetLocal();
-    statsProvider.clear();
-    sessionSyncProvider.clear();
+    await sessionController.logout();
   }
 }
 
@@ -711,8 +699,12 @@ String _maskEmail(String email) {
   final name = parts[0];
   final domain = parts[1];
 
+  if (name.isEmpty) {
+    return '***@$domain';
+  }
+
   if (name.length <= 2) {
-    return '${name[0]}***@$domain';
+    return '${name.substring(0, 1)}***@$domain';
   }
 
   final visibleStart = name.substring(0, 2);

@@ -112,18 +112,21 @@ class ApiClient {
   }
 
   Future<void> _handleUnauthorized() async {
-    await localStorage.clearToken();
-
-    final callback = onUnauthorized;
-
-    if (callback == null || _handlingUnauthorized) {
+    if (_handlingUnauthorized) {
       return;
     }
 
     _handlingUnauthorized = true;
 
     try {
-      await callback();
+      final callback = onUnauthorized;
+
+      if (callback != null) {
+        await callback();
+        return;
+      }
+
+      await localStorage.clearToken();
     } finally {
       _handlingUnauthorized = false;
     }
