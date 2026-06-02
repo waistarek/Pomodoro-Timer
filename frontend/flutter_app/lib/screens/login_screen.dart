@@ -468,6 +468,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     final authProvider = context.read<AuthProvider>();
+    final messenger = ScaffoldMessenger.of(context);
 
     final email = _emailController.text.trim();
     final password = _passwordController.text;

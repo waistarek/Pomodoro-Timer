@@ -2,7 +2,7 @@ import '../models/user_profile.dart';
 import 'api_client.dart';
 import 'local_storage_service.dart';
 
-import '../config/app_config.dart';
+
 
 class AuthService {
   AuthService({required this.apiClient, required this.localStorage});
