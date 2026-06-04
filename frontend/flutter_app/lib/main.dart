@@ -24,7 +24,6 @@ Future<void> main() async {
 
   final localStorage = LocalStorageService();
   await localStorage.init();
-  
 
   final apiClient = ApiClient(localStorage: localStorage);
 

@@ -6,6 +6,7 @@ from typing import Literal
 class OAuthLogin(BaseModel):
     provider: Literal["google"] = "google"
     id_token: str = Field(min_length=20)
+    mode: Literal["login", "register"] = "login"
     
 class Token(BaseModel):
     access_token: str

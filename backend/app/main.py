@@ -89,7 +89,6 @@ def _verify_google_login_token(id_token: str) -> dict:
 
     return claims
 
-
 @app.post("/auth/oauth-login", response_model=Token)
 def oauth_login(data: OAuthLogin, db: Session = Depends(get_db)) -> Token:
     if data.provider != "google":
@@ -113,24 +112,50 @@ def oauth_login(data: OAuthLogin, db: Session = Depends(get_db)) -> Token:
         .first()
     )
 
-    if identity is not None:
-        user = identity.user
-    else:
-        user = db.query(User).filter(User.email == email).first()
-
-        if user is None:
-            user = User(
-                email=email,
-                password_hash=None,
-                is_email_verified=True,
+    if data.mode == "login":
+        if identity is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=(
+                    "Für dieses Google-Konto existiert noch kein Konto. "
+                    "Bitte zuerst ein Konto mit Google erstellen."
+                ),
             )
-            db.add(user)
-            db.commit()
-            db.refresh(user)
 
-            _get_or_create_settings(db, user.id)
-        else:
-            user.is_email_verified = True
+        user = identity.user
+
+    else:
+        if identity is not None:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=(
+                    "Dieses Google-Konto ist bereits registriert. "
+                    "Bitte mit Google einloggen."
+                ),
+            )
+
+        existing_user = db.query(User).filter(User.email == email).first()
+
+        if existing_user is not None:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=(
+                    "Diese E-Mail ist bereits als E-Mail/Passwort-Konto registriert. "
+                    "Bitte mit Passwort einloggen."
+                ),
+            )
+
+        user = User(
+            email=email,
+            password_hash=None,
+            is_email_verified=True,
+        )
+
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+        _get_or_create_settings(db, user.id)
 
         identity = AuthIdentity(
             user_id=user.id,
@@ -149,13 +174,6 @@ def oauth_login(data: OAuthLogin, db: Session = Depends(get_db)) -> Token:
             user.auth_version,
         )
     )
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 
 @app.get("/health")
@@ -246,7 +264,7 @@ def request_password_reset(
         )
     }
 
-    if user is None:
+    if user is None or user.password_hash is None:
         return response
 
     reset_token = create_password_reset_token()

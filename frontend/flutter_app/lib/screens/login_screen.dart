@@ -158,8 +158,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final authProvider = context.read<AuthProvider>();
 
+    final googleMode = _registerMode ? 'register' : 'login';
+
     final ok = await authProvider.loginWithGoogleIdToken(
       idToken,
+      mode: googleMode,
       rememberSession: _rememberSession,
     );
 
@@ -169,7 +172,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (ok) {
       await _loadDataAfterSuccessfulLogin(
-        'Erfolgreich mit Google angemeldet.',
+        googleMode == 'register'
+            ? 'Google-Konto wurde erstellt und du bist angemeldet.'
+            : 'Erfolgreich mit Google angemeldet.',
       );
     }
   }

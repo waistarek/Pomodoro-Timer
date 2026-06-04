@@ -2,8 +2,6 @@ import '../models/user_profile.dart';
 import 'api_client.dart';
 import 'local_storage_service.dart';
 
-
-
 class AuthService {
   AuthService({required this.apiClient, required this.localStorage});
 
@@ -20,6 +18,7 @@ class AuthService {
   void useUserScope(int userId) {
     localStorage.useUserScope(userId);
   }
+
   Future<UserProfile> register(String email, String password) async {
     final data = await apiClient.post(
         '/auth/register', {'email': email, 'password': password},
@@ -83,6 +82,7 @@ class AuthService {
 
   Future<void> loginWithGoogleIdToken(
     String idToken, {
+    required String mode,
     bool rememberSession = true,
   }) async {
     final trimmedToken = idToken.trim();
@@ -96,6 +96,7 @@ class AuthService {
       {
         'provider': 'google',
         'id_token': trimmedToken,
+        'mode': mode,
       },
       auth: false,
     );

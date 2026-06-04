@@ -28,9 +28,8 @@ class _AppShellState extends State<AppShell> {
 
   void _loadDataForCurrentScope(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
-    final scope = authProvider.user == null
-        ? 'guest'
-        : 'user_${authProvider.user!.id}';
+    final scope =
+        authProvider.user == null ? 'guest' : 'user_${authProvider.user!.id}';
 
     if (authProvider.loading) {
       return;
@@ -60,6 +59,7 @@ class _AppShellState extends State<AppShell> {
       unawaited(taskProvider.loadRemoteTasks());
     });
   }
+
   static const List<String> _screenKeys = [
     'timer',
     'tasks',
@@ -87,7 +87,6 @@ class _AppShellState extends State<AppShell> {
       _ => widget.initialIndex.clamp(0, 4).toInt(),
     };
   }
-  
 
   void _selectIndex(int value) {
     setState(() {
@@ -165,7 +164,6 @@ class _AppShellState extends State<AppShell> {
     _loadDataForCurrentScope(context);
 
     final isWide = MediaQuery.sizeOf(context).width >= 900;
- 
 
     final destinations = const [
       NavigationDestination(
@@ -233,7 +231,7 @@ class _AppShellState extends State<AppShell> {
               ],
             ),
             const VerticalDivider(width: 1),
-           Expanded(
+            Expanded(
               child: _ShellContent(child: _screens[_index]),
             ),
           ],

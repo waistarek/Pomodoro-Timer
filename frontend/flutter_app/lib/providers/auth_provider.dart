@@ -150,6 +150,7 @@ class AuthProvider extends ChangeNotifier {
 
   Future<bool> loginWithGoogleIdToken(
     String idToken, {
+    required String mode,
     bool rememberSession = true,
   }) async {
     loading = true;
@@ -159,6 +160,7 @@ class AuthProvider extends ChangeNotifier {
     try {
       await _authService.loginWithGoogleIdToken(
         idToken,
+        mode: mode,
         rememberSession: rememberSession,
       );
 

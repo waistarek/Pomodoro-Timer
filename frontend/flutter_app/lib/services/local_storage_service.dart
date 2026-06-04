@@ -18,6 +18,7 @@ class LocalStorageService {
   String _scopedKey(String key) {
     return '$_scope:$key';
   }
+
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
   }
@@ -42,29 +43,29 @@ class LocalStorageService {
     await _prefs.remove('auth_token');
   }
 
- Map<String, dynamic>? getJsonObject(String key) {
-  final raw = _prefs.getString(_scopedKey(key));
-  if (raw == null) return null;
-  return jsonDecode(raw) as Map<String, dynamic>;
-}
+  Map<String, dynamic>? getJsonObject(String key) {
+    final raw = _prefs.getString(_scopedKey(key));
+    if (raw == null) return null;
+    return jsonDecode(raw) as Map<String, dynamic>;
+  }
 
-Future<void> setJsonObject(String key, Map<String, dynamic> value) {
-  return _prefs.setString(_scopedKey(key), jsonEncode(value));
-}
+  Future<void> setJsonObject(String key, Map<String, dynamic> value) {
+    return _prefs.setString(_scopedKey(key), jsonEncode(value));
+  }
 
-List<Map<String, dynamic>> getJsonList(String key) {
-  final raw = _prefs.getString(_scopedKey(key));
-  if (raw == null) return [];
-  return (jsonDecode(raw) as List).cast<Map<String, dynamic>>();
-}
+  List<Map<String, dynamic>> getJsonList(String key) {
+    final raw = _prefs.getString(_scopedKey(key));
+    if (raw == null) return [];
+    return (jsonDecode(raw) as List).cast<Map<String, dynamic>>();
+  }
 
-Future<void> setJsonList(String key, List<Map<String, dynamic>> value) {
-  return _prefs.setString(_scopedKey(key), jsonEncode(value));
-}
+  Future<void> setJsonList(String key, List<Map<String, dynamic>> value) {
+    return _prefs.setString(_scopedKey(key), jsonEncode(value));
+  }
 
-Future<void> remove(String key) {
-  return _prefs.remove(_scopedKey(key));
-}
+  Future<void> remove(String key) {
+    return _prefs.remove(_scopedKey(key));
+  }
 
   Future<void> clearUserData() async {
     await Future.wait([
