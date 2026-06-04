@@ -103,33 +103,33 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _prepareGoogleSignInForLoginForm() {
-    if (AppConfig.googleClientId.isEmpty) {
-      return;
-    }
-
-    if (_googleSignInReady || _googleSignInPreparing) {
-      return;
-    }
-
-    if (_registerMode || _forgotPasswordMode || _resetPasswordMode) {
-      return;
-    }
-
-    _googleSignInPreparing = true;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        _googleSignInPreparing = false;
-        return;
-      }
-
-      unawaited(
-        _initializeGoogleSignIn().whenComplete(() {
-          _googleSignInPreparing = false;
-        }),
-      );
-    });
+  if (AppConfig.googleClientId.isEmpty) {
+    return;
   }
+
+  if (_googleSignInReady || _googleSignInPreparing) {
+    return;
+  }
+
+  if (_forgotPasswordMode || _resetPasswordMode) {
+    return;
+  }
+
+  _googleSignInPreparing = true;
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (!mounted) {
+      _googleSignInPreparing = false;
+      return;
+    }
+
+    unawaited(
+      _initializeGoogleSignIn().whenComplete(() {
+        _googleSignInPreparing = false;
+      }),
+    );
+  });
+}
 
   Future<void> _handleGoogleAuthenticationEvent(
     GoogleSignInAuthenticationEvent event,
@@ -276,6 +276,8 @@ class _LoginScreenState extends State<LoginScreen> {
       return _buildForgotPasswordForm(context, provider);
     }
 
+    _prepareGoogleSignInForLoginForm();
+
     return _buildLoginRegisterForm(context, provider);
   }
 
@@ -284,7 +286,7 @@ class _LoginScreenState extends State<LoginScreen> {
     AuthProvider provider,
   ) {
     _prepareGoogleSignInForLoginForm();
-    
+
     final title = _registerMode ? 'Neues Konto erstellen' : 'Login';
     final emailPasswordTitle = _registerMode
         ? 'E-Mail/Passwort-Konto erstellen'
