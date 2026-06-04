@@ -10,6 +10,7 @@ import 'tasks_screen.dart';
 import '../providers/stats_provider.dart';
 import '../providers/task_provider.dart';
 import '../services/browser_url_service.dart';
+import '../providers/auth_provider.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key, this.initialIndex = 0});
@@ -49,13 +50,27 @@ class _AppShellState extends State<AppShell> {
       _ => widget.initialIndex.clamp(0, 4).toInt(),
     };
   }
+  bool _requiresLogin(int index) {
+    return index == 1 || index == 2 || index == 3;
+  }
+
+  int _guardedIndex(int index, bool isLoggedIn) {
+    if (!isLoggedIn && _requiresLogin(index)) {
+      return 4; // Konto/Login
+    }
+
+    return index;
+  }
 
   void _selectIndex(int value) {
+    final isLoggedIn = context.read<AuthProvider>().isLoggedIn;
+    final nextIndex = _guardedIndex(value, isLoggedIn);
+
     setState(() {
-      _index = value;
+      _index = nextIndex;
     });
 
-    setAppScreenInUrl(_screenKeys[value]);
+    setAppScreenInUrl(_screenKeys[nextIndex]);
   }
 
   int _lastHandledSessionSyncVersion = 0;
@@ -125,6 +140,8 @@ class _AppShellState extends State<AppShell> {
     _refreshDataAfterSessionSync(context);
 
     final isWide = MediaQuery.sizeOf(context).width >= 900;
+    final isLoggedIn = context.watch<AuthProvider>().isLoggedIn;
+    final currentIndex = _guardedIndex(_index, isLoggedIn);
 
     final destinations = const [
       NavigationDestination(
@@ -159,7 +176,7 @@ class _AppShellState extends State<AppShell> {
         body: Row(
           children: [
             NavigationRail(
-              selectedIndex: _index,
+              selectedIndex: currentIndex,
               onDestinationSelected: _selectIndex,
               labelType: NavigationRailLabelType.all,
               minWidth: 112,
@@ -192,8 +209,8 @@ class _AppShellState extends State<AppShell> {
               ],
             ),
             const VerticalDivider(width: 1),
-            Expanded(
-              child: _ShellContent(child: _screens[_index]),
+           Expanded(
+              child: _ShellContent(child: _screens[currentIndex]),
             ),
           ],
         ),
@@ -201,9 +218,9 @@ class _AppShellState extends State<AppShell> {
     }
 
     return Scaffold(
-      body: _ShellContent(child: _screens[_index]),
+      body: _ShellContent(child: _screens[currentIndex]),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: _index,
+        selectedIndex: currentIndex,
         onDestinationSelected: _selectIndex,
         destinations: destinations,
       ),
