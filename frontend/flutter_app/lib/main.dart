@@ -24,9 +24,7 @@ Future<void> main() async {
 
   final localStorage = LocalStorageService();
   await localStorage.init();
-  if (localStorage.token == null) {
-    await localStorage.clearUserData();
-  }
+  
 
   final apiClient = ApiClient(localStorage: localStorage);
 
@@ -87,10 +85,10 @@ Future<void> main() async {
           value: authProvider..loadLocalSession(),
         ),
         ChangeNotifierProvider.value(
-          value: settingsProvider..load(),
+          value: settingsProvider,
         ),
         ChangeNotifierProvider.value(
-          value: taskProvider..loadLocalTasks(),
+          value: taskProvider,
         ),
         ChangeNotifierProxyProvider2<SettingsProvider, TaskProvider,
             TimerProvider>(

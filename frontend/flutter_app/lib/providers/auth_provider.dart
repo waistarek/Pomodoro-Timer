@@ -17,6 +17,7 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> loadLocalSession() async {
     if (!_authService.hasLocalToken) {
+      _authService.useGuestScope();
       user = null;
       notifyListeners();
       return;
@@ -27,9 +28,13 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      user = await _authService.me();
+      final currentUser = await _authService.me();
+
+      _authService.useUserScope(currentUser.id);
+      user = currentUser;
     } on ApiException catch (e) {
       user = null;
+      _authService.useGuestScope();
 
       if (e.statusCode == 401 || e.statusCode == 403) {
         await _authService.clearLocalToken();
@@ -38,6 +43,7 @@ class AuthProvider extends ChangeNotifier {
       }
     } catch (e, stackTrace) {
       user = null;
+      _authService.useGuestScope();
 
       debugPrint('Lokale Sitzung konnte nicht geprüft werden: $e');
       debugPrintStack(stackTrace: stackTrace);
@@ -80,6 +86,7 @@ class AuthProvider extends ChangeNotifier {
         rememberSession: rememberSession,
       );
       user = await _authService.me();
+      _authService.useUserScope(user!.id);
       return true;
     } catch (e) {
       error = e.toString();
@@ -156,6 +163,7 @@ class AuthProvider extends ChangeNotifier {
       );
 
       user = await _authService.me();
+      _authService.useUserScope(user!.id);
       return true;
     } catch (e) {
       error = e.toString();
@@ -179,6 +187,7 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> logout() async {
     await _authService.logout();
+    _authService.useGuestScope();
     user = null;
     notifyListeners();
   }

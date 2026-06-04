@@ -13,6 +13,13 @@ class AuthService {
   bool get hasLocalToken => localStorage.token != null;
   Future<void> clearLocalToken() => localStorage.clearToken();
 
+  void useGuestScope() {
+    localStorage.useGuestScope();
+  }
+
+  void useUserScope(int userId) {
+    localStorage.useUserScope(userId);
+  }
   Future<UserProfile> register(String email, String password) async {
     final data = await apiClient.post(
         '/auth/register', {'email': email, 'password': password},

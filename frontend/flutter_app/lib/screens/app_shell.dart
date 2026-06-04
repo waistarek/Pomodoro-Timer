@@ -11,6 +11,7 @@ import '../providers/stats_provider.dart';
 import '../providers/task_provider.dart';
 import '../services/browser_url_service.dart';
 import '../providers/auth_provider.dart';
+import '../providers/settings_provider.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key, this.initialIndex = 0});
@@ -23,6 +24,42 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   late int _index;
+  String? _lastLoadedScope;
+
+  void _loadDataForCurrentScope(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+    final scope = authProvider.user == null
+        ? 'guest'
+        : 'user_${authProvider.user!.id}';
+
+    if (authProvider.loading) {
+      return;
+    }
+
+    if (_lastLoadedScope == scope) {
+      return;
+    }
+
+    _lastLoadedScope = scope;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      final settingsProvider = context.read<SettingsProvider>();
+      final taskProvider = context.read<TaskProvider>();
+
+      if (authProvider.user == null) {
+        unawaited(settingsProvider.load());
+        unawaited(taskProvider.loadLocalTasks());
+        return;
+      }
+
+      unawaited(settingsProvider.loadRemoteSettings());
+      unawaited(taskProvider.loadRemoteTasks());
+    });
+  }
   static const List<String> _screenKeys = [
     'timer',
     'tasks',
@@ -50,27 +87,14 @@ class _AppShellState extends State<AppShell> {
       _ => widget.initialIndex.clamp(0, 4).toInt(),
     };
   }
-  bool _requiresLogin(int index) {
-    return index == 1 || index == 2 || index == 3;
-  }
-
-  int _guardedIndex(int index, bool isLoggedIn) {
-    if (!isLoggedIn && _requiresLogin(index)) {
-      return 4; // Konto/Login
-    }
-
-    return index;
-  }
+  
 
   void _selectIndex(int value) {
-    final isLoggedIn = context.read<AuthProvider>().isLoggedIn;
-    final nextIndex = _guardedIndex(value, isLoggedIn);
-
     setState(() {
-      _index = nextIndex;
+      _index = value;
     });
 
-    setAppScreenInUrl(_screenKeys[nextIndex]);
+    setAppScreenInUrl(_screenKeys[value]);
   }
 
   int _lastHandledSessionSyncVersion = 0;
@@ -138,10 +162,10 @@ class _AppShellState extends State<AppShell> {
   @override
   Widget build(BuildContext context) {
     _refreshDataAfterSessionSync(context);
+    _loadDataForCurrentScope(context);
 
     final isWide = MediaQuery.sizeOf(context).width >= 900;
-    final isLoggedIn = context.watch<AuthProvider>().isLoggedIn;
-    final currentIndex = _guardedIndex(_index, isLoggedIn);
+ 
 
     final destinations = const [
       NavigationDestination(
@@ -176,7 +200,7 @@ class _AppShellState extends State<AppShell> {
         body: Row(
           children: [
             NavigationRail(
-              selectedIndex: currentIndex,
+              selectedIndex: _index,
               onDestinationSelected: _selectIndex,
               labelType: NavigationRailLabelType.all,
               minWidth: 112,
@@ -210,7 +234,7 @@ class _AppShellState extends State<AppShell> {
             ),
             const VerticalDivider(width: 1),
            Expanded(
-              child: _ShellContent(child: _screens[currentIndex]),
+              child: _ShellContent(child: _screens[_index]),
             ),
           ],
         ),
@@ -218,9 +242,9 @@ class _AppShellState extends State<AppShell> {
     }
 
     return Scaffold(
-      body: _ShellContent(child: _screens[currentIndex]),
+      body: _ShellContent(child: _screens[_index]),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: currentIndex,
+        selectedIndex: _index,
         onDestinationSelected: _selectIndex,
         destinations: destinations,
       ),
