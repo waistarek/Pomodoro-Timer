@@ -283,16 +283,33 @@ class _LoginScreenState extends State<LoginScreen> {
     BuildContext context,
     AuthProvider provider,
   ) {
-    _prepareGoogleSignInForLoginForm();
+    final title = _registerMode ? 'Neues Konto erstellen' : 'Login';
+    final emailPasswordTitle = _registerMode
+        ? 'E-Mail/Passwort-Konto erstellen'
+        : 'Mit E-Mail und Passwort einloggen';
+
+    final submitLabel = _registerMode ? 'Konto erstellen' : 'Einloggen';
 
     return Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          _registerMode ? 'Registrieren' : 'Login',
+          title,
           style: Theme.of(context).textTheme.headlineSmall,
+          textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 16),
+
+        const SizedBox(height: 24),
+
+        // Bereich 1: E-Mail/Passwort
+        Text(
+          emailPasswordTitle,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+
+        const SizedBox(height: 12),
+
         TextFormField(
           controller: _emailController,
           decoration: const InputDecoration(
@@ -301,6 +318,7 @@ class _LoginScreenState extends State<LoginScreen> {
           keyboardType: TextInputType.emailAddress,
           validator: _validateEmail,
         ),
+
         TextFormField(
           controller: _passwordController,
           decoration: const InputDecoration(
@@ -309,6 +327,7 @@ class _LoginScreenState extends State<LoginScreen> {
           obscureText: true,
           validator: _validatePassword,
         ),
+
         if (!_registerMode)
           CheckboxListTile(
             value: _rememberSession,
@@ -326,31 +345,13 @@ class _LoginScreenState extends State<LoginScreen> {
             controlAffinity: ListTileControlAffinity.leading,
             contentPadding: EdgeInsets.zero,
           ),
+
         const SizedBox(height: 16),
-        if (!_registerMode) ...[
-          const SizedBox(height: 12),
-          const Row(
-            children: [
-              Expanded(child: Divider()),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Text('oder'),
-              ),
-              Expanded(child: Divider()),
-            ],
-          ),
-          const SizedBox(height: 12),
-          if (AppConfig.googleClientId.isEmpty)
-            const Text('Google Login ist nicht konfiguriert.')
-          else if (!_googleSignInReady)
-            const Text('Google Login wird vorbereitet ...')
-          else
-            GoogleWebSignInButton(
-              enabled: !provider.loading,
-            ),
-        ],
+
         _AuthErrorText(error: provider.error),
+
         const SizedBox(height: 16),
+
         SizedBox(
           width: double.infinity,
           child: FilledButton(
@@ -361,13 +362,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 18,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : Text(
-                    _registerMode ? 'Konto erstellen' : 'Einloggen',
-                  ),
+                : Text(submitLabel),
           ),
         ),
-        const SizedBox(height: 8),
-        if (!_registerMode)
+
+        // Aktionen für E-Mail/Passwort
+        if (!_registerMode) ...[
+          const SizedBox(height: 8),
           TextButton(
             onPressed: provider.loading
                 ? null
@@ -379,12 +380,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
             child: const Text('Passwort vergessen?'),
           ),
+        ],
+
         TextButton(
           onPressed: provider.loading
               ? null
               : () {
                   provider.clearError();
-                  setState(() => _registerMode = !_registerMode);
+                  setState(() {
+                    _registerMode = !_registerMode;
+                    _forgotPasswordMode = false;
+                    _passwordController.clear();
+                    _confirmPasswordController.clear();
+                  });
                 },
           child: Text(
             _registerMode
@@ -392,6 +400,55 @@ class _LoginScreenState extends State<LoginScreen> {
                 : 'Neues Konto erstellen',
           ),
         ),
+
+        const SizedBox(height: 8),
+
+        const Row(
+          children: [
+            Expanded(child: Divider()),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Text('oder'),
+            ),
+            Expanded(child: Divider()),
+          ],
+        ),
+
+        const SizedBox(height: 16),
+
+        // Bereich 2: Google
+        _buildGoogleAuthSection(provider),
+      ],
+    );
+  }
+
+  Widget _buildGoogleAuthSection(AuthProvider provider) {
+    final title = _registerMode ? 'Google-Bereich' : 'Google-Bereich';
+
+    final description =
+        _registerMode ? 'Mit Google Konto erstellen' : 'Mit Google einloggen';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          title,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          description,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 12),
+        if (AppConfig.googleClientId.isEmpty)
+          const Text('Google Login ist nicht konfiguriert.')
+        else if (!_googleSignInReady)
+          const Text('Google Login wird vorbereitet ...')
+        else
+          GoogleWebSignInButton(
+            enabled: !provider.loading,
+          ),
       ],
     );
   }
