@@ -31,6 +31,10 @@ class _LoginScreenState extends State<LoginScreen> {
   StreamSubscription<GoogleSignInAuthenticationEvent>?
       _googleSignInSubscription;
 
+  static Future<void>? _googleInitFuture;
+  static bool _googleInitialized = false;
+
+  bool _googleSignInReady = false;
   bool _registerMode = false;
   bool _forgotPasswordMode = false;
   bool _rememberSession = true;
@@ -38,20 +42,51 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool get _resetPasswordMode => _resetToken != null;
 
+  Future<void> _ensureGoogleSignInInitialized() async {
+    if (AppConfig.googleClientId.isEmpty) {
+      return;
+    }
+
+    if (_googleInitialized) {
+      return;
+    }
+
+    try {
+      _googleInitFuture ??= GoogleSignIn.instance
+          .initialize(
+        clientId: AppConfig.googleClientId,
+        serverClientId: AppConfig.googleClientId,
+      )
+          .then((_) {
+        _googleInitialized = true;
+      });
+
+      await _googleInitFuture;
+    } catch (_) {
+      _googleInitFuture = null;
+      _googleInitialized = false;
+      rethrow;
+    }
+  }
+
   Future<void> _initializeGoogleSignIn() async {
     if (AppConfig.googleClientId.isEmpty) {
       return;
     }
 
     try {
-      final googleSignIn = GoogleSignIn.instance;
+      await _ensureGoogleSignInInitialized();
 
-      await googleSignIn.initialize(
-        clientId: AppConfig.googleClientId,
-        serverClientId: AppConfig.googleClientId,
-      );
+      if (!mounted) {
+        return;
+      }
 
-      _googleSignInSubscription = googleSignIn.authenticationEvents.listen(
+      setState(() {
+        _googleSignInReady = true;
+      });
+
+      _googleSignInSubscription ??=
+          GoogleSignIn.instance.authenticationEvents.listen(
         _handleGoogleAuthenticationEvent,
         onError: _handleGoogleAuthenticationError,
       );
@@ -269,9 +304,14 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
           const SizedBox(height: 12),
-          GoogleWebSignInButton(
-            enabled: !provider.loading && AppConfig.googleClientId.isNotEmpty,
-          ),
+          if (AppConfig.googleClientId.isEmpty)
+            const Text('Google Login ist nicht konfiguriert.')
+          else if (!_googleSignInReady)
+            const Text('Google Login wird vorbereitet ...')
+          else
+            GoogleWebSignInButton(
+              enabled: !provider.loading,
+            ),
         ],
         _AuthErrorText(error: provider.error),
         const SizedBox(height: 16),
