@@ -283,6 +283,8 @@ class _LoginScreenState extends State<LoginScreen> {
     BuildContext context,
     AuthProvider provider,
   ) {
+    _prepareGoogleSignInForLoginForm();
+    
     final title = _registerMode ? 'Neues Konto erstellen' : 'Login';
     final emailPasswordTitle = _registerMode
         ? 'E-Mail/Passwort-Konto erstellen'
