@@ -50,6 +50,14 @@ app = FastAPI(title="Pomodoro API", version="1.0.0")
 origins_raw = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:8080,http://127.0.0.1:8080")
 origins = [origin.strip() for origin in origins_raw.split(",") if origin.strip()]
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 def _verify_google_login_token(id_token: str) -> dict:
     google_client_id = os.getenv("GOOGLE_CLIENT_ID")
 

@@ -103,33 +103,33 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _prepareGoogleSignInForLoginForm() {
-  if (AppConfig.googleClientId.isEmpty) {
-    return;
-  }
-
-  if (_googleSignInReady || _googleSignInPreparing) {
-    return;
-  }
-
-  if (_forgotPasswordMode || _resetPasswordMode) {
-    return;
-  }
-
-  _googleSignInPreparing = true;
-
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    if (!mounted) {
-      _googleSignInPreparing = false;
+    if (AppConfig.googleClientId.isEmpty) {
       return;
     }
 
-    unawaited(
-      _initializeGoogleSignIn().whenComplete(() {
+    if (_googleSignInReady || _googleSignInPreparing) {
+      return;
+    }
+
+    if (_forgotPasswordMode || _resetPasswordMode) {
+      return;
+    }
+
+    _googleSignInPreparing = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
         _googleSignInPreparing = false;
-      }),
-    );
-  });
-}
+        return;
+      }
+
+      unawaited(
+        _initializeGoogleSignIn().whenComplete(() {
+          _googleSignInPreparing = false;
+        }),
+      );
+    });
+  }
 
   Future<void> _handleGoogleAuthenticationEvent(
     GoogleSignInAuthenticationEvent event,
