@@ -35,6 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
   static bool _googleInitialized = false;
 
   bool _googleSignInReady = false;
+  bool _googleSignInPreparing = false;
   bool _registerMode = false;
   bool _forgotPasswordMode = false;
   bool _rememberSession = true;
@@ -99,6 +100,35 @@ class _LoginScreenState extends State<LoginScreen> {
             'Google Login konnte nicht vorbereitet werden: $e',
           );
     }
+  }
+
+  void _prepareGoogleSignInForLoginForm() {
+    if (AppConfig.googleClientId.isEmpty) {
+      return;
+    }
+
+    if (_googleSignInReady || _googleSignInPreparing) {
+      return;
+    }
+
+    if (_registerMode || _forgotPasswordMode || _resetPasswordMode) {
+      return;
+    }
+
+    _googleSignInPreparing = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        _googleSignInPreparing = false;
+        return;
+      }
+
+      unawaited(
+        _initializeGoogleSignIn().whenComplete(() {
+          _googleSignInPreparing = false;
+        }),
+      );
+    });
   }
 
   Future<void> _handleGoogleAuthenticationEvent(
@@ -191,7 +221,6 @@ class _LoginScreenState extends State<LoginScreen> {
     if (email != null && email.isNotEmpty) {
       _emailController.text = email;
     }
-    unawaited(_initializeGoogleSignIn());
   }
 
   @override
@@ -249,6 +278,8 @@ class _LoginScreenState extends State<LoginScreen> {
     BuildContext context,
     AuthProvider provider,
   ) {
+    _prepareGoogleSignInForLoginForm();
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
