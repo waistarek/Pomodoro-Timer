@@ -1,0 +1,423 @@
+{
+  "@@locale": "ru",
+  "appTitle": "Приложение Pomodoro",
+  "navTimer": "Таймер",
+  "navTasks": "Задачи",
+  "navStats": "Статистика",
+  "navSettings": "Настройки",
+  "navAccount": "Аккаунт",
+  "close": "Закрыть",
+  "retry": "Повторить",
+  "cancel": "Отмена",
+  "delete": "Удалить",
+  "edit": "Редактировать",
+  "save": "Сохранить",
+  "reset": "Сбросить",
+  "refresh": "Обновить",
+  "messageClose": "Закрыть сообщение",
+  "or": "или",
+  "yes": "Да",
+  "no": "Нет",
+  "emailVerifiedSuccess": "Электронная почта успешно подтверждена. Теперь можно войти.",
+  "emailVerifiedExpired": "Срок действия ссылки подтверждения истёк.",
+  "emailVerifiedInvalid": "Ссылка подтверждения недействительна.",
+  "sessionSyncOneWithAccount": "Одна сессия синхронизируется с вашим аккаунтом.",
+  "sessionSyncManyWithAccount": "{count} сессий синхронизируются с вашим аккаунтом.",
+  "@sessionSyncManyWithAccount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOneAfterLogin": "Одна локальная сессия будет синхронизирована после входа.",
+  "sessionSyncManyAfterLogin": "{count} локальных сессий будут синхронизированы после входа.",
+  "@sessionSyncManyAfterLogin": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOnePending": "Одна сессия ожидает синхронизации.",
+  "sessionSyncManyPending": "{count} сессий ожидают синхронизации.",
+  "@sessionSyncManyPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncDone": "Синхронизация завершена.",
+  "sessionSyncFailed": "Сессии сейчас не удалось синхронизировать. Повторная попытка будет выполнена позже.",
+  "accountTitle": "Аккаунт пользователя",
+  "loginTitle": "Вход",
+  "createAccountTitle": "Создать новый аккаунт",
+  "emailPasswordLoginTitle": "Войти с помощью электронной почты и пароля",
+  "emailPasswordCreateTitle": "Создать аккаунт с электронной почтой и паролем",
+  "emailLabel": "Электронная почта",
+  "passwordLabel": "Пароль",
+  "loginButton": "Войти",
+  "createAccountButton": "Создать аккаунт",
+  "rememberSessionTitle": "Оставаться в системе на этом устройстве",
+  "rememberSessionSubtitle": "Если отключено, вход будет активен только в текущей сессии приложения.",
+  "forgotPasswordButton": "Забыли пароль?",
+  "alreadyHaveAccount": "У меня уже есть аккаунт",
+  "googleSection": "Раздел Google",
+  "googleLoginButton": "Войти через Google",
+  "googleCreateButton": "Создать аккаунт через Google",
+  "googleNotConfigured": "Вход через Google не настроен.",
+  "googlePreparing": "Подготовка входа через Google ...",
+  "googleNoIdToken": "Google не вернул действительный ID-токен.",
+  "googlePrepareFailed": "Не удалось подготовить вход через Google: {error}",
+  "@googlePrepareFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginFailed": "Ошибка входа через Google: {error}",
+  "@googleLoginFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginSuccess": "Вход через Google выполнен успешно.",
+  "googleAccountCreated": "Аккаунт Google создан, и вы вошли в систему.",
+  "googleWebOnly": "Вход через Google доступен только в веб-приложении",
+  "githubSection": "Раздел GitHub",
+  "githubLoginButton": "Войти через GitHub",
+  "githubCreateButton": "Создать аккаунт через GitHub",
+  "githubNotConfigured": "Вход через GitHub не настроен.",
+  "githubCancelled": "Вход через GitHub был отменён или завершился ошибкой.",
+  "githubSecurityCancelled": "Вход через GitHub был отменён по соображениям безопасности.",
+  "githubNoValidCode": "GitHub не вернул действительный код.",
+  "githubLoginSuccess": "Вход через GitHub выполнен успешно.",
+  "githubAccountCreated": "Аккаунт GitHub создан, и вы вошли в систему.",
+  "passwordResetTitle": "Сброс пароля",
+  "passwordResetDescription": "Введите адрес электронной почты. Если аккаунт существует, вы получите ссылку для сброса пароля.",
+  "sendResetLink": "Отправить ссылку для сброса",
+  "backToLogin": "Вернуться ко входу",
+  "setNewPasswordTitle": "Установить новый пароль",
+  "setNewPasswordDescription": "Установите новый пароль для вашего аккаунта.",
+  "newPasswordLabel": "Новый пароль",
+  "repeatNewPasswordLabel": "Повторите новый пароль",
+  "passwordsDoNotMatch": "Пароли не совпадают",
+  "savePassword": "Сохранить пароль",
+  "registrationSuccess": "Регистрация прошла успешно. Подтвердите адрес электронной почты, затем войдите.",
+  "passwordResetRequestSuccess": "Если аккаунт с этой электронной почтой существует, ссылка для сброса отправлена.",
+  "passwordChangedSuccess": "Пароль изменён. Теперь можно войти.",
+  "passwordResetMailSent": "Если аккаунт существует, ссылка для сброса отправлена.",
+  "loginSuccess": "Вход выполнен успешно.",
+  "invalidEmail": "Введите действительный адрес электронной почты",
+  "passwordMinLength": "Минимум 8 символов",
+  "loggedInTitle": "Аккаунт пользователя",
+  "loggedInDescription": "Вы сейчас вошли в систему.",
+  "emailAddress": "Адрес электронной почты",
+  "emailStatus": "Статус электронной почты",
+  "emailVerified": "Подтверждена",
+  "emailNotVerified": "Ещё не подтверждена",
+  "accountCreated": "Аккаунт создан",
+  "synchronization": "Синхронизация",
+  "accountInfoWarning": "Приложение может автоматически восстановить вашу сессию, если локально сохранён действительный токен входа. На общих устройствах всегда выходите из аккаунта.",
+  "changePassword": "Изменить пароль",
+  "logout": "Выйти",
+  "syncRunning": "Синхронизация выполняется",
+  "syncOneWaiting": "1 сессия ожидает",
+  "syncManyWaiting": "{count} сессий ожидают",
+  "@syncManyWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncError": "Ошибка синхронизации",
+  "syncAllSynced": "Всё синхронизировано",
+  "sessionExpired": "Срок действия вашей сессии истёк. Войдите снова.",
+  "settingsSaved": "Настройки сохранены.",
+  "timerTimesTitle": "Длительности таймера",
+  "timerTimesDescription": "Задайте длительность рабочих фаз и перерывов.",
+  "workTime": "Рабочее время",
+  "shortBreak": "Короткий перерыв",
+  "longBreak": "Длинный перерыв",
+  "longBreakAfter": "Длинный перерыв после",
+  "minutes": "Минуты",
+  "pomodorosUnit": "Pomodoro",
+  "behaviorTitle": "Поведение",
+  "behaviorDescription": "Настройте поведение таймера во время использования.",
+  "autoStartNextPhase": "Автоматически запускать следующую фазу",
+  "enableSound": "Включить звук",
+  "enableVibration": "Включить вибрацию",
+  "vibrationDescription": "Реальная мобильная вибрация будет подключена позже через плагин.",
+  "languageTitle": "Язык",
+  "languageDescription": "Выберите язык приложения. При выборе «Системный язык» приложение использует язык браузера или устройства.",
+  "languageLabel": "Язык приложения",
+  "languageSystem": "Системный язык",
+  "languageGerman": "Немецкий",
+  "languageEnglish": "Английский",
+  "languageArabic": "Арабский",
+  "languageChinese": "Китайский",
+  "languageFrench": "Французский",
+  "languageSpanish": "Испанский",
+  "languageHindi": "Хинди",
+  "languagePortuguese": "Португальский",
+  "languageRussian": "Русский",
+  "languageJapanese": "Японский",
+  "languageTurkish": "Турецкий",
+  "languageItalian": "Итальянский",
+  "languageKorean": "Корейский",
+  "languageIndonesian": "Индонезийский",
+  "languagePersian": "Персидский",
+  "appearanceTitle": "Внешний вид",
+  "appearanceDescription": "Выберите режим оформления и основной цвет приложения.",
+  "appearanceLabel": "Внешний вид",
+  "systemTheme": "Система",
+  "lightMode": "Светлый режим",
+  "darkMode": "Тёмный режим",
+  "themeColor": "Цвет темы",
+  "red": "Красный",
+  "blue": "Синий",
+  "green": "Зелёный",
+  "purple": "Фиолетовый",
+  "saveSettings": "Сохранить настройки",
+  "noChanges": "Нет изменений",
+  "decrease": "Уменьшить",
+  "increase": "Увеличить",
+  "minutesShort": "мин",
+  "settingsSavedButNotSynced": "Настройки сохранены локально, но ещё не синхронизированы.",
+  "settingsLoadRemoteFailed": "Не удалось загрузить настройки с backend. Используются локальные настройки.",
+  "statsTitle": "Статистика",
+  "statsRefresh": "Обновить",
+  "statsWeek": "Неделя",
+  "statsMonth": "Месяц",
+  "statsYear": "Год",
+  "statsTasksTime": "Время по задачам",
+  "chartFocusPerDay": "Время фокуса по дням",
+  "chartFocusPerCalendarWeek": "Время фокуса по календарным неделям",
+  "chartFocusPerMonth": "Время фокуса по месяцам",
+  "chartFocusPerTask": "Время фокуса по задачам",
+  "xAxisWeek": "Ось X: дни недели",
+  "xAxisMonth": "Ось X: календарные недели месяца",
+  "xAxisYear": "Ось X: месяцы года",
+  "xAxisTasks": "Ось X: задачи",
+  "periodNoData": "Период: данные отсутствуют",
+  "periodRange": "Период: {start} – {end}",
+  "@periodRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "previousPeriod": "Предыдущий период",
+  "nextPeriod": "Следующий период",
+  "statsLoading": "Загрузка статистики ...",
+  "taskStatsLoading": "Загрузка статистики задач ...",
+  "taskStatsEmpty": "Пока нет рабочего времени по задачам. Запустите Pomodoro с задачей, чтобы увидеть данные.",
+  "pomodoros": "Pomodoro",
+  "focusTime": "Время фокуса",
+  "streak": "Серия",
+  "bestPeriod": "Лучший период",
+  "daysCount": "{count, plural, =1{1 день} few{{count} дня} many{{count} дней} other{{count} дня}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "yAxisFocusHoursWithXAxis": "Ось Y: время фокуса в часах · {xAxisText}",
+  "@yAxisFocusHoursWithXAxis": {
+    "placeholders": {
+      "xAxisText": {
+        "type": "String"
+      }
+    }
+  },
+  "focusTimeMinutes": "Время фокуса в минутах",
+  "sortedByHighestFocusTime": "Отсортировано по наибольшему времени фокуса.",
+  "taskPomodoroMinutes": "{pomodoros} Pomodoro · {minutes} мин",
+  "@taskPomodoroMinutes": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "statsNoData": "Статистические данные пока отсутствуют.",
+  "statsLoadFailed": "Не удалось загрузить статистику. Войдите в систему и проверьте подключение к интернету.",
+  "taskStatsLoadFailed": "Не удалось загрузить статистику задач.",
+  "todayPomodorosLoadFailed": "Не удалось загрузить количество Pomodoro за сегодня.",
+  "noTaskTitle": "Без задачи",
+  "calendarWeekShort": "КН {week}",
+  "@calendarWeekShort": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarWeekWithYear": "КН {week}/{year}",
+  "@calendarWeekWithYear": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "tasksTitle": "Задачи",
+  "tasksRefreshTooltip": "Обновить задачи",
+  "taskSingular": "Задача",
+  "deleteTaskTitle": "Удалить задачу?",
+  "deleteTaskMessage": "Вы действительно хотите удалить задачу «{title}»?",
+  "@deleteTaskMessage": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksLoading": "Загрузка задач ...",
+  "tasksEmpty": "Задач пока нет. Создайте первую задачу.",
+  "tasksSearchEmpty": "Задачи не найдены. Измените поиск или фильтры.",
+  "noTimerTaskSelected": "Задача для таймера не выбрана",
+  "activeTimerTask": "Активная задача таймера: {title}",
+  "@activeTimerTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskSelectionLockedDescription": "Фаза таймера выполняется или приостановлена. Поэтому задача сейчас заблокирована.",
+  "taskSelectionNextWorkPhaseDescription": "Эта задача будет использована для следующей рабочей фазы.",
+  "withoutTask": "Без задачи",
+  "searchTasks": "Искать задачи",
+  "clearSearch": "Очистить поиск",
+  "filterAll": "Все",
+  "filterOpen": "Открытые",
+  "filterCompleted": "Завершённые",
+  "sortLabel": "Сортировка",
+  "sortNewest": "Сначала новые",
+  "sortPriority": "Приоритет",
+  "sortPomodoros": "Pomodoro",
+  "active": "Активна",
+  "completed": "Завершена",
+  "locked": "Заблокирована",
+  "forTimer": "Для таймера",
+  "priorityLow": "Низкий",
+  "priorityMedium": "Средний",
+  "priorityHigh": "Высокий",
+  "taskLoadRemoteFailed": "Не удалось загрузить задачи с backend. Локальные данные будут отображаться дальше.",
+  "taskSavedLocallyNotSynced": "Задача сохранена локально, но не синхронизирована с аккаунтом.",
+  "taskSaveFailedRolledBack": "Не удалось сохранить задачу. Последнее изменение было отменено.",
+  "taskDeleteFailedRestored": "Не удалось удалить задачу из аккаунта. Задача была восстановлена.",
+  "taskCreateTitle": "Создать задачу",
+  "taskEditTitle": "Редактировать задачу",
+  "taskTitleLabel": "Название",
+  "taskTitleRequired": "Введите название",
+  "taskTitleTooShort": "Название слишком короткое.",
+  "taskDescriptionLabel": "Описание",
+  "priorityLabel": "Приоритет",
+  "tagsLabel": "Теги/категории",
+  "tagsHint": "например: университет, работа, разработка",
+  "timerResetTitle": "Сбросить таймер?",
+  "timerResetMessage": "Текущая фаза будет отменена и не будет сохранена как завершённая сессия.",
+  "taskNoneSelected": "Задача не выбрана",
+  "currentTask": "Текущая задача: {title}",
+  "@currentTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskForWorkPhase": "Задача для этой рабочей фазы",
+  "taskLockedToPhase": "Эта фаза привязана к выбранной задаче.",
+  "phaseWork": "Рабочая фаза",
+  "phaseShortBreak": "Короткий перерыв",
+  "phaseLongBreak": "Длинный перерыв",
+  "timerStatusSaving": "Сохранение ...",
+  "timerStatusRunning": "Выполняется",
+  "timerStatusPaused": "Пауза",
+  "timerStatusReady": "Готово",
+  "phaseDescriptionWork": "Время фокуса",
+  "phaseDescriptionShortBreak": "Короткое восстановление",
+  "phaseDescriptionLongBreak": "Более длинное восстановление",
+  "afterNextPhase": "{phaseDescription} · Далее: {nextPhase}",
+  "@afterNextPhase": {
+    "placeholders": {
+      "phaseDescription": {
+        "type": "String"
+      },
+      "nextPhase": {
+        "type": "String"
+      }
+    }
+  },
+  "todayPomodorosLoading": "Сегодня: загрузка ...",
+  "todayPomodoros": "Сегодня: {pomodoros}",
+  "@todayPomodoros": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "String"
+      }
+    }
+  },
+  "pomodoroCount": "{count, plural, =1{1 Pomodoro} other{{count} Pomodoro}}",
+  "@pomodoroCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pause": "Пауза",
+  "continueButton": "Продолжить",
+  "start": "Старт",
+  "skipPause": "Пропустить перерыв",
+  "shortcutSpaceCompact": "Пробел: старт/пауза",
+  "shortcutResetCompact": "R: сброс",
+  "shortcutSkipCompact": "S: пропустить",
+  "shortcutSpace": "Пробел: старт/пауза",
+  "shortcutReset": "R: сброс",
+  "shortcutSkip": "S: пропустить перерыв",
+  "phaseSavingTitle": "Сохранение фазы",
+  "phaseSavingDescription": "Завершённая фаза сохраняется, и таймер подготавливается.",
+  "storageProblem": "Проблема хранения",
+  "oneFinishedPhaseSavingBackground": "Завершённая фаза сохраняется в фоновом режиме.",
+  "manyFinishedPhasesSavingBackground": "{count} завершённых фаз сохраняются в фоновом режиме.",
+  "@manyFinishedPhasesSavingBackground": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timerLocalSaveFailed": "Не удалось сохранить завершённую фазу локально.",
+  "timerBackendSyncFailed": "Завершённая фаза сохранена локально, но ещё не синхронизирована с backend.",
+  "phaseProgress": "{elapsed} из {total}",
+  "@phaseProgress": {
+    "placeholders": {
+      "elapsed": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  }
+}
