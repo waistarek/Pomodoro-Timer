@@ -1,0 +1,423 @@
+{
+  "@@locale": "it",
+  "appTitle": "App Pomodoro",
+  "navTimer": "Timer",
+  "navTasks": "Attività",
+  "navStats": "Statistiche",
+  "navSettings": "Impostazioni",
+  "navAccount": "Account",
+  "close": "Chiudi",
+  "retry": "Riprova",
+  "cancel": "Annulla",
+  "delete": "Elimina",
+  "edit": "Modifica",
+  "save": "Salva",
+  "reset": "Reimposta",
+  "refresh": "Aggiorna",
+  "messageClose": "Chiudi messaggio",
+  "or": "oppure",
+  "yes": "Sì",
+  "no": "No",
+  "emailVerifiedSuccess": "E-mail verificata con successo. Ora puoi accedere.",
+  "emailVerifiedExpired": "Il link di verifica è scaduto.",
+  "emailVerifiedInvalid": "Il link di verifica non è valido.",
+  "sessionSyncOneWithAccount": "Una sessione viene sincronizzata con il tuo account.",
+  "sessionSyncManyWithAccount": "{count} sessioni vengono sincronizzate con il tuo account.",
+  "@sessionSyncManyWithAccount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOneAfterLogin": "Una sessione locale verrà sincronizzata dopo l’accesso.",
+  "sessionSyncManyAfterLogin": "{count} sessioni locali verranno sincronizzate dopo l’accesso.",
+  "@sessionSyncManyAfterLogin": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOnePending": "Una sessione è in attesa di sincronizzazione.",
+  "sessionSyncManyPending": "{count} sessioni sono in attesa di sincronizzazione.",
+  "@sessionSyncManyPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncDone": "Sincronizzazione completata.",
+  "sessionSyncFailed": "Al momento non è stato possibile sincronizzare le sessioni. L’app riproverà più tardi.",
+  "accountTitle": "Account utente",
+  "loginTitle": "Accesso",
+  "createAccountTitle": "Crea nuovo account",
+  "emailPasswordLoginTitle": "Accedi con e-mail e password",
+  "emailPasswordCreateTitle": "Crea account con e-mail e password",
+  "emailLabel": "E-mail",
+  "passwordLabel": "Password",
+  "loginButton": "Accedi",
+  "createAccountButton": "Crea account",
+  "rememberSessionTitle": "Rimani connesso su questo dispositivo",
+  "rememberSessionSubtitle": "Se disattivato, l’accesso resta attivo solo per la sessione corrente dell’app.",
+  "forgotPasswordButton": "Password dimenticata?",
+  "alreadyHaveAccount": "Ho già un account",
+  "googleSection": "Sezione Google",
+  "googleLoginButton": "Accedi con Google",
+  "googleCreateButton": "Crea account con Google",
+  "googleNotConfigured": "L’accesso con Google non è configurato.",
+  "googlePreparing": "Preparazione dell’accesso con Google ...",
+  "googleNoIdToken": "Google non ha restituito un token ID valido.",
+  "googlePrepareFailed": "Non è stato possibile preparare l’accesso con Google: {error}",
+  "@googlePrepareFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginFailed": "Accesso con Google non riuscito: {error}",
+  "@googleLoginFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginSuccess": "Accesso con Google riuscito.",
+  "googleAccountCreated": "L’account Google è stato creato e hai effettuato l’accesso.",
+  "googleWebOnly": "L’accesso con Google è disponibile solo nell’app web",
+  "githubSection": "Sezione GitHub",
+  "githubLoginButton": "Accedi con GitHub",
+  "githubCreateButton": "Crea account con GitHub",
+  "githubNotConfigured": "L’accesso con GitHub non è configurato.",
+  "githubCancelled": "L’accesso con GitHub è stato annullato o non è riuscito.",
+  "githubSecurityCancelled": "L’accesso con GitHub è stato annullato per motivi di sicurezza.",
+  "githubNoValidCode": "GitHub non ha restituito un codice valido.",
+  "githubLoginSuccess": "Accesso con GitHub riuscito.",
+  "githubAccountCreated": "L’account GitHub è stato creato e hai effettuato l’accesso.",
+  "passwordResetTitle": "Reimposta password",
+  "passwordResetDescription": "Inserisci il tuo indirizzo e-mail. Se esiste un account, riceverai un link per reimpostare la password.",
+  "sendResetLink": "Invia link di reimpostazione",
+  "backToLogin": "Torna all’accesso",
+  "setNewPasswordTitle": "Imposta nuova password",
+  "setNewPasswordDescription": "Imposta una nuova password per il tuo account.",
+  "newPasswordLabel": "Nuova password",
+  "repeatNewPasswordLabel": "Ripeti nuova password",
+  "passwordsDoNotMatch": "Le password non corrispondono",
+  "savePassword": "Salva password",
+  "registrationSuccess": "Registrazione riuscita. Verifica il tuo indirizzo e-mail e poi accedi.",
+  "passwordResetRequestSuccess": "Se esiste un account con questa e-mail, è stato inviato un link di reimpostazione.",
+  "passwordChangedSuccess": "La password è stata modificata. Ora puoi accedere.",
+  "passwordResetMailSent": "Se l’account esiste, è stato inviato un link di reimpostazione.",
+  "loginSuccess": "Accesso riuscito.",
+  "invalidEmail": "Inserisci un indirizzo e-mail valido",
+  "passwordMinLength": "Almeno 8 caratteri",
+  "loggedInTitle": "Account utente",
+  "loggedInDescription": "Al momento hai effettuato l’accesso.",
+  "emailAddress": "Indirizzo e-mail",
+  "emailStatus": "Stato e-mail",
+  "emailVerified": "Verificata",
+  "emailNotVerified": "Non ancora verificata",
+  "accountCreated": "Account creato",
+  "synchronization": "Sincronizzazione",
+  "accountInfoWarning": "L’app può ripristinare automaticamente la tua sessione se un token di accesso valido è salvato localmente. Su dispositivi condivisi dovresti sempre disconnetterti.",
+  "changePassword": "Cambia password",
+  "logout": "Esci",
+  "syncRunning": "Sincronizzazione in corso",
+  "syncOneWaiting": "1 sessione in attesa",
+  "syncManyWaiting": "{count} sessioni in attesa",
+  "@syncManyWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncError": "Errore di sincronizzazione",
+  "syncAllSynced": "Tutto sincronizzato",
+  "sessionExpired": "La tua sessione è scaduta. Accedi di nuovo.",
+  "settingsSaved": "Impostazioni salvate.",
+  "timerTimesTitle": "Durate del timer",
+  "timerTimesDescription": "Definisci la durata delle fasi di lavoro e delle pause.",
+  "workTime": "Tempo di lavoro",
+  "shortBreak": "Pausa breve",
+  "longBreak": "Pausa lunga",
+  "longBreakAfter": "Pausa lunga dopo",
+  "minutes": "Minuti",
+  "pomodorosUnit": "Pomodori",
+  "behaviorTitle": "Comportamento",
+  "behaviorDescription": "Personalizza il comportamento del timer durante l’utilizzo.",
+  "autoStartNextPhase": "Avvia automaticamente la fase successiva",
+  "enableSound": "Attiva suono",
+  "enableVibration": "Attiva vibrazione",
+  "vibrationDescription": "La vibrazione mobile effettiva verrà collegata più avanti tramite un plugin.",
+  "languageTitle": "Lingua",
+  "languageDescription": "Scegli la lingua dell’app. Con “Lingua di sistema”, l’app usa la lingua del browser o del dispositivo.",
+  "languageLabel": "Lingua dell’app",
+  "languageSystem": "Lingua di sistema",
+  "languageGerman": "Tedesco",
+  "languageEnglish": "Inglese",
+  "languageArabic": "Arabo",
+  "languageChinese": "Cinese",
+  "languageFrench": "Francese",
+  "languageSpanish": "Spagnolo",
+  "languageHindi": "Hindi",
+  "languagePortuguese": "Portoghese",
+  "languageRussian": "Russo",
+  "languageJapanese": "Giapponese",
+  "languageTurkish": "Turco",
+  "languageItalian": "Italiano",
+  "languageKorean": "Coreano",
+  "languageIndonesian": "Indonesiano",
+  "languagePersian": "Persiano",
+  "appearanceTitle": "Aspetto",
+  "appearanceDescription": "Scegli la modalità di visualizzazione e il colore principale dell’app.",
+  "appearanceLabel": "Aspetto",
+  "systemTheme": "Sistema",
+  "lightMode": "Modalità chiara",
+  "darkMode": "Modalità scura",
+  "themeColor": "Colore tema",
+  "red": "Rosso",
+  "blue": "Blu",
+  "green": "Verde",
+  "purple": "Viola",
+  "saveSettings": "Salva impostazioni",
+  "noChanges": "Nessuna modifica disponibile",
+  "decrease": "Diminuisci",
+  "increase": "Aumenta",
+  "minutesShort": "min",
+  "settingsSavedButNotSynced": "Impostazioni salvate localmente, ma non ancora sincronizzate.",
+  "settingsLoadRemoteFailed": "Non è stato possibile caricare le impostazioni dal backend. Verranno usate le impostazioni locali.",
+  "statsTitle": "Statistiche",
+  "statsRefresh": "Aggiorna",
+  "statsWeek": "Settimana",
+  "statsMonth": "Mese",
+  "statsYear": "Anno",
+  "statsTasksTime": "Tempo per attività",
+  "chartFocusPerDay": "Tempo di concentrazione per giorno",
+  "chartFocusPerCalendarWeek": "Tempo di concentrazione per settimana di calendario",
+  "chartFocusPerMonth": "Tempo di concentrazione per mese",
+  "chartFocusPerTask": "Tempo di concentrazione per attività",
+  "xAxisWeek": "Asse X: giorni della settimana",
+  "xAxisMonth": "Asse X: settimane di calendario nel mese",
+  "xAxisYear": "Asse X: mesi dell’anno",
+  "xAxisTasks": "Asse X: attività",
+  "periodNoData": "Periodo: nessun dato disponibile",
+  "periodRange": "Periodo: {start} – {end}",
+  "@periodRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "previousPeriod": "Periodo precedente",
+  "nextPeriod": "Periodo successivo",
+  "statsLoading": "Caricamento statistiche ...",
+  "taskStatsLoading": "Caricamento statistiche attività ...",
+  "taskStatsEmpty": "Non è ancora disponibile tempo di lavoro per attività. Avvia un Pomodoro con un’attività per vedere i dati.",
+  "pomodoros": "Pomodori",
+  "focusTime": "Tempo di concentrazione",
+  "streak": "Serie",
+  "bestPeriod": "Periodo migliore",
+  "daysCount": "{count, plural, =1{1 giorno} other{{count} giorni}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "yAxisFocusHoursWithXAxis": "Asse Y: tempo di concentrazione in ore · {xAxisText}",
+  "@yAxisFocusHoursWithXAxis": {
+    "placeholders": {
+      "xAxisText": {
+        "type": "String"
+      }
+    }
+  },
+  "focusTimeMinutes": "Tempo di concentrazione in minuti",
+  "sortedByHighestFocusTime": "Ordinato per tempo di concentrazione più alto.",
+  "taskPomodoroMinutes": "{pomodoros} Pomodori · {minutes} min",
+  "@taskPomodoroMinutes": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "statsNoData": "Non sono ancora disponibili dati statistici.",
+  "statsLoadFailed": "Non è stato possibile caricare le statistiche. Accedi e controlla la connessione Internet.",
+  "taskStatsLoadFailed": "Non è stato possibile caricare le statistiche delle attività.",
+  "todayPomodorosLoadFailed": "Non è stato possibile caricare il numero di Pomodori di oggi.",
+  "noTaskTitle": "Senza attività",
+  "calendarWeekShort": "Sett. {week}",
+  "@calendarWeekShort": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarWeekWithYear": "Sett. {week}/{year}",
+  "@calendarWeekWithYear": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "tasksTitle": "Attività",
+  "tasksRefreshTooltip": "Aggiorna attività",
+  "taskSingular": "Attività",
+  "deleteTaskTitle": "Eliminare attività?",
+  "deleteTaskMessage": "Vuoi davvero eliminare l’attività “{title}”?",
+  "@deleteTaskMessage": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksLoading": "Caricamento attività ...",
+  "tasksEmpty": "Non ci sono ancora attività. Crea la tua prima attività.",
+  "tasksSearchEmpty": "Nessuna attività trovata. Modifica la ricerca o i filtri.",
+  "noTimerTaskSelected": "Nessuna attività selezionata per il timer",
+  "activeTimerTask": "Attività attiva del timer: {title}",
+  "@activeTimerTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskSelectionLockedDescription": "Una fase del timer è in corso o in pausa. L’attività è quindi attualmente bloccata.",
+  "taskSelectionNextWorkPhaseDescription": "Questa attività verrà usata per la prossima fase di lavoro.",
+  "withoutTask": "Senza attività",
+  "searchTasks": "Cerca attività",
+  "clearSearch": "Cancella ricerca",
+  "filterAll": "Tutte",
+  "filterOpen": "Aperte",
+  "filterCompleted": "Completate",
+  "sortLabel": "Ordinamento",
+  "sortNewest": "Più recenti prima",
+  "sortPriority": "Priorità",
+  "sortPomodoros": "Pomodori",
+  "active": "Attiva",
+  "completed": "Completata",
+  "locked": "Bloccata",
+  "forTimer": "Per il timer",
+  "priorityLow": "Bassa",
+  "priorityMedium": "Media",
+  "priorityHigh": "Alta",
+  "taskLoadRemoteFailed": "Non è stato possibile caricare le attività dal backend. I dati locali continueranno a essere mostrati.",
+  "taskSavedLocallyNotSynced": "L’attività è stata salvata localmente, ma non è stato possibile sincronizzarla con l’account.",
+  "taskSaveFailedRolledBack": "Non è stato possibile salvare l’attività. L’ultima modifica è stata annullata.",
+  "taskDeleteFailedRestored": "Non è stato possibile eliminare l’attività dall’account. L’attività è stata ripristinata.",
+  "taskCreateTitle": "Crea attività",
+  "taskEditTitle": "Modifica attività",
+  "taskTitleLabel": "Titolo",
+  "taskTitleRequired": "Inserisci un titolo",
+  "taskTitleTooShort": "Il titolo è troppo breve.",
+  "taskDescriptionLabel": "Descrizione",
+  "priorityLabel": "Priorità",
+  "tagsLabel": "Tag/categorie",
+  "tagsHint": "ad es. università, lavoro, sviluppo",
+  "timerResetTitle": "Reimpostare il timer?",
+  "timerResetMessage": "La fase corrente verrà annullata e non verrà salvata come sessione completata.",
+  "taskNoneSelected": "Nessuna attività selezionata",
+  "currentTask": "Attività corrente: {title}",
+  "@currentTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskForWorkPhase": "Attività per questa fase di lavoro",
+  "taskLockedToPhase": "Questa fase è collegata all’attività selezionata.",
+  "phaseWork": "Fase di lavoro",
+  "phaseShortBreak": "Pausa breve",
+  "phaseLongBreak": "Pausa lunga",
+  "timerStatusSaving": "Salvataggio ...",
+  "timerStatusRunning": "In esecuzione",
+  "timerStatusPaused": "In pausa",
+  "timerStatusReady": "Pronto",
+  "phaseDescriptionWork": "Tempo di concentrazione",
+  "phaseDescriptionShortBreak": "Recupero breve",
+  "phaseDescriptionLongBreak": "Recupero più lungo",
+  "afterNextPhase": "{phaseDescription} · Dopo: {nextPhase}",
+  "@afterNextPhase": {
+    "placeholders": {
+      "phaseDescription": {
+        "type": "String"
+      },
+      "nextPhase": {
+        "type": "String"
+      }
+    }
+  },
+  "todayPomodorosLoading": "Oggi: caricamento ...",
+  "todayPomodoros": "Oggi: {pomodoros}",
+  "@todayPomodoros": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "String"
+      }
+    }
+  },
+  "pomodoroCount": "{count, plural, =1{1 Pomodoro} other{{count} Pomodori}}",
+  "@pomodoroCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pause": "Pausa",
+  "continueButton": "Continua",
+  "start": "Avvia",
+  "skipPause": "Salta pausa",
+  "shortcutSpaceCompact": "Spazio: avvia/pausa",
+  "shortcutResetCompact": "R: reimposta",
+  "shortcutSkipCompact": "S: salta",
+  "shortcutSpace": "Barra spaziatrice: avvia/pausa",
+  "shortcutReset": "R: reimposta",
+  "shortcutSkip": "S: salta pausa",
+  "phaseSavingTitle": "Salvataggio fase",
+  "phaseSavingDescription": "La fase completata viene salvata e il timer viene preparato.",
+  "storageProblem": "Problema di archiviazione",
+  "oneFinishedPhaseSavingBackground": "La fase completata viene salvata in background.",
+  "manyFinishedPhasesSavingBackground": "{count} fasi completate vengono salvate in background.",
+  "@manyFinishedPhasesSavingBackground": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timerLocalSaveFailed": "Non è stato possibile salvare localmente la fase completata.",
+  "timerBackendSyncFailed": "La fase completata è stata salvata localmente, ma non è ancora stata sincronizzata con il backend.",
+  "phaseProgress": "{elapsed} di {total}",
+  "@phaseProgress": {
+    "placeholders": {
+      "elapsed": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  }
+}
