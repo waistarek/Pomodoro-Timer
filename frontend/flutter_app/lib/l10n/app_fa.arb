@@ -1,0 +1,423 @@
+{
+  "@@locale": "fa",
+  "appTitle": "برنامه پومودورو",
+  "navTimer": "تایمر",
+  "navTasks": "وظایف",
+  "navStats": "آمار",
+  "navSettings": "تنظیمات",
+  "navAccount": "حساب",
+  "close": "بستن",
+  "retry": "تلاش دوباره",
+  "cancel": "لغو",
+  "delete": "حذف",
+  "edit": "ویرایش",
+  "save": "ذخیره",
+  "reset": "بازنشانی",
+  "refresh": "به‌روزرسانی",
+  "messageClose": "بستن پیام",
+  "or": "یا",
+  "yes": "بله",
+  "no": "خیر",
+  "emailVerifiedSuccess": "ایمیل با موفقیت تأیید شد. اکنون می‌توانید وارد شوید.",
+  "emailVerifiedExpired": "لینک تأیید منقضی شده است.",
+  "emailVerifiedInvalid": "لینک تأیید نامعتبر است.",
+  "sessionSyncOneWithAccount": "یک جلسه با حساب شما همگام‌سازی می‌شود.",
+  "sessionSyncManyWithAccount": "{count} جلسه با حساب شما همگام‌سازی می‌شوند.",
+  "@sessionSyncManyWithAccount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOneAfterLogin": "یک جلسه محلی پس از ورود همگام‌سازی می‌شود.",
+  "sessionSyncManyAfterLogin": "{count} جلسه محلی پس از ورود همگام‌سازی می‌شوند.",
+  "@sessionSyncManyAfterLogin": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOnePending": "یک جلسه در انتظار همگام‌سازی است.",
+  "sessionSyncManyPending": "{count} جلسه در انتظار همگام‌سازی هستند.",
+  "@sessionSyncManyPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncDone": "همگام‌سازی کامل شد.",
+  "sessionSyncFailed": "جلسه‌ها در حال حاضر همگام‌سازی نشدند. بعداً دوباره تلاش می‌شود.",
+  "accountTitle": "حساب کاربری",
+  "loginTitle": "ورود",
+  "createAccountTitle": "ایجاد حساب جدید",
+  "emailPasswordLoginTitle": "ورود با ایمیل و رمز عبور",
+  "emailPasswordCreateTitle": "ایجاد حساب با ایمیل و رمز عبور",
+  "emailLabel": "ایمیل",
+  "passwordLabel": "رمز عبور",
+  "loginButton": "ورود",
+  "createAccountButton": "ایجاد حساب",
+  "rememberSessionTitle": "در این دستگاه وارد بمان",
+  "rememberSessionSubtitle": "اگر غیرفعال باشد، ورود فقط برای جلسه فعلی برنامه فعال می‌ماند.",
+  "forgotPasswordButton": "رمز عبور را فراموش کرده‌اید؟",
+  "alreadyHaveAccount": "من قبلاً حساب دارم",
+  "googleSection": "بخش Google",
+  "googleLoginButton": "ورود با Google",
+  "googleCreateButton": "ایجاد حساب با Google",
+  "googleNotConfigured": "ورود با Google پیکربندی نشده است.",
+  "googlePreparing": "در حال آماده‌سازی ورود با Google ...",
+  "googleNoIdToken": "Google توکن شناسه معتبر برنگرداند.",
+  "googlePrepareFailed": "آماده‌سازی ورود با Google ممکن نشد: {error}",
+  "@googlePrepareFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginFailed": "ورود با Google ناموفق بود: {error}",
+  "@googleLoginFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginSuccess": "ورود با Google با موفقیت انجام شد.",
+  "googleAccountCreated": "حساب Google ایجاد شد و شما وارد شدید.",
+  "googleWebOnly": "ورود با Google فقط در برنامه وب در دسترس است",
+  "githubSection": "بخش GitHub",
+  "githubLoginButton": "ورود با GitHub",
+  "githubCreateButton": "ایجاد حساب با GitHub",
+  "githubNotConfigured": "ورود با GitHub پیکربندی نشده است.",
+  "githubCancelled": "ورود با GitHub لغو شد یا ناموفق بود.",
+  "githubSecurityCancelled": "ورود با GitHub به دلایل امنیتی لغو شد.",
+  "githubNoValidCode": "GitHub کد معتبر برنگرداند.",
+  "githubLoginSuccess": "ورود با GitHub با موفقیت انجام شد.",
+  "githubAccountCreated": "حساب GitHub ایجاد شد و شما وارد شدید.",
+  "passwordResetTitle": "بازنشانی رمز عبور",
+  "passwordResetDescription": "آدرس ایمیل خود را وارد کنید. اگر حسابی وجود داشته باشد، لینک بازنشانی رمز عبور را دریافت می‌کنید.",
+  "sendResetLink": "ارسال لینک بازنشانی",
+  "backToLogin": "بازگشت به ورود",
+  "setNewPasswordTitle": "تنظیم رمز عبور جدید",
+  "setNewPasswordDescription": "برای حساب خود یک رمز عبور جدید تعیین کنید.",
+  "newPasswordLabel": "رمز عبور جدید",
+  "repeatNewPasswordLabel": "تکرار رمز عبور جدید",
+  "passwordsDoNotMatch": "رمزهای عبور مطابقت ندارند",
+  "savePassword": "ذخیره رمز عبور",
+  "registrationSuccess": "ثبت‌نام با موفقیت انجام شد. لطفاً ایمیل خود را تأیید کنید و سپس وارد شوید.",
+  "passwordResetRequestSuccess": "اگر حسابی با این ایمیل وجود داشته باشد، لینک بازنشانی ارسال شده است.",
+  "passwordChangedSuccess": "رمز عبور تغییر کرد. اکنون می‌توانید وارد شوید.",
+  "passwordResetMailSent": "اگر حساب وجود داشته باشد، لینک بازنشانی ارسال شده است.",
+  "loginSuccess": "ورود با موفقیت انجام شد.",
+  "invalidEmail": "لطفاً یک ایمیل معتبر وارد کنید",
+  "passwordMinLength": "حداقل ۸ کاراکتر",
+  "loggedInTitle": "حساب کاربری",
+  "loggedInDescription": "شما در حال حاضر وارد شده‌اید.",
+  "emailAddress": "آدرس ایمیل",
+  "emailStatus": "وضعیت ایمیل",
+  "emailVerified": "تأیید شده",
+  "emailNotVerified": "هنوز تأیید نشده",
+  "accountCreated": "حساب ایجاد شد",
+  "synchronization": "همگام‌سازی",
+  "accountInfoWarning": "اگر یک توکن ورود معتبر به‌صورت محلی ذخیره شده باشد، برنامه می‌تواند جلسه شما را به‌صورت خودکار بازیابی کند. در دستگاه‌های مشترک همیشه باید خارج شوید.",
+  "changePassword": "تغییر رمز عبور",
+  "logout": "خروج",
+  "syncRunning": "همگام‌سازی در حال اجراست",
+  "syncOneWaiting": "۱ جلسه در انتظار است",
+  "syncManyWaiting": "{count} جلسه در انتظار هستند",
+  "@syncManyWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncError": "خطای همگام‌سازی",
+  "syncAllSynced": "همه چیز همگام‌سازی شد",
+  "sessionExpired": "جلسه شما منقضی شده است. لطفاً دوباره وارد شوید.",
+  "settingsSaved": "تنظیمات ذخیره شد.",
+  "timerTimesTitle": "مدت‌های تایمر",
+  "timerTimesDescription": "مدت مرحله‌های کار و استراحت را تعیین کنید.",
+  "workTime": "زمان کار",
+  "shortBreak": "استراحت کوتاه",
+  "longBreak": "استراحت طولانی",
+  "longBreakAfter": "استراحت طولانی پس از",
+  "minutes": "دقیقه",
+  "pomodorosUnit": "پومودورو",
+  "behaviorTitle": "رفتار",
+  "behaviorDescription": "نحوه رفتار تایمر هنگام استفاده را تنظیم کنید.",
+  "autoStartNextPhase": "شروع خودکار مرحله بعدی",
+  "enableSound": "فعال‌سازی صدا",
+  "enableVibration": "فعال‌سازی لرزش",
+  "vibrationDescription": "لرزش واقعی موبایل بعداً از طریق یک افزونه متصل می‌شود.",
+  "languageTitle": "زبان",
+  "languageDescription": "زبان برنامه را انتخاب کنید. با «زبان سیستم»، برنامه از زبان مرورگر یا دستگاه استفاده می‌کند.",
+  "languageLabel": "زبان برنامه",
+  "languageSystem": "زبان سیستم",
+  "languageGerman": "آلمانی",
+  "languageEnglish": "انگلیسی",
+  "languageArabic": "عربی",
+  "languageChinese": "چینی",
+  "languageFrench": "فرانسوی",
+  "languageSpanish": "اسپانیایی",
+  "languageHindi": "هندی",
+  "languagePortuguese": "پرتغالی",
+  "languageRussian": "روسی",
+  "languageJapanese": "ژاپنی",
+  "languageTurkish": "ترکی",
+  "languageItalian": "ایتالیایی",
+  "languageKorean": "کره‌ای",
+  "languageIndonesian": "اندونزیایی",
+  "languagePersian": "فارسی",
+  "appearanceTitle": "ظاهر",
+  "appearanceDescription": "حالت نمایش و رنگ اصلی برنامه را انتخاب کنید.",
+  "appearanceLabel": "ظاهر",
+  "systemTheme": "سیستم",
+  "lightMode": "حالت روشن",
+  "darkMode": "حالت تاریک",
+  "themeColor": "رنگ پوسته",
+  "red": "قرمز",
+  "blue": "آبی",
+  "green": "سبز",
+  "purple": "بنفش",
+  "saveSettings": "ذخیره تنظیمات",
+  "noChanges": "تغییری وجود ندارد",
+  "decrease": "کاهش",
+  "increase": "افزایش",
+  "minutesShort": "دقیقه",
+  "settingsSavedButNotSynced": "تنظیمات به‌صورت محلی ذخیره شد، اما هنوز همگام‌سازی نشده است.",
+  "settingsLoadRemoteFailed": "تنظیمات از بک‌اند بارگذاری نشد. تنظیمات محلی استفاده می‌شود.",
+  "statsTitle": "آمار",
+  "statsRefresh": "به‌روزرسانی",
+  "statsWeek": "هفته",
+  "statsMonth": "ماه",
+  "statsYear": "سال",
+  "statsTasksTime": "زمان وظایف",
+  "chartFocusPerDay": "زمان تمرکز در هر روز",
+  "chartFocusPerCalendarWeek": "زمان تمرکز در هر هفته تقویمی",
+  "chartFocusPerMonth": "زمان تمرکز در هر ماه",
+  "chartFocusPerTask": "زمان تمرکز برای هر وظیفه",
+  "xAxisWeek": "محور X: روزهای هفته",
+  "xAxisMonth": "محور X: هفته‌های تقویمی در ماه",
+  "xAxisYear": "محور X: ماه‌های سال",
+  "xAxisTasks": "محور X: وظایف",
+  "periodNoData": "بازه: داده‌ای موجود نیست",
+  "periodRange": "بازه: {start} – {end}",
+  "@periodRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "previousPeriod": "بازه قبلی",
+  "nextPeriod": "بازه بعدی",
+  "statsLoading": "در حال بارگذاری آمار ...",
+  "taskStatsLoading": "در حال بارگذاری آمار وظایف ...",
+  "taskStatsEmpty": "هنوز زمان کار برای هر وظیفه وجود ندارد. برای دیدن داده‌ها، یک پومودورو را با وظیفه شروع کنید.",
+  "pomodoros": "پومودورو",
+  "focusTime": "زمان تمرکز",
+  "streak": "روند پیوسته",
+  "bestPeriod": "بهترین بازه",
+  "daysCount": "{count, plural, =1{۱ روز} other{{count} روز}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "yAxisFocusHoursWithXAxis": "محور Y: زمان تمرکز بر حسب ساعت · {xAxisText}",
+  "@yAxisFocusHoursWithXAxis": {
+    "placeholders": {
+      "xAxisText": {
+        "type": "String"
+      }
+    }
+  },
+  "focusTimeMinutes": "زمان تمرکز بر حسب دقیقه",
+  "sortedByHighestFocusTime": "مرتب‌شده بر اساس بیشترین زمان تمرکز.",
+  "taskPomodoroMinutes": "{pomodoros} پومودورو · {minutes} دقیقه",
+  "@taskPomodoroMinutes": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "statsNoData": "هنوز داده آماری وجود ندارد.",
+  "statsLoadFailed": "آمار بارگذاری نشد. لطفاً وارد شوید و اتصال اینترنت را بررسی کنید.",
+  "taskStatsLoadFailed": "آمار وظایف بارگذاری نشد.",
+  "todayPomodorosLoadFailed": "تعداد پومودوروهای امروز بارگذاری نشد.",
+  "noTaskTitle": "بدون وظیفه",
+  "calendarWeekShort": "هفته {week}",
+  "@calendarWeekShort": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarWeekWithYear": "هفته {week}/{year}",
+  "@calendarWeekWithYear": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "tasksTitle": "وظایف",
+  "tasksRefreshTooltip": "به‌روزرسانی وظایف",
+  "taskSingular": "وظیفه",
+  "deleteTaskTitle": "وظیفه حذف شود؟",
+  "deleteTaskMessage": "آیا واقعاً می‌خواهید وظیفه «{title}» را حذف کنید؟",
+  "@deleteTaskMessage": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksLoading": "در حال بارگذاری وظایف ...",
+  "tasksEmpty": "هنوز وظیفه‌ای وجود ندارد. اولین وظیفه خود را ایجاد کنید.",
+  "tasksSearchEmpty": "وظیفه‌ای پیدا نشد. جستجو یا فیلترها را تغییر دهید.",
+  "noTimerTaskSelected": "هیچ وظیفه‌ای برای تایمر انتخاب نشده است",
+  "activeTimerTask": "وظیفه فعال تایمر: {title}",
+  "@activeTimerTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskSelectionLockedDescription": "یک مرحله تایمر در حال اجرا یا متوقف‌شده است. بنابراین وظیفه در حال حاضر قفل است.",
+  "taskSelectionNextWorkPhaseDescription": "این وظیفه برای مرحله کاری بعدی استفاده می‌شود.",
+  "withoutTask": "بدون وظیفه",
+  "searchTasks": "جستجوی وظایف",
+  "clearSearch": "پاک‌کردن جستجو",
+  "filterAll": "همه",
+  "filterOpen": "باز",
+  "filterCompleted": "انجام‌شده",
+  "sortLabel": "مرتب‌سازی",
+  "sortNewest": "جدیدترین‌ها ابتدا",
+  "sortPriority": "اولویت",
+  "sortPomodoros": "پومودورو",
+  "active": "فعال",
+  "completed": "انجام‌شده",
+  "locked": "قفل‌شده",
+  "forTimer": "برای تایمر",
+  "priorityLow": "کم",
+  "priorityMedium": "متوسط",
+  "priorityHigh": "زیاد",
+  "taskLoadRemoteFailed": "وظایف از بک‌اند بارگذاری نشدند. داده‌های محلی همچنان نمایش داده می‌شوند.",
+  "taskSavedLocallyNotSynced": "وظیفه به‌صورت محلی ذخیره شد، اما با حساب همگام‌سازی نشد.",
+  "taskSaveFailedRolledBack": "وظیفه ذخیره نشد. آخرین تغییر برگردانده شد.",
+  "taskDeleteFailedRestored": "وظیفه از حساب حذف نشد. وظیفه بازیابی شد.",
+  "taskCreateTitle": "ایجاد وظیفه",
+  "taskEditTitle": "ویرایش وظیفه",
+  "taskTitleLabel": "عنوان",
+  "taskTitleRequired": "لطفاً عنوان را وارد کنید",
+  "taskTitleTooShort": "عنوان خیلی کوتاه است.",
+  "taskDescriptionLabel": "توضیح",
+  "priorityLabel": "اولویت",
+  "tagsLabel": "برچسب‌ها/دسته‌ها",
+  "tagsHint": "مثلاً دانشگاه، کار، توسعه",
+  "timerResetTitle": "تایمر بازنشانی شود؟",
+  "timerResetMessage": "مرحله فعلی لغو می‌شود و به‌عنوان جلسه کامل‌شده ذخیره نمی‌شود.",
+  "taskNoneSelected": "هیچ وظیفه‌ای انتخاب نشده است",
+  "currentTask": "وظیفه فعلی: {title}",
+  "@currentTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskForWorkPhase": "وظیفه برای این مرحله کاری",
+  "taskLockedToPhase": "این مرحله به وظیفه انتخاب‌شده متصل است.",
+  "phaseWork": "مرحله کار",
+  "phaseShortBreak": "استراحت کوتاه",
+  "phaseLongBreak": "استراحت طولانی",
+  "timerStatusSaving": "در حال ذخیره ...",
+  "timerStatusRunning": "در حال اجرا",
+  "timerStatusPaused": "متوقف",
+  "timerStatusReady": "آماده",
+  "phaseDescriptionWork": "زمان تمرکز",
+  "phaseDescriptionShortBreak": "استراحت کوتاه",
+  "phaseDescriptionLongBreak": "استراحت طولانی‌تر",
+  "afterNextPhase": "{phaseDescription} · بعدی: {nextPhase}",
+  "@afterNextPhase": {
+    "placeholders": {
+      "phaseDescription": {
+        "type": "String"
+      },
+      "nextPhase": {
+        "type": "String"
+      }
+    }
+  },
+  "todayPomodorosLoading": "امروز: در حال بارگذاری ...",
+  "todayPomodoros": "امروز: {pomodoros}",
+  "@todayPomodoros": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "String"
+      }
+    }
+  },
+  "pomodoroCount": "{count, plural, =1{۱ پومودورو} other{{count} پومودورو}}",
+  "@pomodoroCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pause": "توقف",
+  "continueButton": "ادامه",
+  "start": "شروع",
+  "skipPause": "رد کردن استراحت",
+  "shortcutSpaceCompact": "Space: شروع/توقف",
+  "shortcutResetCompact": "R: بازنشانی",
+  "shortcutSkipCompact": "S: رد کردن",
+  "shortcutSpace": "کلید فاصله: شروع/توقف",
+  "shortcutReset": "R: بازنشانی",
+  "shortcutSkip": "S: رد کردن استراحت",
+  "phaseSavingTitle": "در حال ذخیره مرحله",
+  "phaseSavingDescription": "مرحله کامل‌شده ذخیره می‌شود و تایمر آماده می‌شود.",
+  "storageProblem": "مشکل ذخیره‌سازی",
+  "oneFinishedPhaseSavingBackground": "مرحله کامل‌شده در پس‌زمینه ذخیره می‌شود.",
+  "manyFinishedPhasesSavingBackground": "{count} مرحله کامل‌شده در پس‌زمینه ذخیره می‌شوند.",
+  "@manyFinishedPhasesSavingBackground": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timerLocalSaveFailed": "مرحله کامل‌شده به‌صورت محلی ذخیره نشد.",
+  "timerBackendSyncFailed": "مرحله کامل‌شده به‌صورت محلی ذخیره شد، اما هنوز با بک‌اند همگام‌سازی نشده است.",
+  "phaseProgress": "{elapsed} از {total}",
+  "@phaseProgress": {
+    "placeholders": {
+      "elapsed": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  }
+}
