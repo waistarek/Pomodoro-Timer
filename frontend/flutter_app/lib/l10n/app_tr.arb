@@ -1,0 +1,423 @@
+{
+  "@@locale": "tr",
+  "appTitle": "Pomodoro Uygulaması",
+  "navTimer": "Zamanlayıcı",
+  "navTasks": "Görevler",
+  "navStats": "İstatistikler",
+  "navSettings": "Ayarlar",
+  "navAccount": "Hesap",
+  "close": "Kapat",
+  "retry": "Tekrar dene",
+  "cancel": "İptal",
+  "delete": "Sil",
+  "edit": "Düzenle",
+  "save": "Kaydet",
+  "reset": "Sıfırla",
+  "refresh": "Yenile",
+  "messageClose": "Mesajı kapat",
+  "or": "veya",
+  "yes": "Evet",
+  "no": "Hayır",
+  "emailVerifiedSuccess": "E-posta başarıyla doğrulandı. Artık giriş yapabilirsiniz.",
+  "emailVerifiedExpired": "Doğrulama bağlantısının süresi doldu.",
+  "emailVerifiedInvalid": "Doğrulama bağlantısı geçersiz.",
+  "sessionSyncOneWithAccount": "Bir oturum hesabınızla senkronize ediliyor.",
+  "sessionSyncManyWithAccount": "{count} oturum hesabınızla senkronize ediliyor.",
+  "@sessionSyncManyWithAccount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOneAfterLogin": "Bir yerel oturum giriş yaptıktan sonra senkronize edilecek.",
+  "sessionSyncManyAfterLogin": "{count} yerel oturum giriş yaptıktan sonra senkronize edilecek.",
+  "@sessionSyncManyAfterLogin": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOnePending": "Bir oturum senkronizasyon bekliyor.",
+  "sessionSyncManyPending": "{count} oturum senkronizasyon bekliyor.",
+  "@sessionSyncManyPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncDone": "Senkronizasyon tamamlandı.",
+  "sessionSyncFailed": "Oturumlar şu anda senkronize edilemedi. Daha sonra tekrar denenecek.",
+  "accountTitle": "Kullanıcı hesabı",
+  "loginTitle": "Giriş",
+  "createAccountTitle": "Yeni hesap oluştur",
+  "emailPasswordLoginTitle": "E-posta ve şifre ile giriş yap",
+  "emailPasswordCreateTitle": "E-posta/şifre hesabı oluştur",
+  "emailLabel": "E-posta",
+  "passwordLabel": "Şifre",
+  "loginButton": "Giriş yap",
+  "createAccountButton": "Hesap oluştur",
+  "rememberSessionTitle": "Bu cihazda oturumu açık tut",
+  "rememberSessionSubtitle": "Devre dışı bırakılırsa giriş yalnızca mevcut uygulama oturumu için aktif kalır.",
+  "forgotPasswordButton": "Şifrenizi mi unuttunuz?",
+  "alreadyHaveAccount": "Zaten bir hesabım var",
+  "googleSection": "Google bölümü",
+  "googleLoginButton": "Google ile giriş yap",
+  "googleCreateButton": "Google ile hesap oluştur",
+  "googleNotConfigured": "Google girişi yapılandırılmamış.",
+  "googlePreparing": "Google girişi hazırlanıyor ...",
+  "googleNoIdToken": "Google geçerli bir ID token döndürmedi.",
+  "googlePrepareFailed": "Google girişi hazırlanamadı: {error}",
+  "@googlePrepareFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginFailed": "Google girişi başarısız oldu: {error}",
+  "@googleLoginFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginSuccess": "Google ile başarıyla giriş yapıldı.",
+  "googleAccountCreated": "Google hesabı oluşturuldu ve giriş yaptınız.",
+  "googleWebOnly": "Google girişi yalnızca web uygulamasında kullanılabilir",
+  "githubSection": "GitHub bölümü",
+  "githubLoginButton": "GitHub ile giriş yap",
+  "githubCreateButton": "GitHub ile hesap oluştur",
+  "githubNotConfigured": "GitHub girişi yapılandırılmamış.",
+  "githubCancelled": "GitHub girişi iptal edildi veya başarısız oldu.",
+  "githubSecurityCancelled": "GitHub girişi güvenlik nedeniyle iptal edildi.",
+  "githubNoValidCode": "GitHub geçerli bir kod döndürmedi.",
+  "githubLoginSuccess": "GitHub ile başarıyla giriş yapıldı.",
+  "githubAccountCreated": "GitHub hesabı oluşturuldu ve giriş yaptınız.",
+  "passwordResetTitle": "Şifreyi sıfırla",
+  "passwordResetDescription": "E-posta adresinizi girin. Bir hesap varsa şifre sıfırlama bağlantısı alırsınız.",
+  "sendResetLink": "Sıfırlama bağlantısı gönder",
+  "backToLogin": "Girişe geri dön",
+  "setNewPasswordTitle": "Yeni şifre belirle",
+  "setNewPasswordDescription": "Hesabınız için yeni bir şifre belirleyin.",
+  "newPasswordLabel": "Yeni şifre",
+  "repeatNewPasswordLabel": "Yeni şifreyi tekrarla",
+  "passwordsDoNotMatch": "Şifreler eşleşmiyor",
+  "savePassword": "Şifreyi kaydet",
+  "registrationSuccess": "Kayıt başarılı. Lütfen e-posta adresinizi doğrulayın ve ardından giriş yapın.",
+  "passwordResetRequestSuccess": "Bu e-posta ile bir hesap varsa sıfırlama bağlantısı gönderildi.",
+  "passwordChangedSuccess": "Şifre değiştirildi. Artık giriş yapabilirsiniz.",
+  "passwordResetMailSent": "Hesap varsa sıfırlama bağlantısı gönderildi.",
+  "loginSuccess": "Başarıyla giriş yapıldı.",
+  "invalidEmail": "Lütfen geçerli bir e-posta adresi girin",
+  "passwordMinLength": "En az 8 karakter",
+  "loggedInTitle": "Kullanıcı hesabı",
+  "loggedInDescription": "Şu anda giriş yapmış durumdasınız.",
+  "emailAddress": "E-posta adresi",
+  "emailStatus": "E-posta durumu",
+  "emailVerified": "Doğrulandı",
+  "emailNotVerified": "Henüz doğrulanmadı",
+  "accountCreated": "Hesap oluşturuldu",
+  "synchronization": "Senkronizasyon",
+  "accountInfoWarning": "Geçerli bir giriş token’ı yerel olarak kaydedildiyse uygulama oturumunuzu otomatik olarak geri yükleyebilir. Ortak cihazlarda her zaman çıkış yapmalısınız.",
+  "changePassword": "Şifreyi değiştir",
+  "logout": "Çıkış yap",
+  "syncRunning": "Senkronizasyon çalışıyor",
+  "syncOneWaiting": "1 oturum bekliyor",
+  "syncManyWaiting": "{count} oturum bekliyor",
+  "@syncManyWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncError": "Senkronizasyon hatası",
+  "syncAllSynced": "Her şey senkronize edildi",
+  "sessionExpired": "Oturumunuzun süresi doldu. Lütfen tekrar giriş yapın.",
+  "settingsSaved": "Ayarlar kaydedildi.",
+  "timerTimesTitle": "Zamanlayıcı süreleri",
+  "timerTimesDescription": "Çalışma aşamalarının ve molaların ne kadar süreceğini belirleyin.",
+  "workTime": "Çalışma süresi",
+  "shortBreak": "Kısa mola",
+  "longBreak": "Uzun mola",
+  "longBreakAfter": "Uzun mola şu sayıdan sonra",
+  "minutes": "Dakika",
+  "pomodorosUnit": "Pomodoro",
+  "behaviorTitle": "Davranış",
+  "behaviorDescription": "Zamanlayıcının kullanım sırasında nasıl davranacağını ayarlayın.",
+  "autoStartNextPhase": "Sonraki aşamayı otomatik başlat",
+  "enableSound": "Sesi etkinleştir",
+  "enableVibration": "Titreşimi etkinleştir",
+  "vibrationDescription": "Gerçek mobil titreşim daha sonra bir eklenti üzerinden bağlanacak.",
+  "languageTitle": "Dil",
+  "languageDescription": "Uygulama dilini seçin. “Sistem dili” seçildiğinde uygulama tarayıcı veya cihaz dilini kullanır.",
+  "languageLabel": "Uygulama dili",
+  "languageSystem": "Sistem dili",
+  "languageGerman": "Almanca",
+  "languageEnglish": "İngilizce",
+  "languageArabic": "Arapça",
+  "languageChinese": "Çince",
+  "languageFrench": "Fransızca",
+  "languageSpanish": "İspanyolca",
+  "languageHindi": "Hintçe",
+  "languagePortuguese": "Portekizce",
+  "languageRussian": "Rusça",
+  "languageJapanese": "Japonca",
+  "languageTurkish": "Türkçe",
+  "languageItalian": "İtalyanca",
+  "languageKorean": "Korece",
+  "languageIndonesian": "Endonezce",
+  "languagePersian": "Farsça",
+  "appearanceTitle": "Görünüm",
+  "appearanceDescription": "Uygulamanın tasarım modunu ve ana rengini seçin.",
+  "appearanceLabel": "Görünüm",
+  "systemTheme": "Sistem",
+  "lightMode": "Açık mod",
+  "darkMode": "Koyu mod",
+  "themeColor": "Tema rengi",
+  "red": "Kırmızı",
+  "blue": "Mavi",
+  "green": "Yeşil",
+  "purple": "Mor",
+  "saveSettings": "Ayarları kaydet",
+  "noChanges": "Değişiklik yok",
+  "decrease": "Azalt",
+  "increase": "Artır",
+  "minutesShort": "dk",
+  "settingsSavedButNotSynced": "Ayarlar yerel olarak kaydedildi, ancak henüz senkronize edilmedi.",
+  "settingsLoadRemoteFailed": "Ayarlar backend’den yüklenemedi. Yerel ayarlar kullanılacak.",
+  "statsTitle": "İstatistikler",
+  "statsRefresh": "Yenile",
+  "statsWeek": "Hafta",
+  "statsMonth": "Ay",
+  "statsYear": "Yıl",
+  "statsTasksTime": "Görev süresi",
+  "chartFocusPerDay": "Günlük odak süresi",
+  "chartFocusPerCalendarWeek": "Takvim haftasına göre odak süresi",
+  "chartFocusPerMonth": "Aylık odak süresi",
+  "chartFocusPerTask": "Göreve göre odak süresi",
+  "xAxisWeek": "X ekseni: haftanın günleri",
+  "xAxisMonth": "X ekseni: ay içindeki takvim haftaları",
+  "xAxisYear": "X ekseni: yılın ayları",
+  "xAxisTasks": "X ekseni: görevler",
+  "periodNoData": "Dönem: Veri yok",
+  "periodRange": "Dönem: {start} – {end}",
+  "@periodRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "previousPeriod": "Önceki dönem",
+  "nextPeriod": "Sonraki dönem",
+  "statsLoading": "İstatistikler yükleniyor ...",
+  "taskStatsLoading": "Görev istatistikleri yükleniyor ...",
+  "taskStatsEmpty": "Henüz görev başına çalışma süresi yok. Verileri görmek için bir görevle Pomodoro başlatın.",
+  "pomodoros": "Pomodoro",
+  "focusTime": "Odak süresi",
+  "streak": "Seri",
+  "bestPeriod": "En iyi dönem",
+  "daysCount": "{count, plural, =1{1 gün} other{{count} gün}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "yAxisFocusHoursWithXAxis": "Y ekseni: saat cinsinden odak süresi · {xAxisText}",
+  "@yAxisFocusHoursWithXAxis": {
+    "placeholders": {
+      "xAxisText": {
+        "type": "String"
+      }
+    }
+  },
+  "focusTimeMinutes": "Dakika cinsinden odak süresi",
+  "sortedByHighestFocusTime": "En yüksek odak süresine göre sıralandı.",
+  "taskPomodoroMinutes": "{pomodoros} Pomodoro · {minutes} dk",
+  "@taskPomodoroMinutes": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "statsNoData": "Henüz istatistik verisi yok.",
+  "statsLoadFailed": "İstatistikler yüklenemedi. Lütfen giriş yapın ve internet bağlantınızı kontrol edin.",
+  "taskStatsLoadFailed": "Görev istatistikleri yüklenemedi.",
+  "todayPomodorosLoadFailed": "Bugünkü Pomodoro sayısı yüklenemedi.",
+  "noTaskTitle": "Görev yok",
+  "calendarWeekShort": "TH {week}",
+  "@calendarWeekShort": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarWeekWithYear": "TH {week}/{year}",
+  "@calendarWeekWithYear": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "tasksTitle": "Görevler",
+  "tasksRefreshTooltip": "Görevleri yenile",
+  "taskSingular": "Görev",
+  "deleteTaskTitle": "Görev silinsin mi?",
+  "deleteTaskMessage": "“{title}” görevini gerçekten silmek istiyor musunuz?",
+  "@deleteTaskMessage": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksLoading": "Görevler yükleniyor ...",
+  "tasksEmpty": "Henüz görev yok. İlk görevinizi oluşturun.",
+  "tasksSearchEmpty": "Görev bulunamadı. Aramayı veya filtreleri değiştirin.",
+  "noTimerTaskSelected": "Zamanlayıcı için görev seçilmedi",
+  "activeTimerTask": "Aktif zamanlayıcı görevi: {title}",
+  "@activeTimerTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskSelectionLockedDescription": "Bir zamanlayıcı aşaması çalışıyor veya duraklatılmış. Bu nedenle görev şu anda kilitli.",
+  "taskSelectionNextWorkPhaseDescription": "Bu görev bir sonraki çalışma aşaması için kullanılacak.",
+  "withoutTask": "Görevsiz",
+  "searchTasks": "Görev ara",
+  "clearSearch": "Aramayı temizle",
+  "filterAll": "Tümü",
+  "filterOpen": "Açık",
+  "filterCompleted": "Tamamlandı",
+  "sortLabel": "Sıralama",
+  "sortNewest": "Önce en yeni",
+  "sortPriority": "Öncelik",
+  "sortPomodoros": "Pomodoro",
+  "active": "Aktif",
+  "completed": "Tamamlandı",
+  "locked": "Kilitli",
+  "forTimer": "Zamanlayıcı için",
+  "priorityLow": "Düşük",
+  "priorityMedium": "Orta",
+  "priorityHigh": "Yüksek",
+  "taskLoadRemoteFailed": "Görevler backend’den yüklenemedi. Yerel veriler gösterilmeye devam edecek.",
+  "taskSavedLocallyNotSynced": "Görev yerel olarak kaydedildi, ancak hesapla senkronize edilemedi.",
+  "taskSaveFailedRolledBack": "Görev kaydedilemedi. Son değişiklik geri alındı.",
+  "taskDeleteFailedRestored": "Görev hesaptan silinemedi. Görev geri yüklendi.",
+  "taskCreateTitle": "Görev oluştur",
+  "taskEditTitle": "Görevi düzenle",
+  "taskTitleLabel": "Başlık",
+  "taskTitleRequired": "Lütfen başlık girin",
+  "taskTitleTooShort": "Başlık çok kısa.",
+  "taskDescriptionLabel": "Açıklama",
+  "priorityLabel": "Öncelik",
+  "tagsLabel": "Etiketler/kategoriler",
+  "tagsHint": "örn. üniversite, iş, geliştirme",
+  "timerResetTitle": "Zamanlayıcı sıfırlansın mı?",
+  "timerResetMessage": "Mevcut aşama iptal edilecek ve tamamlanmış oturum olarak kaydedilmeyecek.",
+  "taskNoneSelected": "Görev seçilmedi",
+  "currentTask": "Mevcut görev: {title}",
+  "@currentTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskForWorkPhase": "Bu çalışma aşaması için görev",
+  "taskLockedToPhase": "Bu aşama seçilen göreve bağlıdır.",
+  "phaseWork": "Çalışma aşaması",
+  "phaseShortBreak": "Kısa mola",
+  "phaseLongBreak": "Uzun mola",
+  "timerStatusSaving": "Kaydediliyor ...",
+  "timerStatusRunning": "Çalışıyor",
+  "timerStatusPaused": "Duraklatıldı",
+  "timerStatusReady": "Hazır",
+  "phaseDescriptionWork": "Odak süresi",
+  "phaseDescriptionShortBreak": "Kısa dinlenme",
+  "phaseDescriptionLongBreak": "Daha uzun dinlenme",
+  "afterNextPhase": "{phaseDescription} · Sonra: {nextPhase}",
+  "@afterNextPhase": {
+    "placeholders": {
+      "phaseDescription": {
+        "type": "String"
+      },
+      "nextPhase": {
+        "type": "String"
+      }
+    }
+  },
+  "todayPomodorosLoading": "Bugün: yükleniyor ...",
+  "todayPomodoros": "Bugün: {pomodoros}",
+  "@todayPomodoros": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "String"
+      }
+    }
+  },
+  "pomodoroCount": "{count, plural, =1{1 Pomodoro} other{{count} Pomodoro}}",
+  "@pomodoroCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pause": "Duraklat",
+  "continueButton": "Devam et",
+  "start": "Başlat",
+  "skipPause": "Molayı atla",
+  "shortcutSpaceCompact": "Boşluk: Başlat/Duraklat",
+  "shortcutResetCompact": "R: Sıfırla",
+  "shortcutSkipCompact": "S: Atla",
+  "shortcutSpace": "Boşluk tuşu: Başlat/Duraklat",
+  "shortcutReset": "R: Sıfırla",
+  "shortcutSkip": "S: Molayı atla",
+  "phaseSavingTitle": "Aşama kaydediliyor",
+  "phaseSavingDescription": "Tamamlanan aşama kaydediliyor ve zamanlayıcı hazırlanıyor.",
+  "storageProblem": "Depolama sorunu",
+  "oneFinishedPhaseSavingBackground": "Tamamlanan aşama arka planda kaydediliyor.",
+  "manyFinishedPhasesSavingBackground": "{count} tamamlanan aşama arka planda kaydediliyor.",
+  "@manyFinishedPhasesSavingBackground": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timerLocalSaveFailed": "Tamamlanan aşama yerel olarak kaydedilemedi.",
+  "timerBackendSyncFailed": "Tamamlanan aşama yerel olarak kaydedildi, ancak henüz backend ile senkronize edilmedi.",
+  "phaseProgress": "{elapsed} / {total}",
+  "@phaseProgress": {
+    "placeholders": {
+      "elapsed": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  }
+}
