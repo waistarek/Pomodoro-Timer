@@ -43,6 +43,18 @@ class LocalStorageService {
     await _prefs.remove('auth_token');
   }
 
+  String? getGlobalString(String key) {
+    return _prefs.getString(key);
+  }
+
+  Future<void> setGlobalString(String key, String value) {
+    return _prefs.setString(key, value);
+  }
+
+  Future<void> removeGlobal(String key) {
+    return _prefs.remove(key);
+  }
+
   Map<String, dynamic>? getJsonObject(String key) {
     final raw = _prefs.getString(_scopedKey(key));
     if (raw == null) return null;

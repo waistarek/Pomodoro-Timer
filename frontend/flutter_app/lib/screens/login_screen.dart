@@ -204,9 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (ok) {
       await _loadDataAfterSuccessfulLogin(
-        mode == 'register'
-            ? l10n.githubAccountCreated
-            : l10n.githubLoginSuccess,
+        mode == 'register' ? l10n.githubAccountCreated : l10n.githubLoginSuccess,
       );
     }
   }

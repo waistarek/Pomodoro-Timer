@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'l10n/app_localizations.dart';
 import 'providers/auth_provider.dart';
+import 'providers/locale_provider.dart';
 import 'providers/session_sync_provider.dart';
 import 'providers/settings_provider.dart';
 import 'providers/stats_provider.dart';
@@ -52,6 +53,7 @@ Future<void> main() async {
 
   final authProvider = AuthProvider(authService);
   final sessionSyncProvider = SessionSyncProvider(sessionService);
+  final localeProvider = LocaleProvider(localStorage);
   final settingsProvider = SettingsProvider(localStorage, settingsService);
   final taskProvider = TaskProvider(localStorage, taskService);
   final statsProvider = StatsProvider(statsService);
@@ -86,6 +88,9 @@ Future<void> main() async {
           value: authProvider..loadLocalSession(),
         ),
         ChangeNotifierProvider.value(
+          value: localeProvider..load(),
+        ),
+        ChangeNotifierProvider.value(
           value: settingsProvider,
         ),
         ChangeNotifierProvider.value(
@@ -115,8 +120,8 @@ class PomodoroRoot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SettingsProvider>(
-      builder: (context, settingsProvider, _) {
+    return Consumer2<SettingsProvider, LocaleProvider>(
+      builder: (context, settingsProvider, localeProvider, _) {
         final settings = settingsProvider.settings;
 
         return MaterialApp(
@@ -129,6 +134,7 @@ class PomodoroRoot extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
           ],
           supportedLocales: AppLocalizations.supportedLocales,
+          locale: localeProvider.locale,
           localeResolutionCallback: (locale, supportedLocales) {
             if (locale == null) {
               return supportedLocales.first;

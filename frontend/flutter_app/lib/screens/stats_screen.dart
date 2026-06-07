@@ -349,8 +349,7 @@ class _GeneralStatsContent extends StatelessWidget {
                 const SizedBox(height: 16),
                 StatsChart(
                   items: stats.items,
-                  labelFormatter: (label) =>
-                      _formatChartLabel(label, mode, l10n),
+                  labelFormatter: (label) => _formatChartLabel(label, mode, l10n),
                 ),
               ],
             ),
@@ -707,8 +706,7 @@ String _localizedStatsError(AppLocalizations l10n, String error) {
   return switch (error) {
     'Statistiken konnten nicht geladen werden. Bitte anmelden und Internetverbindung prüfen.' =>
       l10n.statsLoadFailed,
-    'Aufgabenstatistik konnte nicht geladen werden.' =>
-      l10n.taskStatsLoadFailed,
+    'Aufgabenstatistik konnte nicht geladen werden.' => l10n.taskStatsLoadFailed,
     'Die heutige Pomodoro-Anzahl konnte nicht geladen werden.' =>
       l10n.todayPomodorosLoadFailed,
     _ => error,

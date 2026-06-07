@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../l10n/app_localizations.dart';
 import '../models/app_settings.dart';
+import '../providers/locale_provider.dart';
 import '../providers/settings_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -202,6 +203,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const SizedBox(height: 16),
                   _SettingsSection(
+                    title: l10n.languageTitle,
+                    description: l10n.languageDescription,
+                    children: const [
+                      _LanguageDropdown(),
+                    ],
+                  ),
+
+                  const SizedBox(height: 16),
+                  _SettingsSection(
                     title: l10n.appearanceTitle,
                     description: l10n.appearanceDescription,
                     children: [
@@ -312,6 +322,62 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
     );
   }
+}
+
+
+class _LanguageDropdown extends StatelessWidget {
+  const _LanguageDropdown();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Consumer<LocaleProvider>(
+      builder: (context, localeProvider, _) {
+        final localeCodes = [
+          LocaleProvider.systemLocaleCode,
+          ...AppLocalizations.supportedLocales.map(
+            (locale) => locale.languageCode,
+          ),
+        ];
+
+        return DropdownButtonFormField<String>(
+          key: ValueKey('language-${localeProvider.localeCode}'),
+          initialValue: localeProvider.localeCode,
+          decoration: InputDecoration(
+            labelText: l10n.languageLabel,
+            border: const OutlineInputBorder(),
+          ),
+          items: localeCodes.map((localeCode) {
+            return DropdownMenuItem<String>(
+              value: localeCode,
+              child: Text(_localizedLanguageName(l10n, localeCode)),
+            );
+          }).toList(),
+          onChanged: (value) {
+            if (value == null) {
+              return;
+            }
+
+            localeProvider.setLocaleCode(value);
+          },
+        );
+      },
+    );
+  }
+}
+
+String _localizedLanguageName(AppLocalizations l10n, String localeCode) {
+  return switch (localeCode) {
+    LocaleProvider.systemLocaleCode => l10n.languageSystem,
+    'de' => l10n.languageGerman,
+    'en' => l10n.languageEnglish,
+    'fr' => l10n.languageFrench,
+    'es' => l10n.languageSpanish,
+    'tr' => l10n.languageTurkish,
+    'ar' => l10n.languageArabic,
+    _ => localeCode.toUpperCase(),
+  };
 }
 
 class _SettingsSection extends StatelessWidget {
