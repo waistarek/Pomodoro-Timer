@@ -1,0 +1,423 @@
+{
+  "@@locale": "ar",
+  "appTitle": "تطبيق بومودورو",
+  "navTimer": "المؤقت",
+  "navTasks": "المهام",
+  "navStats": "الإحصائيات",
+  "navSettings": "الإعدادات",
+  "navAccount": "الحساب",
+  "close": "إغلاق",
+  "retry": "إعادة المحاولة",
+  "cancel": "إلغاء",
+  "delete": "حذف",
+  "edit": "تعديل",
+  "save": "حفظ",
+  "reset": "إعادة التعيين",
+  "refresh": "تحديث",
+  "messageClose": "إغلاق الرسالة",
+  "or": "أو",
+  "yes": "نعم",
+  "no": "لا",
+  "emailVerifiedSuccess": "تم تأكيد البريد الإلكتروني بنجاح. يمكنك الآن تسجيل الدخول.",
+  "emailVerifiedExpired": "انتهت صلاحية رابط التأكيد.",
+  "emailVerifiedInvalid": "رابط التأكيد غير صالح.",
+  "sessionSyncOneWithAccount": "تتم مزامنة جلسة واحدة مع حسابك.",
+  "sessionSyncManyWithAccount": "تتم مزامنة {count} جلسات مع حسابك.",
+  "@sessionSyncManyWithAccount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOneAfterLogin": "ستتم مزامنة جلسة محلية واحدة بعد تسجيل الدخول.",
+  "sessionSyncManyAfterLogin": "ستتم مزامنة {count} جلسات محلية بعد تسجيل الدخول.",
+  "@sessionSyncManyAfterLogin": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOnePending": "جلسة واحدة بانتظار المزامنة.",
+  "sessionSyncManyPending": "{count} جلسات بانتظار المزامنة.",
+  "@sessionSyncManyPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncDone": "اكتملت المزامنة.",
+  "sessionSyncFailed": "تعذرت مزامنة الجلسات الآن. ستتم المحاولة مرة أخرى لاحقًا.",
+  "accountTitle": "حساب المستخدم",
+  "loginTitle": "تسجيل الدخول",
+  "createAccountTitle": "إنشاء حساب جديد",
+  "emailPasswordLoginTitle": "تسجيل الدخول بالبريد الإلكتروني وكلمة المرور",
+  "emailPasswordCreateTitle": "إنشاء حساب بالبريد الإلكتروني وكلمة المرور",
+  "emailLabel": "البريد الإلكتروني",
+  "passwordLabel": "كلمة المرور",
+  "loginButton": "تسجيل الدخول",
+  "createAccountButton": "إنشاء حساب",
+  "rememberSessionTitle": "البقاء مسجلًا على هذا الجهاز",
+  "rememberSessionSubtitle": "إذا تم تعطيل هذا الخيار، سيبقى تسجيل الدخول نشطًا فقط خلال جلسة التطبيق الحالية.",
+  "forgotPasswordButton": "هل نسيت كلمة المرور؟",
+  "alreadyHaveAccount": "لدي حساب بالفعل",
+  "googleSection": "قسم Google",
+  "googleLoginButton": "تسجيل الدخول باستخدام Google",
+  "googleCreateButton": "إنشاء حساب باستخدام Google",
+  "googleNotConfigured": "تسجيل الدخول باستخدام Google غير مهيأ.",
+  "googlePreparing": "يتم تجهيز تسجيل الدخول باستخدام Google ...",
+  "googleNoIdToken": "لم يُرجع Google رمز معرف صالحًا.",
+  "googlePrepareFailed": "تعذر تجهيز تسجيل الدخول باستخدام Google: {error}",
+  "@googlePrepareFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginFailed": "فشل تسجيل الدخول باستخدام Google: {error}",
+  "@googleLoginFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginSuccess": "تم تسجيل الدخول باستخدام Google بنجاح.",
+  "googleAccountCreated": "تم إنشاء حساب Google وتم تسجيل دخولك.",
+  "googleWebOnly": "تسجيل الدخول باستخدام Google متاح فقط في تطبيق الويب",
+  "githubSection": "قسم GitHub",
+  "githubLoginButton": "تسجيل الدخول باستخدام GitHub",
+  "githubCreateButton": "إنشاء حساب باستخدام GitHub",
+  "githubNotConfigured": "تسجيل الدخول باستخدام GitHub غير مهيأ.",
+  "githubCancelled": "تم إلغاء تسجيل الدخول باستخدام GitHub أو فشل.",
+  "githubSecurityCancelled": "تم إلغاء تسجيل الدخول باستخدام GitHub لأسباب أمنية.",
+  "githubNoValidCode": "لم يُرجع GitHub رمزًا صالحًا.",
+  "githubLoginSuccess": "تم تسجيل الدخول باستخدام GitHub بنجاح.",
+  "githubAccountCreated": "تم إنشاء حساب GitHub وتم تسجيل دخولك.",
+  "passwordResetTitle": "إعادة تعيين كلمة المرور",
+  "passwordResetDescription": "أدخل بريدك الإلكتروني. إذا كان الحساب موجودًا، فستتلقى رابطًا لإعادة تعيين كلمة المرور.",
+  "sendResetLink": "إرسال رابط إعادة التعيين",
+  "backToLogin": "العودة إلى تسجيل الدخول",
+  "setNewPasswordTitle": "تعيين كلمة مرور جديدة",
+  "setNewPasswordDescription": "عيّن كلمة مرور جديدة لحسابك.",
+  "newPasswordLabel": "كلمة مرور جديدة",
+  "repeatNewPasswordLabel": "تكرار كلمة المرور الجديدة",
+  "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
+  "savePassword": "حفظ كلمة المرور",
+  "registrationSuccess": "تم التسجيل بنجاح. يرجى تأكيد بريدك الإلكتروني ثم تسجيل الدخول.",
+  "passwordResetRequestSuccess": "إذا كان هناك حساب بهذا البريد الإلكتروني، فقد تم إرسال رابط إعادة التعيين.",
+  "passwordChangedSuccess": "تم تغيير كلمة المرور. يمكنك الآن تسجيل الدخول.",
+  "passwordResetMailSent": "إذا كان الحساب موجودًا، فقد تم إرسال رابط إعادة التعيين.",
+  "loginSuccess": "تم تسجيل الدخول بنجاح.",
+  "invalidEmail": "يرجى إدخال بريد إلكتروني صالح",
+  "passwordMinLength": "8 أحرف على الأقل",
+  "loggedInTitle": "حساب المستخدم",
+  "loggedInDescription": "أنت مسجل الدخول حاليًا.",
+  "emailAddress": "عنوان البريد الإلكتروني",
+  "emailStatus": "حالة البريد الإلكتروني",
+  "emailVerified": "مؤكد",
+  "emailNotVerified": "لم يتم التأكيد بعد",
+  "accountCreated": "تم إنشاء الحساب",
+  "synchronization": "المزامنة",
+  "accountInfoWarning": "يمكن للتطبيق استعادة جلستك تلقائيًا إذا كان رمز تسجيل دخول صالح مخزنًا محليًا. على الأجهزة المشتركة، يجب عليك دائمًا تسجيل الخروج.",
+  "changePassword": "تغيير كلمة المرور",
+  "logout": "تسجيل الخروج",
+  "syncRunning": "المزامنة قيد التشغيل",
+  "syncOneWaiting": "جلسة واحدة بانتظار المزامنة",
+  "syncManyWaiting": "{count} جلسات بانتظار المزامنة",
+  "@syncManyWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncError": "خطأ في المزامنة",
+  "syncAllSynced": "تمت مزامنة كل شيء",
+  "sessionExpired": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.",
+  "settingsSaved": "تم حفظ الإعدادات.",
+  "timerTimesTitle": "مدد المؤقت",
+  "timerTimesDescription": "حدد مدة مراحل العمل والاستراحات.",
+  "workTime": "وقت العمل",
+  "shortBreak": "استراحة قصيرة",
+  "longBreak": "استراحة طويلة",
+  "longBreakAfter": "استراحة طويلة بعد",
+  "minutes": "دقائق",
+  "pomodorosUnit": "بومودورو",
+  "behaviorTitle": "السلوك",
+  "behaviorDescription": "خصص طريقة عمل المؤقت أثناء الاستخدام.",
+  "autoStartNextPhase": "بدء المرحلة التالية تلقائيًا",
+  "enableSound": "تفعيل الصوت",
+  "enableVibration": "تفعيل الاهتزاز",
+  "vibrationDescription": "سيتم ربط الاهتزاز الفعلي على الهاتف لاحقًا عبر إضافة.",
+  "languageTitle": "اللغة",
+  "languageDescription": "اختر لغة التطبيق. عند اختيار “لغة النظام”، يستخدم التطبيق لغة المتصفح أو الجهاز.",
+  "languageLabel": "لغة التطبيق",
+  "languageSystem": "لغة النظام",
+  "languageGerman": "الألمانية",
+  "languageEnglish": "الإنجليزية",
+  "languageArabic": "العربية",
+  "languageChinese": "الصينية",
+  "languageFrench": "الفرنسية",
+  "languageSpanish": "الإسبانية",
+  "languageHindi": "الهندية",
+  "languagePortuguese": "البرتغالية",
+  "languageRussian": "الروسية",
+  "languageJapanese": "اليابانية",
+  "languageTurkish": "التركية",
+  "languageItalian": "الإيطالية",
+  "languageKorean": "الكورية",
+  "languageIndonesian": "الإندونيسية",
+  "languagePersian": "الفارسية",
+  "appearanceTitle": "المظهر",
+  "appearanceDescription": "اختر وضع العرض واللون الرئيسي للتطبيق.",
+  "appearanceLabel": "المظهر",
+  "systemTheme": "النظام",
+  "lightMode": "الوضع الفاتح",
+  "darkMode": "الوضع الداكن",
+  "themeColor": "لون السمة",
+  "red": "أحمر",
+  "blue": "أزرق",
+  "green": "أخضر",
+  "purple": "بنفسجي",
+  "saveSettings": "حفظ الإعدادات",
+  "noChanges": "لا توجد تغييرات",
+  "decrease": "تقليل",
+  "increase": "زيادة",
+  "minutesShort": "د",
+  "settingsSavedButNotSynced": "تم حفظ الإعدادات محليًا، لكنها لم تتم مزامنتها بعد.",
+  "settingsLoadRemoteFailed": "تعذر تحميل الإعدادات من الخادم الخلفي. سيتم استخدام الإعدادات المحلية.",
+  "statsTitle": "الإحصائيات",
+  "statsRefresh": "تحديث",
+  "statsWeek": "أسبوع",
+  "statsMonth": "شهر",
+  "statsYear": "سنة",
+  "statsTasksTime": "وقت المهام",
+  "chartFocusPerDay": "وقت التركيز لكل يوم",
+  "chartFocusPerCalendarWeek": "وقت التركيز لكل أسبوع تقويمي",
+  "chartFocusPerMonth": "وقت التركيز لكل شهر",
+  "chartFocusPerTask": "وقت التركيز لكل مهمة",
+  "xAxisWeek": "المحور X: أيام الأسبوع",
+  "xAxisMonth": "المحور X: الأسابيع التقويمية في الشهر",
+  "xAxisYear": "المحور X: أشهر السنة",
+  "xAxisTasks": "المحور X: المهام",
+  "periodNoData": "الفترة: لا توجد بيانات",
+  "periodRange": "الفترة: {start} – {end}",
+  "@periodRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "previousPeriod": "الفترة السابقة",
+  "nextPeriod": "الفترة التالية",
+  "statsLoading": "يتم تحميل الإحصائيات ...",
+  "taskStatsLoading": "يتم تحميل إحصائيات المهام ...",
+  "taskStatsEmpty": "لا يوجد وقت عمل لكل مهمة حتى الآن. ابدأ بومودورو مع مهمة لعرض البيانات.",
+  "pomodoros": "بومودورو",
+  "focusTime": "وقت التركيز",
+  "streak": "السلسلة",
+  "bestPeriod": "أفضل فترة",
+  "daysCount": "{count, plural, =1{يوم واحد} other{{count} أيام}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "yAxisFocusHoursWithXAxis": "المحور Y: وقت التركيز بالساعات · {xAxisText}",
+  "@yAxisFocusHoursWithXAxis": {
+    "placeholders": {
+      "xAxisText": {
+        "type": "String"
+      }
+    }
+  },
+  "focusTimeMinutes": "وقت التركيز بالدقائق",
+  "sortedByHighestFocusTime": "مرتبة حسب أعلى وقت تركيز.",
+  "taskPomodoroMinutes": "{pomodoros} بومودورو · {minutes} د",
+  "@taskPomodoroMinutes": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "statsNoData": "لا توجد بيانات إحصائية حتى الآن.",
+  "statsLoadFailed": "تعذر تحميل الإحصائيات. يرجى تسجيل الدخول والتحقق من اتصال الإنترنت.",
+  "taskStatsLoadFailed": "تعذر تحميل إحصائيات المهام.",
+  "todayPomodorosLoadFailed": "تعذر تحميل عدد بومودورو اليوم.",
+  "noTaskTitle": "بدون مهمة",
+  "calendarWeekShort": "أسبوع {week}",
+  "@calendarWeekShort": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarWeekWithYear": "أسبوع {week}/{year}",
+  "@calendarWeekWithYear": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "tasksTitle": "المهام",
+  "tasksRefreshTooltip": "تحديث المهام",
+  "taskSingular": "مهمة",
+  "deleteTaskTitle": "حذف المهمة؟",
+  "deleteTaskMessage": "هل تريد حقًا حذف المهمة “{title}”؟",
+  "@deleteTaskMessage": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksLoading": "يتم تحميل المهام ...",
+  "tasksEmpty": "لا توجد مهام حتى الآن. أنشئ أول مهمة لك.",
+  "tasksSearchEmpty": "لم يتم العثور على مهام. غيّر البحث أو الفلاتر.",
+  "noTimerTaskSelected": "لم يتم اختيار مهمة للمؤقت",
+  "activeTimerTask": "مهمة المؤقت النشطة: {title}",
+  "@activeTimerTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskSelectionLockedDescription": "هناك مرحلة مؤقت قيد التشغيل أو متوقفة مؤقتًا. لذلك المهمة مقفلة حاليًا.",
+  "taskSelectionNextWorkPhaseDescription": "سيتم استخدام هذه المهمة في مرحلة العمل التالية.",
+  "withoutTask": "بدون مهمة",
+  "searchTasks": "بحث في المهام",
+  "clearSearch": "مسح البحث",
+  "filterAll": "الكل",
+  "filterOpen": "مفتوحة",
+  "filterCompleted": "مكتملة",
+  "sortLabel": "الترتيب",
+  "sortNewest": "الأحدث أولًا",
+  "sortPriority": "الأولوية",
+  "sortPomodoros": "بومودورو",
+  "active": "نشطة",
+  "completed": "مكتملة",
+  "locked": "مقفلة",
+  "forTimer": "للمؤقت",
+  "priorityLow": "منخفضة",
+  "priorityMedium": "متوسطة",
+  "priorityHigh": "عالية",
+  "taskLoadRemoteFailed": "تعذر تحميل المهام من الخادم الخلفي. ستظل البيانات المحلية معروضة.",
+  "taskSavedLocallyNotSynced": "تم حفظ المهمة محليًا، لكن تعذرت مزامنتها مع الحساب.",
+  "taskSaveFailedRolledBack": "تعذر حفظ المهمة. تم التراجع عن آخر تغيير.",
+  "taskDeleteFailedRestored": "تعذر حذف المهمة من الحساب. تمت استعادة المهمة.",
+  "taskCreateTitle": "إنشاء مهمة",
+  "taskEditTitle": "تعديل المهمة",
+  "taskTitleLabel": "العنوان",
+  "taskTitleRequired": "يرجى إدخال عنوان",
+  "taskTitleTooShort": "العنوان قصير جدًا.",
+  "taskDescriptionLabel": "الوصف",
+  "priorityLabel": "الأولوية",
+  "tagsLabel": "الوسوم/الفئات",
+  "tagsHint": "مثال: جامعة، عمل، تطوير",
+  "timerResetTitle": "إعادة تعيين المؤقت؟",
+  "timerResetMessage": "سيتم إلغاء المرحلة الحالية ولن يتم حفظها كجلسة مكتملة.",
+  "taskNoneSelected": "لم يتم اختيار مهمة",
+  "currentTask": "المهمة الحالية: {title}",
+  "@currentTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskForWorkPhase": "مهمة هذه مرحلة العمل",
+  "taskLockedToPhase": "هذه المرحلة مرتبطة بالمهمة المختارة.",
+  "phaseWork": "مرحلة العمل",
+  "phaseShortBreak": "استراحة قصيرة",
+  "phaseLongBreak": "استراحة طويلة",
+  "timerStatusSaving": "يتم الحفظ ...",
+  "timerStatusRunning": "قيد التشغيل",
+  "timerStatusPaused": "متوقف مؤقتًا",
+  "timerStatusReady": "جاهز",
+  "phaseDescriptionWork": "وقت التركيز",
+  "phaseDescriptionShortBreak": "راحة قصيرة",
+  "phaseDescriptionLongBreak": "راحة أطول",
+  "afterNextPhase": "{phaseDescription} · بعد ذلك: {nextPhase}",
+  "@afterNextPhase": {
+    "placeholders": {
+      "phaseDescription": {
+        "type": "String"
+      },
+      "nextPhase": {
+        "type": "String"
+      }
+    }
+  },
+  "todayPomodorosLoading": "اليوم: يتم التحميل ...",
+  "todayPomodoros": "اليوم: {pomodoros}",
+  "@todayPomodoros": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "String"
+      }
+    }
+  },
+  "pomodoroCount": "{count, plural, =1{بومودورو واحد} other{{count} بومودورو}}",
+  "@pomodoroCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pause": "إيقاف مؤقت",
+  "continueButton": "متابعة",
+  "start": "بدء",
+  "skipPause": "تخطي الاستراحة",
+  "shortcutSpaceCompact": "مسافة: بدء/إيقاف مؤقت",
+  "shortcutResetCompact": "R: إعادة تعيين",
+  "shortcutSkipCompact": "S: تخطي",
+  "shortcutSpace": "مفتاح المسافة: بدء/إيقاف مؤقت",
+  "shortcutReset": "R: إعادة تعيين",
+  "shortcutSkip": "S: تخطي الاستراحة",
+  "phaseSavingTitle": "يتم حفظ المرحلة",
+  "phaseSavingDescription": "يتم حفظ المرحلة المكتملة وتجهيز المؤقت.",
+  "storageProblem": "مشكلة في التخزين",
+  "oneFinishedPhaseSavingBackground": "يتم حفظ المرحلة المكتملة في الخلفية.",
+  "manyFinishedPhasesSavingBackground": "يتم حفظ {count} مراحل مكتملة في الخلفية.",
+  "@manyFinishedPhasesSavingBackground": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timerLocalSaveFailed": "تعذر حفظ المرحلة المكتملة محليًا.",
+  "timerBackendSyncFailed": "تم حفظ المرحلة المكتملة محليًا، لكنها لم تتم مزامنتها مع الخادم الخلفي بعد.",
+  "phaseProgress": "{elapsed} من {total}",
+  "@phaseProgress": {
+    "placeholders": {
+      "elapsed": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  }
+}
