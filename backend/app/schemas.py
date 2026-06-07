@@ -4,8 +4,10 @@ from typing import Literal
 
 
 class OAuthLogin(BaseModel):
-    provider: Literal["google"] = "google"
-    id_token: str = Field(min_length=20)
+    provider: Literal["google", "github"] = "google"
+    id_token: str | None = Field(default=None, min_length=20)
+    code: str | None = Field(default=None, min_length=1)
+    redirect_uri: str | None = Field(default=None, min_length=1)
     mode: Literal["login", "register"] = "login"
     
 class Token(BaseModel):

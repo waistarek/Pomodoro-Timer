@@ -340,8 +340,9 @@ def test_google_oauth_login_creates_user(monkeypatch):
         json={
             "provider": "google",
             "id_token": "x" * 30,
+            "mode": "register",
         },
-    )
+        )
 
     assert response.status_code == 200
     token = response.json()["access_token"]
@@ -374,6 +375,7 @@ def test_google_only_user_cannot_login_with_password(monkeypatch):
         json={
             "provider": "google",
             "id_token": "x" * 30,
+            "mode": "register",
         },
     )
 

@@ -106,4 +106,33 @@ class AuthService {
       persist: rememberSession,
     );
   }
+
+  Future<void> loginWithGithubCode(
+    String code, {
+    required String mode,
+    required String redirectUri,
+    bool rememberSession = true,
+  }) async {
+    final trimmedCode = code.trim();
+
+    if (trimmedCode.isEmpty) {
+      throw Exception('GitHub hat keinen gültigen Code zurückgegeben.');
+    }
+
+    final data = await apiClient.post(
+      '/auth/oauth-login',
+      {
+        'provider': 'github',
+        'code': trimmedCode,
+        'redirect_uri': redirectUri,
+        'mode': mode,
+      },
+      auth: false,
+    );
+
+    await localStorage.setToken(
+      data['access_token'],
+      persist: rememberSession,
+    );
+  }
 }

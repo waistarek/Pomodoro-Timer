@@ -23,6 +23,13 @@ void setAppScreenInUrl(String screen) {
   query.remove('set_token');
   query.remove('email_verified');
 
+  // OAuth-Parameter entfernen
+  query.remove('oauth_provider');
+  query.remove('code');
+  query.remove('state');
+  query.remove('error');
+  query.remove('error_description');
+
   _replaceQuery(query);
 }
 
@@ -33,6 +40,12 @@ void clearLoginActionQueryParameters() {
   query.remove('reset_token');
   query.remove('set_token');
   query.remove('email_verified');
+
+  query.remove('oauth_provider');
+  query.remove('code');
+  query.remove('state');
+  query.remove('error');
+  query.remove('error_description');
 
   _replaceQuery(query);
 }

@@ -14,6 +14,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import '../config/app_config.dart';
 import '../widgets/google_sign_in_button.dart';
+import 'dart:convert';
+import 'dart:math';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../services/browser_redirect_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -31,6 +36,11 @@ class _LoginScreenState extends State<LoginScreen> {
   StreamSubscription<GoogleSignInAuthenticationEvent>?
       _googleSignInSubscription;
 
+  static const _githubOauthStateKey = 'github_oauth_state';
+  static const _githubOauthModeKey = 'github_oauth_mode';
+  static const _githubOauthRememberKey = 'github_oauth_remember';
+  static const _githubOauthRedirectUriKey = 'github_oauth_redirect_uri';
+
   static Future<void>? _googleInitFuture;
   static bool _googleInitialized = false;
 
@@ -42,6 +52,133 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _resetToken;
 
   bool get _resetPasswordMode => _resetToken != null;
+
+  String _createOauthState() {
+    final random = Random.secure();
+    final bytes = List<int>.generate(32, (_) => random.nextInt(256));
+
+    return base64Url.encode(bytes).replaceAll('=', '');
+  }
+
+  String _githubRedirectUri() {
+    final uri = Uri.base;
+
+    return uri.replace(
+      queryParameters: {
+        'screen': 'account',
+        'oauth_provider': 'github',
+      },
+    ).toString();
+  }
+
+  Future<void> _startGithubOAuth() async {
+    if (AppConfig.githubClientId.isEmpty) {
+      context.read<AuthProvider>().setError(
+            'GitHub Login ist nicht konfiguriert.',
+          );
+      return;
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    final state = _createOauthState();
+    final mode = _registerMode ? 'register' : 'login';
+    final redirectUri = _githubRedirectUri();
+
+    await prefs.setString(_githubOauthStateKey, state);
+    await prefs.setString(_githubOauthModeKey, mode);
+    await prefs.setBool(_githubOauthRememberKey, _rememberSession);
+    await prefs.setString(_githubOauthRedirectUriKey, redirectUri);
+
+    final authorizationUri = Uri.https(
+      'github.com',
+      '/login/oauth/authorize',
+      {
+        'client_id': AppConfig.githubClientId,
+        'redirect_uri': redirectUri,
+        'scope': 'user:email',
+        'state': state,
+      },
+    );
+
+    redirectToUrl(authorizationUri.toString());
+  }
+
+  Future<void> _handleGithubOAuthCallback() async {
+    final uri = Uri.base;
+
+    if (uri.queryParameters['oauth_provider'] != 'github') {
+      return;
+    }
+
+    final oauthError = uri.queryParameters['error'];
+
+    if (oauthError != null) {
+      if (!mounted) {
+        return;
+      }
+
+      context.read<AuthProvider>().setError(
+            'GitHub Login wurde abgebrochen oder ist fehlgeschlagen.',
+          );
+      clearLoginActionQueryParameters();
+      return;
+    }
+
+    final code = uri.queryParameters['code'];
+    final receivedState = uri.queryParameters['state'];
+
+    if (code == null || receivedState == null) {
+      return;
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+
+    final expectedState = prefs.getString(_githubOauthStateKey);
+    final mode = prefs.getString(_githubOauthModeKey) ?? 'login';
+    final rememberSession = prefs.getBool(_githubOauthRememberKey) ?? true;
+    final redirectUri =
+        prefs.getString(_githubOauthRedirectUriKey) ?? _githubRedirectUri();
+
+    await prefs.remove(_githubOauthStateKey);
+    await prefs.remove(_githubOauthModeKey);
+    await prefs.remove(_githubOauthRememberKey);
+    await prefs.remove(_githubOauthRedirectUriKey);
+
+    if (!mounted) {
+      return;
+    }
+
+    if (expectedState == null || expectedState != receivedState) {
+      context.read<AuthProvider>().setError(
+            'GitHub Login wurde aus Sicherheitsgründen abgebrochen.',
+          );
+      clearLoginActionQueryParameters();
+      return;
+    }
+
+    final authProvider = context.read<AuthProvider>();
+
+    final ok = await authProvider.loginWithGithubCode(
+      code,
+      mode: mode,
+      redirectUri: redirectUri,
+      rememberSession: rememberSession,
+    );
+
+    if (!mounted) {
+      return;
+    }
+
+    clearLoginActionQueryParameters();
+
+    if (ok) {
+      await _loadDataAfterSuccessfulLogin(
+        mode == 'register'
+            ? 'GitHub-Konto wurde erstellt und du bist angemeldet.'
+            : 'Erfolgreich mit GitHub angemeldet.',
+      );
+    }
+  }
 
   Future<void> _ensureGoogleSignInInitialized() async {
     if (AppConfig.googleClientId.isEmpty) {
@@ -226,6 +363,13 @@ class _LoginScreenState extends State<LoginScreen> {
     if (email != null && email.isNotEmpty) {
       _emailController.text = email;
     }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      unawaited(_handleGithubOAuthCallback());
+    });
   }
 
   @override
@@ -422,6 +566,38 @@ class _LoginScreenState extends State<LoginScreen> {
 
         // Bereich 2: Google
         _buildGoogleAuthSection(provider),
+
+        const SizedBox(height: 16),
+        _buildGithubAuthSection(provider),
+      ],
+    );
+  }
+
+  Widget _buildGithubAuthSection(AuthProvider provider) {
+    final description =
+        _registerMode ? 'Mit GitHub Konto erstellen' : 'Mit GitHub einloggen';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'GitHub-Bereich',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          description,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 12),
+        if (AppConfig.githubClientId.isEmpty)
+          const Text('GitHub Login ist nicht konfiguriert.')
+        else
+          OutlinedButton.icon(
+            onPressed: provider.loading ? null : _startGithubOAuth,
+            icon: const Icon(Icons.code),
+            label: Text(description),
+          ),
       ],
     );
   }

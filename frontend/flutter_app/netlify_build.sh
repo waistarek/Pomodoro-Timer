@@ -9,4 +9,5 @@ flutter doctor
 flutter pub get
 flutter build web --release \
   --dart-define=API_BASE_URL="${API_BASE_URL:-https://pomodoro-backend-00pe.onrender.com}" \
-  --dart-define=GOOGLE_CLIENT_ID="${GOOGLE_CLIENT_ID:-}"
+  --dart-define=GOOGLE_CLIENT_ID="${GOOGLE_CLIENT_ID:-}" \
+  --dart-define=GITHUB_CLIENT_ID="${GITHUB_CLIENT_ID:-}"

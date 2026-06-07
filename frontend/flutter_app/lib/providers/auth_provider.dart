@@ -193,4 +193,34 @@ class AuthProvider extends ChangeNotifier {
     user = null;
     notifyListeners();
   }
+
+  Future<bool> loginWithGithubCode(
+    String code, {
+    required String mode,
+    required String redirectUri,
+    bool rememberSession = true,
+  }) async {
+    loading = true;
+    error = null;
+    notifyListeners();
+
+    try {
+      await _authService.loginWithGithubCode(
+        code,
+        mode: mode,
+        redirectUri: redirectUri,
+        rememberSession: rememberSession,
+      );
+
+      user = await _authService.me();
+      _authService.useUserScope(user!.id);
+      return true;
+    } catch (e) {
+      error = e.toString();
+      return false;
+    } finally {
+      loading = false;
+      notifyListeners();
+    }
+  }
 }

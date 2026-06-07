@@ -43,7 +43,7 @@ from .database import get_db
 
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token as google_id_token
-
+import requests
 
 app = FastAPI(title="Pomodoro API", version="1.0.0")
 
@@ -97,19 +97,124 @@ def _verify_google_login_token(id_token: str) -> dict:
 
     return claims
 
-@app.post("/auth/oauth-login", response_model=Token)
-def oauth_login(data: OAuthLogin, db: Session = Depends(get_db)) -> Token:
-    if data.provider != "google":
+def _verify_github_login_code(code: str, redirect_uri: str | None) -> dict:
+    github_client_id = os.getenv("GITHUB_CLIENT_ID")
+    github_client_secret = os.getenv("GITHUB_CLIENT_SECRET")
+
+    if not github_client_id or not github_client_secret:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Dieser Login-Anbieter wird noch nicht unterstützt.",
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="GitHub Login ist serverseitig nicht konfiguriert.",
         )
 
-    claims = _verify_google_login_token(data.id_token)
+    token_payload = {
+        "client_id": github_client_id,
+        "client_secret": github_client_secret,
+        "code": code,
+    }
 
-    provider = "google"
-    provider_subject = claims["sub"]
-    email = claims["email"].lower()
+    if redirect_uri:
+        token_payload["redirect_uri"] = redirect_uri
+
+    token_response = requests.post(
+        "https://github.com/login/oauth/access_token",
+        headers={"Accept": "application/json"},
+        data=token_payload,
+        timeout=10,
+    )
+
+    if token_response.status_code >= 400:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="GitHub-Code konnte nicht eingelöst werden.",
+        )
+
+    token_data = token_response.json()
+    access_token = token_data.get("access_token")
+
+    if not access_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=token_data.get("error_description", "Ungültiger GitHub-Code."),
+        )
+
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "Authorization": f"Bearer {access_token}",
+        "User-Agent": "pomodoro-timer",
+    }
+
+    user_response = requests.get(
+        "https://api.github.com/user",
+        headers=headers,
+        timeout=10,
+    )
+
+    if user_response.status_code >= 400:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="GitHub-Benutzerdaten konnten nicht geladen werden.",
+        )
+
+    github_user = user_response.json()
+    github_user_id = github_user.get("id")
+
+    if github_user_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="GitHub-Benutzerdaten enthalten keine gültige ID.",
+        )
+
+    email = github_user.get("email")
+
+    if not email:
+        emails_response = requests.get(
+            "https://api.github.com/user/emails",
+            headers=headers,
+            timeout=10,
+        )
+
+        if emails_response.status_code >= 400:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="GitHub-E-Mail-Adresse konnte nicht gelesen werden.",
+            )
+
+        emails = emails_response.json()
+
+        primary_verified_email = next(
+            (
+                item.get("email")
+                for item in emails
+                if item.get("primary") is True
+                and item.get("verified") is True
+                and item.get("email")
+            ),
+            None,
+        )
+
+        email = primary_verified_email
+
+    if not email:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="GitHub-Konto hat keine verifizierte E-Mail-Adresse.",
+        )
+
+    return {
+        "provider_subject": str(github_user_id),
+        "email": email.lower(),
+    }
+
+def _login_or_register_oauth_user(
+    *,
+    provider: str,
+    provider_subject: str,
+    email: str,
+    mode: str,
+    db: Session,
+) -> Token:
+    provider_label = "Google" if provider == "google" else "GitHub"
 
     identity = (
         db.query(AuthIdentity)
@@ -120,13 +225,13 @@ def oauth_login(data: OAuthLogin, db: Session = Depends(get_db)) -> Token:
         .first()
     )
 
-    if data.mode == "login":
+    if mode == "login":
         if identity is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=(
-                    "Für dieses Google-Konto existiert noch kein Konto. "
-                    "Bitte zuerst ein Konto mit Google erstellen."
+                    f"Für dieses {provider_label}-Konto existiert noch kein Konto. "
+                    f"Bitte zuerst ein Konto mit {provider_label} erstellen."
                 ),
             )
 
@@ -137,8 +242,8 @@ def oauth_login(data: OAuthLogin, db: Session = Depends(get_db)) -> Token:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail=(
-                    "Dieses Google-Konto ist bereits registriert. "
-                    "Bitte mit Google einloggen."
+                    f"Dieses {provider_label}-Konto ist bereits registriert. "
+                    f"Bitte mit {provider_label} einloggen."
                 ),
             )
 
@@ -181,6 +286,51 @@ def oauth_login(data: OAuthLogin, db: Session = Depends(get_db)) -> Token:
             str(user.id),
             user.auth_version,
         )
+    )
+
+
+@app.post("/auth/oauth-login", response_model=Token)
+def oauth_login(data: OAuthLogin, db: Session = Depends(get_db)) -> Token:
+    if data.provider == "google":
+        if not data.id_token:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Google-ID-Token fehlt.",
+            )
+
+        claims = _verify_google_login_token(data.id_token)
+
+        return _login_or_register_oauth_user(
+            provider="google",
+            provider_subject=claims["sub"],
+            email=claims["email"].lower(),
+            mode=data.mode,
+            db=db,
+        )
+
+    if data.provider == "github":
+        if not data.code:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="GitHub-Code fehlt.",
+            )
+
+        github_identity = _verify_github_login_code(
+            data.code,
+            data.redirect_uri,
+        )
+
+        return _login_or_register_oauth_user(
+            provider="github",
+            provider_subject=github_identity["provider_subject"],
+            email=github_identity["email"],
+            mode=data.mode,
+            db=db,
+        )
+
+    raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail="Dieser Login-Anbieter wird nicht unterstützt.",
     )
 
 
