@@ -1,0 +1,423 @@
+{
+  "@@locale": "zh",
+  "appTitle": "番茄钟应用",
+  "navTimer": "计时器",
+  "navTasks": "任务",
+  "navStats": "统计",
+  "navSettings": "设置",
+  "navAccount": "账户",
+  "close": "关闭",
+  "retry": "重试",
+  "cancel": "取消",
+  "delete": "删除",
+  "edit": "编辑",
+  "save": "保存",
+  "reset": "重置",
+  "refresh": "刷新",
+  "messageClose": "关闭消息",
+  "or": "或",
+  "yes": "是",
+  "no": "否",
+  "emailVerifiedSuccess": "电子邮件已成功验证。你现在可以登录。",
+  "emailVerifiedExpired": "验证链接已过期。",
+  "emailVerifiedInvalid": "验证链接无效。",
+  "sessionSyncOneWithAccount": "一个会话正在与你的账户同步。",
+  "sessionSyncManyWithAccount": "{count} 个会话正在与你的账户同步。",
+  "@sessionSyncManyWithAccount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOneAfterLogin": "一个本地会话将在登录后同步。",
+  "sessionSyncManyAfterLogin": "{count} 个本地会话将在登录后同步。",
+  "@sessionSyncManyAfterLogin": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOnePending": "一个会话正在等待同步。",
+  "sessionSyncManyPending": "{count} 个会话正在等待同步。",
+  "@sessionSyncManyPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncDone": "同步已完成。",
+  "sessionSyncFailed": "当前无法同步会话。稍后会再次尝试。",
+  "accountTitle": "用户账户",
+  "loginTitle": "登录",
+  "createAccountTitle": "创建新账户",
+  "emailPasswordLoginTitle": "使用电子邮件和密码登录",
+  "emailPasswordCreateTitle": "创建电子邮件/密码账户",
+  "emailLabel": "电子邮件",
+  "passwordLabel": "密码",
+  "loginButton": "登录",
+  "createAccountButton": "创建账户",
+  "rememberSessionTitle": "在此设备上保持登录",
+  "rememberSessionSubtitle": "如果关闭此选项，登录状态只会在当前应用会话中保持。",
+  "forgotPasswordButton": "忘记密码？",
+  "alreadyHaveAccount": "我已有账户",
+  "googleSection": "Google 区域",
+  "googleLoginButton": "使用 Google 登录",
+  "googleCreateButton": "使用 Google 创建账户",
+  "googleNotConfigured": "Google 登录尚未配置。",
+  "googlePreparing": "正在准备 Google 登录 ...",
+  "googleNoIdToken": "Google 没有返回有效的 ID 令牌。",
+  "googlePrepareFailed": "无法准备 Google 登录：{error}",
+  "@googlePrepareFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginFailed": "Google 登录失败：{error}",
+  "@googleLoginFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginSuccess": "已成功使用 Google 登录。",
+  "googleAccountCreated": "Google 账户已创建，并且你已登录。",
+  "googleWebOnly": "Google 登录仅在网页应用中可用",
+  "githubSection": "GitHub 区域",
+  "githubLoginButton": "使用 GitHub 登录",
+  "githubCreateButton": "使用 GitHub 创建账户",
+  "githubNotConfigured": "GitHub 登录尚未配置。",
+  "githubCancelled": "GitHub 登录已取消或失败。",
+  "githubSecurityCancelled": "GitHub 登录因安全原因被取消。",
+  "githubNoValidCode": "GitHub 没有返回有效代码。",
+  "githubLoginSuccess": "已成功使用 GitHub 登录。",
+  "githubAccountCreated": "GitHub 账户已创建，并且你已登录。",
+  "passwordResetTitle": "重置密码",
+  "passwordResetDescription": "请输入你的电子邮件地址。如果账户存在，你将收到密码重置链接。",
+  "sendResetLink": "发送重置链接",
+  "backToLogin": "返回登录",
+  "setNewPasswordTitle": "设置新密码",
+  "setNewPasswordDescription": "为你的账户设置一个新密码。",
+  "newPasswordLabel": "新密码",
+  "repeatNewPasswordLabel": "再次输入新密码",
+  "passwordsDoNotMatch": "两次输入的密码不一致",
+  "savePassword": "保存密码",
+  "registrationSuccess": "注册成功。请验证你的电子邮件地址，然后登录。",
+  "passwordResetRequestSuccess": "如果此电子邮件对应的账户存在，重置链接已发送。",
+  "passwordChangedSuccess": "密码已更改。你现在可以登录。",
+  "passwordResetMailSent": "如果账户存在，重置链接已发送。",
+  "loginSuccess": "登录成功。",
+  "invalidEmail": "请输入有效的电子邮件地址",
+  "passwordMinLength": "至少 8 个字符",
+  "loggedInTitle": "用户账户",
+  "loggedInDescription": "你当前已登录。",
+  "emailAddress": "电子邮件地址",
+  "emailStatus": "电子邮件状态",
+  "emailVerified": "已验证",
+  "emailNotVerified": "尚未验证",
+  "accountCreated": "账户已创建",
+  "synchronization": "同步",
+  "accountInfoWarning": "如果本地保存了有效的登录令牌，应用可以自动恢复你的会话。在共享设备上，你应始终退出登录。",
+  "changePassword": "更改密码",
+  "logout": "退出登录",
+  "syncRunning": "正在同步",
+  "syncOneWaiting": "1 个会话等待中",
+  "syncManyWaiting": "{count} 个会话等待中",
+  "@syncManyWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncError": "同步错误",
+  "syncAllSynced": "全部已同步",
+  "sessionExpired": "你的会话已过期。请重新登录。",
+  "settingsSaved": "设置已保存。",
+  "timerTimesTitle": "计时器时长",
+  "timerTimesDescription": "设置工作阶段和休息阶段的持续时间。",
+  "workTime": "工作时间",
+  "shortBreak": "短休息",
+  "longBreak": "长休息",
+  "longBreakAfter": "长休息间隔",
+  "minutes": "分钟",
+  "pomodorosUnit": "番茄钟",
+  "behaviorTitle": "行为",
+  "behaviorDescription": "调整计时器在使用过程中的行为。",
+  "autoStartNextPhase": "自动开始下一阶段",
+  "enableSound": "启用声音",
+  "enableVibration": "启用振动",
+  "vibrationDescription": "实际的移动设备振动稍后会通过插件接入。",
+  "languageTitle": "语言",
+  "languageDescription": "选择应用语言。选择“系统语言”时，应用会使用浏览器或设备语言。",
+  "languageLabel": "应用语言",
+  "languageSystem": "系统语言",
+  "languageGerman": "德语",
+  "languageEnglish": "英语",
+  "languageArabic": "阿拉伯语",
+  "languageChinese": "中文",
+  "languageFrench": "法语",
+  "languageSpanish": "西班牙语",
+  "languageHindi": "印地语",
+  "languagePortuguese": "葡萄牙语",
+  "languageRussian": "俄语",
+  "languageJapanese": "日语",
+  "languageTurkish": "土耳其语",
+  "languageItalian": "意大利语",
+  "languageKorean": "韩语",
+  "languageIndonesian": "印度尼西亚语",
+  "languagePersian": "波斯语",
+  "appearanceTitle": "外观",
+  "appearanceDescription": "选择应用的显示模式和主色。",
+  "appearanceLabel": "外观",
+  "systemTheme": "系统",
+  "lightMode": "浅色模式",
+  "darkMode": "深色模式",
+  "themeColor": "主题颜色",
+  "red": "红色",
+  "blue": "蓝色",
+  "green": "绿色",
+  "purple": "紫色",
+  "saveSettings": "保存设置",
+  "noChanges": "没有更改",
+  "decrease": "减少",
+  "increase": "增加",
+  "minutesShort": "分",
+  "settingsSavedButNotSynced": "设置已在本地保存，但尚未同步。",
+  "settingsLoadRemoteFailed": "无法从后端加载设置。将使用本地设置。",
+  "statsTitle": "统计",
+  "statsRefresh": "刷新",
+  "statsWeek": "周",
+  "statsMonth": "月",
+  "statsYear": "年",
+  "statsTasksTime": "任务时间",
+  "chartFocusPerDay": "每日专注时间",
+  "chartFocusPerCalendarWeek": "每个日历周的专注时间",
+  "chartFocusPerMonth": "每月专注时间",
+  "chartFocusPerTask": "每项任务的专注时间",
+  "xAxisWeek": "X 轴：一周中的日期",
+  "xAxisMonth": "X 轴：本月的日历周",
+  "xAxisYear": "X 轴：一年中的月份",
+  "xAxisTasks": "X 轴：任务",
+  "periodNoData": "时间段：暂无数据",
+  "periodRange": "时间段：{start} – {end}",
+  "@periodRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "previousPeriod": "上一个时间段",
+  "nextPeriod": "下一个时间段",
+  "statsLoading": "正在加载统计数据 ...",
+  "taskStatsLoading": "正在加载任务统计 ...",
+  "taskStatsEmpty": "尚无每项任务的工作时间。启动带任务的番茄钟后即可查看数据。",
+  "pomodoros": "番茄钟",
+  "focusTime": "专注时间",
+  "streak": "连续记录",
+  "bestPeriod": "最佳时间段",
+  "daysCount": "{count, plural, =1{1 天} other{{count} 天}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "yAxisFocusHoursWithXAxis": "Y 轴：专注时间（小时） · {xAxisText}",
+  "@yAxisFocusHoursWithXAxis": {
+    "placeholders": {
+      "xAxisText": {
+        "type": "String"
+      }
+    }
+  },
+  "focusTimeMinutes": "专注时间（分钟）",
+  "sortedByHighestFocusTime": "按最高专注时间排序。",
+  "taskPomodoroMinutes": "{pomodoros} 个番茄钟 · {minutes} 分钟",
+  "@taskPomodoroMinutes": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "statsNoData": "尚无统计数据。",
+  "statsLoadFailed": "无法加载统计数据。请登录并检查网络连接。",
+  "taskStatsLoadFailed": "无法加载任务统计。",
+  "todayPomodorosLoadFailed": "无法加载今天的番茄钟数量。",
+  "noTaskTitle": "无任务",
+  "calendarWeekShort": "第 {week} 周",
+  "@calendarWeekShort": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarWeekWithYear": "第 {week} 周/{year}",
+  "@calendarWeekWithYear": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "tasksTitle": "任务",
+  "tasksRefreshTooltip": "刷新任务",
+  "taskSingular": "任务",
+  "deleteTaskTitle": "删除任务？",
+  "deleteTaskMessage": "你确定要删除任务“{title}”吗？",
+  "@deleteTaskMessage": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksLoading": "正在加载任务 ...",
+  "tasksEmpty": "还没有任务。创建你的第一个任务。",
+  "tasksSearchEmpty": "未找到任务。请调整搜索或筛选条件。",
+  "noTimerTaskSelected": "未选择计时器任务",
+  "activeTimerTask": "当前计时器任务：{title}",
+  "@activeTimerTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskSelectionLockedDescription": "计时器阶段正在运行或已暂停。因此当前任务被锁定。",
+  "taskSelectionNextWorkPhaseDescription": "此任务将用于下一个工作阶段。",
+  "withoutTask": "无任务",
+  "searchTasks": "搜索任务",
+  "clearSearch": "清除搜索",
+  "filterAll": "全部",
+  "filterOpen": "未完成",
+  "filterCompleted": "已完成",
+  "sortLabel": "排序",
+  "sortNewest": "最新优先",
+  "sortPriority": "优先级",
+  "sortPomodoros": "番茄钟",
+  "active": "活动",
+  "completed": "已完成",
+  "locked": "已锁定",
+  "forTimer": "用于计时器",
+  "priorityLow": "低",
+  "priorityMedium": "中",
+  "priorityHigh": "高",
+  "taskLoadRemoteFailed": "无法从后端加载任务。仍将显示本地数据。",
+  "taskSavedLocallyNotSynced": "任务已在本地保存，但无法与账户同步。",
+  "taskSaveFailedRolledBack": "无法保存任务。最后的更改已回滚。",
+  "taskDeleteFailedRestored": "无法从账户中删除任务。任务已恢复。",
+  "taskCreateTitle": "创建任务",
+  "taskEditTitle": "编辑任务",
+  "taskTitleLabel": "标题",
+  "taskTitleRequired": "请输入标题",
+  "taskTitleTooShort": "标题太短。",
+  "taskDescriptionLabel": "描述",
+  "priorityLabel": "优先级",
+  "tagsLabel": "标签/分类",
+  "tagsHint": "例如：大学、工作、开发",
+  "timerResetTitle": "重置计时器？",
+  "timerResetMessage": "当前阶段将被取消，并且不会保存为已完成会话。",
+  "taskNoneSelected": "未选择任务",
+  "currentTask": "当前任务：{title}",
+  "@currentTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskForWorkPhase": "此工作阶段的任务",
+  "taskLockedToPhase": "此阶段已绑定到所选任务。",
+  "phaseWork": "工作阶段",
+  "phaseShortBreak": "短休息",
+  "phaseLongBreak": "长休息",
+  "timerStatusSaving": "正在保存 ...",
+  "timerStatusRunning": "运行中",
+  "timerStatusPaused": "已暂停",
+  "timerStatusReady": "就绪",
+  "phaseDescriptionWork": "专注时间",
+  "phaseDescriptionShortBreak": "短暂恢复",
+  "phaseDescriptionLongBreak": "较长恢复",
+  "afterNextPhase": "{phaseDescription} · 接下来：{nextPhase}",
+  "@afterNextPhase": {
+    "placeholders": {
+      "phaseDescription": {
+        "type": "String"
+      },
+      "nextPhase": {
+        "type": "String"
+      }
+    }
+  },
+  "todayPomodorosLoading": "今天：正在加载 ...",
+  "todayPomodoros": "今天：{pomodoros}",
+  "@todayPomodoros": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "String"
+      }
+    }
+  },
+  "pomodoroCount": "{count, plural, =1{1 个番茄钟} other{{count} 个番茄钟}}",
+  "@pomodoroCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pause": "暂停",
+  "continueButton": "继续",
+  "start": "开始",
+  "skipPause": "跳过休息",
+  "shortcutSpaceCompact": "空格：开始/暂停",
+  "shortcutResetCompact": "R：重置",
+  "shortcutSkipCompact": "S：跳过",
+  "shortcutSpace": "空格键：开始/暂停",
+  "shortcutReset": "R：重置",
+  "shortcutSkip": "S：跳过休息",
+  "phaseSavingTitle": "正在保存阶段",
+  "phaseSavingDescription": "已完成的阶段正在保存，计时器正在准备。",
+  "storageProblem": "存储问题",
+  "oneFinishedPhaseSavingBackground": "已完成的阶段正在后台保存。",
+  "manyFinishedPhasesSavingBackground": "{count} 个已完成阶段正在后台保存。",
+  "@manyFinishedPhasesSavingBackground": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timerLocalSaveFailed": "无法在本地保存已完成阶段。",
+  "timerBackendSyncFailed": "已完成阶段已在本地保存，但尚未与后端同步。",
+  "phaseProgress": "{elapsed} / {total}",
+  "@phaseProgress": {
+    "placeholders": {
+      "elapsed": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  }
+}
