@@ -1,0 +1,423 @@
+{
+  "@@locale": "id",
+  "appTitle": "Aplikasi Pomodoro",
+  "navTimer": "Timer",
+  "navTasks": "Tugas",
+  "navStats": "Statistik",
+  "navSettings": "Pengaturan",
+  "navAccount": "Akun",
+  "close": "Tutup",
+  "retry": "Coba lagi",
+  "cancel": "Batal",
+  "delete": "Hapus",
+  "edit": "Edit",
+  "save": "Simpan",
+  "reset": "Reset",
+  "refresh": "Muat ulang",
+  "messageClose": "Tutup pesan",
+  "or": "atau",
+  "yes": "Ya",
+  "no": "Tidak",
+  "emailVerifiedSuccess": "Email berhasil diverifikasi. Sekarang kamu dapat masuk.",
+  "emailVerifiedExpired": "Tautan verifikasi sudah kedaluwarsa.",
+  "emailVerifiedInvalid": "Tautan verifikasi tidak valid.",
+  "sessionSyncOneWithAccount": "Satu sesi sedang disinkronkan dengan akunmu.",
+  "sessionSyncManyWithAccount": "{count} sesi sedang disinkronkan dengan akunmu.",
+  "@sessionSyncManyWithAccount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOneAfterLogin": "Satu sesi lokal akan disinkronkan setelah masuk.",
+  "sessionSyncManyAfterLogin": "{count} sesi lokal akan disinkronkan setelah masuk.",
+  "@sessionSyncManyAfterLogin": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOnePending": "Satu sesi menunggu sinkronisasi.",
+  "sessionSyncManyPending": "{count} sesi menunggu sinkronisasi.",
+  "@sessionSyncManyPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncDone": "Sinkronisasi selesai.",
+  "sessionSyncFailed": "Sesi belum dapat disinkronkan saat ini. Aplikasi akan mencoba lagi nanti.",
+  "accountTitle": "Akun pengguna",
+  "loginTitle": "Masuk",
+  "createAccountTitle": "Buat akun baru",
+  "emailPasswordLoginTitle": "Masuk dengan email dan kata sandi",
+  "emailPasswordCreateTitle": "Buat akun email/kata sandi",
+  "emailLabel": "Email",
+  "passwordLabel": "Kata sandi",
+  "loginButton": "Masuk",
+  "createAccountButton": "Buat akun",
+  "rememberSessionTitle": "Tetap masuk di perangkat ini",
+  "rememberSessionSubtitle": "Jika dinonaktifkan, login hanya aktif selama sesi aplikasi saat ini.",
+  "forgotPasswordButton": "Lupa kata sandi?",
+  "alreadyHaveAccount": "Saya sudah punya akun",
+  "googleSection": "Bagian Google",
+  "googleLoginButton": "Masuk dengan Google",
+  "googleCreateButton": "Buat akun dengan Google",
+  "googleNotConfigured": "Login Google belum dikonfigurasi.",
+  "googlePreparing": "Menyiapkan login Google ...",
+  "googleNoIdToken": "Google tidak mengembalikan ID token yang valid.",
+  "googlePrepareFailed": "Login Google tidak dapat disiapkan: {error}",
+  "@googlePrepareFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginFailed": "Login Google gagal: {error}",
+  "@googleLoginFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginSuccess": "Berhasil masuk dengan Google.",
+  "googleAccountCreated": "Akun Google dibuat dan kamu sudah masuk.",
+  "googleWebOnly": "Login Google hanya tersedia di aplikasi web",
+  "githubSection": "Bagian GitHub",
+  "githubLoginButton": "Masuk dengan GitHub",
+  "githubCreateButton": "Buat akun dengan GitHub",
+  "githubNotConfigured": "Login GitHub belum dikonfigurasi.",
+  "githubCancelled": "Login GitHub dibatalkan atau gagal.",
+  "githubSecurityCancelled": "Login GitHub dibatalkan karena alasan keamanan.",
+  "githubNoValidCode": "GitHub tidak mengembalikan kode yang valid.",
+  "githubLoginSuccess": "Berhasil masuk dengan GitHub.",
+  "githubAccountCreated": "Akun GitHub dibuat dan kamu sudah masuk.",
+  "passwordResetTitle": "Reset kata sandi",
+  "passwordResetDescription": "Masukkan alamat emailmu. Jika akun ada, kamu akan menerima tautan untuk mereset kata sandi.",
+  "sendResetLink": "Kirim tautan reset",
+  "backToLogin": "Kembali ke login",
+  "setNewPasswordTitle": "Atur kata sandi baru",
+  "setNewPasswordDescription": "Atur kata sandi baru untuk akunmu.",
+  "newPasswordLabel": "Kata sandi baru",
+  "repeatNewPasswordLabel": "Ulangi kata sandi baru",
+  "passwordsDoNotMatch": "Kata sandi tidak cocok",
+  "savePassword": "Simpan kata sandi",
+  "registrationSuccess": "Registrasi berhasil. Harap verifikasi alamat emailmu lalu masuk.",
+  "passwordResetRequestSuccess": "Jika akun dengan email ini ada, tautan reset telah dikirim.",
+  "passwordChangedSuccess": "Kata sandi telah diubah. Sekarang kamu dapat masuk.",
+  "passwordResetMailSent": "Jika akun ada, tautan reset telah dikirim.",
+  "loginSuccess": "Berhasil masuk.",
+  "invalidEmail": "Masukkan alamat email yang valid",
+  "passwordMinLength": "Minimal 8 karakter",
+  "loggedInTitle": "Akun pengguna",
+  "loggedInDescription": "Kamu sedang masuk.",
+  "emailAddress": "Alamat email",
+  "emailStatus": "Status email",
+  "emailVerified": "Terverifikasi",
+  "emailNotVerified": "Belum diverifikasi",
+  "accountCreated": "Akun dibuat",
+  "synchronization": "Sinkronisasi",
+  "accountInfoWarning": "Aplikasi dapat memulihkan sesimu secara otomatis jika token login yang valid tersimpan secara lokal. Di perangkat bersama, kamu harus selalu keluar.",
+  "changePassword": "Ubah kata sandi",
+  "logout": "Keluar",
+  "syncRunning": "Sinkronisasi berjalan",
+  "syncOneWaiting": "1 sesi menunggu",
+  "syncManyWaiting": "{count} sesi menunggu",
+  "@syncManyWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncError": "Kesalahan sinkronisasi",
+  "syncAllSynced": "Semuanya tersinkronisasi",
+  "sessionExpired": "Sesimu telah kedaluwarsa. Harap masuk lagi.",
+  "settingsSaved": "Pengaturan disimpan.",
+  "timerTimesTitle": "Durasi timer",
+  "timerTimesDescription": "Tentukan berapa lama fase kerja dan istirahat berlangsung.",
+  "workTime": "Waktu kerja",
+  "shortBreak": "Istirahat pendek",
+  "longBreak": "Istirahat panjang",
+  "longBreakAfter": "Istirahat panjang setelah",
+  "minutes": "Menit",
+  "pomodorosUnit": "Pomodoro",
+  "behaviorTitle": "Perilaku",
+  "behaviorDescription": "Sesuaikan cara timer berperilaku saat digunakan.",
+  "autoStartNextPhase": "Mulai fase berikutnya secara otomatis",
+  "enableSound": "Aktifkan suara",
+  "enableVibration": "Aktifkan getaran",
+  "vibrationDescription": "Getaran mobile sebenarnya akan dihubungkan nanti melalui plugin.",
+  "languageTitle": "Bahasa",
+  "languageDescription": "Pilih bahasa aplikasi. Dengan “Bahasa sistem”, aplikasi menggunakan bahasa browser atau perangkat.",
+  "languageLabel": "Bahasa aplikasi",
+  "languageSystem": "Bahasa sistem",
+  "languageGerman": "Jerman",
+  "languageEnglish": "Inggris",
+  "languageArabic": "Arab",
+  "languageChinese": "Tionghoa",
+  "languageFrench": "Prancis",
+  "languageSpanish": "Spanyol",
+  "languageHindi": "Hindi",
+  "languagePortuguese": "Portugis",
+  "languageRussian": "Rusia",
+  "languageJapanese": "Jepang",
+  "languageTurkish": "Turki",
+  "languageItalian": "Italia",
+  "languageKorean": "Korea",
+  "languageIndonesian": "Indonesia",
+  "languagePersian": "Persia",
+  "appearanceTitle": "Tampilan",
+  "appearanceDescription": "Pilih mode tampilan dan warna utama aplikasi.",
+  "appearanceLabel": "Tampilan",
+  "systemTheme": "Sistem",
+  "lightMode": "Mode terang",
+  "darkMode": "Mode gelap",
+  "themeColor": "Warna tema",
+  "red": "Merah",
+  "blue": "Biru",
+  "green": "Hijau",
+  "purple": "Ungu",
+  "saveSettings": "Simpan pengaturan",
+  "noChanges": "Tidak ada perubahan",
+  "decrease": "Kurangi",
+  "increase": "Tambah",
+  "minutesShort": "mnt",
+  "settingsSavedButNotSynced": "Pengaturan disimpan secara lokal, tetapi belum disinkronkan.",
+  "settingsLoadRemoteFailed": "Pengaturan tidak dapat dimuat dari backend. Pengaturan lokal akan digunakan.",
+  "statsTitle": "Statistik",
+  "statsRefresh": "Muat ulang",
+  "statsWeek": "Minggu",
+  "statsMonth": "Bulan",
+  "statsYear": "Tahun",
+  "statsTasksTime": "Waktu tugas",
+  "chartFocusPerDay": "Waktu fokus per hari",
+  "chartFocusPerCalendarWeek": "Waktu fokus per minggu kalender",
+  "chartFocusPerMonth": "Waktu fokus per bulan",
+  "chartFocusPerTask": "Waktu fokus per tugas",
+  "xAxisWeek": "Sumbu X: hari dalam minggu",
+  "xAxisMonth": "Sumbu X: minggu kalender dalam bulan",
+  "xAxisYear": "Sumbu X: bulan dalam tahun",
+  "xAxisTasks": "Sumbu X: tugas",
+  "periodNoData": "Periode: Tidak ada data",
+  "periodRange": "Periode: {start} – {end}",
+  "@periodRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "previousPeriod": "Periode sebelumnya",
+  "nextPeriod": "Periode berikutnya",
+  "statsLoading": "Memuat statistik ...",
+  "taskStatsLoading": "Memuat statistik tugas ...",
+  "taskStatsEmpty": "Belum ada waktu kerja per tugas. Mulai Pomodoro dengan tugas untuk melihat data.",
+  "pomodoros": "Pomodoro",
+  "focusTime": "Waktu fokus",
+  "streak": "Rangkaian",
+  "bestPeriod": "Periode terbaik",
+  "daysCount": "{count, plural, =1{1 hari} other{{count} hari}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "yAxisFocusHoursWithXAxis": "Sumbu Y: waktu fokus dalam jam · {xAxisText}",
+  "@yAxisFocusHoursWithXAxis": {
+    "placeholders": {
+      "xAxisText": {
+        "type": "String"
+      }
+    }
+  },
+  "focusTimeMinutes": "Waktu fokus dalam menit",
+  "sortedByHighestFocusTime": "Diurutkan berdasarkan waktu fokus tertinggi.",
+  "taskPomodoroMinutes": "{pomodoros} Pomodoro · {minutes} mnt",
+  "@taskPomodoroMinutes": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "statsNoData": "Belum ada data statistik.",
+  "statsLoadFailed": "Statistik tidak dapat dimuat. Harap masuk dan periksa koneksi internet.",
+  "taskStatsLoadFailed": "Statistik tugas tidak dapat dimuat.",
+  "todayPomodorosLoadFailed": "Jumlah Pomodoro hari ini tidak dapat dimuat.",
+  "noTaskTitle": "Tanpa tugas",
+  "calendarWeekShort": "MG {week}",
+  "@calendarWeekShort": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarWeekWithYear": "MG {week}/{year}",
+  "@calendarWeekWithYear": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "tasksTitle": "Tugas",
+  "tasksRefreshTooltip": "Muat ulang tugas",
+  "taskSingular": "Tugas",
+  "deleteTaskTitle": "Hapus tugas?",
+  "deleteTaskMessage": "Apakah kamu yakin ingin menghapus tugas “{title}”?",
+  "@deleteTaskMessage": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksLoading": "Memuat tugas ...",
+  "tasksEmpty": "Belum ada tugas. Buat tugas pertamamu.",
+  "tasksSearchEmpty": "Tidak ada tugas yang ditemukan. Sesuaikan pencarian atau filter.",
+  "noTimerTaskSelected": "Tidak ada tugas timer yang dipilih",
+  "activeTimerTask": "Tugas timer aktif: {title}",
+  "@activeTimerTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskSelectionLockedDescription": "Fase timer sedang berjalan atau dijeda. Karena itu tugas saat ini terkunci.",
+  "taskSelectionNextWorkPhaseDescription": "Tugas ini akan digunakan untuk fase kerja berikutnya.",
+  "withoutTask": "Tanpa tugas",
+  "searchTasks": "Cari tugas",
+  "clearSearch": "Bersihkan pencarian",
+  "filterAll": "Semua",
+  "filterOpen": "Terbuka",
+  "filterCompleted": "Selesai",
+  "sortLabel": "Urutan",
+  "sortNewest": "Terbaru dulu",
+  "sortPriority": "Prioritas",
+  "sortPomodoros": "Pomodoro",
+  "active": "Aktif",
+  "completed": "Selesai",
+  "locked": "Terkunci",
+  "forTimer": "Untuk timer",
+  "priorityLow": "Rendah",
+  "priorityMedium": "Sedang",
+  "priorityHigh": "Tinggi",
+  "taskLoadRemoteFailed": "Tugas tidak dapat dimuat dari backend. Data lokal tetap ditampilkan.",
+  "taskSavedLocallyNotSynced": "Tugas disimpan secara lokal, tetapi tidak dapat disinkronkan dengan akun.",
+  "taskSaveFailedRolledBack": "Tugas tidak dapat disimpan. Perubahan terakhir dibatalkan.",
+  "taskDeleteFailedRestored": "Tugas tidak dapat dihapus dari akun. Tugas telah dipulihkan.",
+  "taskCreateTitle": "Buat tugas",
+  "taskEditTitle": "Edit tugas",
+  "taskTitleLabel": "Judul",
+  "taskTitleRequired": "Harap masukkan judul",
+  "taskTitleTooShort": "Judul terlalu pendek.",
+  "taskDescriptionLabel": "Deskripsi",
+  "priorityLabel": "Prioritas",
+  "tagsLabel": "Tag/kategori",
+  "tagsHint": "mis. kuliah, kerja, pengembangan",
+  "timerResetTitle": "Reset timer?",
+  "timerResetMessage": "Fase saat ini akan dibatalkan dan tidak disimpan sebagai sesi yang selesai.",
+  "taskNoneSelected": "Tidak ada tugas yang dipilih",
+  "currentTask": "Tugas saat ini: {title}",
+  "@currentTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskForWorkPhase": "Tugas untuk fase kerja ini",
+  "taskLockedToPhase": "Fase ini terkunci pada tugas yang dipilih.",
+  "phaseWork": "Fase kerja",
+  "phaseShortBreak": "Istirahat pendek",
+  "phaseLongBreak": "Istirahat panjang",
+  "timerStatusSaving": "Menyimpan ...",
+  "timerStatusRunning": "Berjalan",
+  "timerStatusPaused": "Dijeda",
+  "timerStatusReady": "Siap",
+  "phaseDescriptionWork": "Waktu fokus",
+  "phaseDescriptionShortBreak": "Pemulihan singkat",
+  "phaseDescriptionLongBreak": "Pemulihan lebih lama",
+  "afterNextPhase": "{phaseDescription} · Berikutnya: {nextPhase}",
+  "@afterNextPhase": {
+    "placeholders": {
+      "phaseDescription": {
+        "type": "String"
+      },
+      "nextPhase": {
+        "type": "String"
+      }
+    }
+  },
+  "todayPomodorosLoading": "Hari ini: memuat ...",
+  "todayPomodoros": "Hari ini: {pomodoros}",
+  "@todayPomodoros": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "String"
+      }
+    }
+  },
+  "pomodoroCount": "{count, plural, =1{1 Pomodoro} other{{count} Pomodoro}}",
+  "@pomodoroCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pause": "Jeda",
+  "continueButton": "Lanjutkan",
+  "start": "Mulai",
+  "skipPause": "Lewati istirahat",
+  "shortcutSpaceCompact": "Space: Mulai/Jeda",
+  "shortcutResetCompact": "R: Reset",
+  "shortcutSkipCompact": "S: Lewati",
+  "shortcutSpace": "Spasi: Mulai/Jeda",
+  "shortcutReset": "R: Reset",
+  "shortcutSkip": "S: Lewati istirahat",
+  "phaseSavingTitle": "Menyimpan fase",
+  "phaseSavingDescription": "Fase yang selesai sedang disimpan dan timer sedang disiapkan.",
+  "storageProblem": "Masalah penyimpanan",
+  "oneFinishedPhaseSavingBackground": "Fase yang selesai sedang disimpan di latar belakang.",
+  "manyFinishedPhasesSavingBackground": "{count} fase yang selesai sedang disimpan di latar belakang.",
+  "@manyFinishedPhasesSavingBackground": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timerLocalSaveFailed": "Fase yang selesai tidak dapat disimpan secara lokal.",
+  "timerBackendSyncFailed": "Fase yang selesai telah disimpan secara lokal, tetapi belum disinkronkan dengan backend.",
+  "phaseProgress": "{elapsed} dari {total}",
+  "@phaseProgress": {
+    "placeholders": {
+      "elapsed": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  }
+}
