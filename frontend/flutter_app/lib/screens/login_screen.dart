@@ -1,24 +1,23 @@
 import 'dart:async';
-import '../services/app_session_controller.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'dart:convert';
+import 'dart:math';
 
+import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../config/app_config.dart';
+import '../l10n/app_localizations.dart';
 import '../providers/auth_provider.dart';
 import '../providers/session_sync_provider.dart';
 import '../providers/settings_provider.dart';
-
 import '../providers/task_provider.dart';
-
-import '../services/browser_url_service.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-
-import '../config/app_config.dart';
-import '../widgets/google_sign_in_button.dart';
-import 'dart:convert';
-import 'dart:math';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import '../services/app_session_controller.dart';
 import '../services/browser_redirect_service.dart';
+import '../services/browser_url_service.dart';
+import '../widgets/google_sign_in_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -53,6 +52,37 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool get _resetPasswordMode => _resetToken != null;
 
+  @override
+  void initState() {
+    super.initState();
+
+    final uri = Uri.base;
+    _resetToken =
+        uri.queryParameters['reset_token'] ?? uri.queryParameters['set_token'];
+
+    final email = uri.queryParameters['email'];
+    if (email != null && email.isNotEmpty) {
+      _emailController.text = email;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
+      unawaited(_handleGithubOAuthCallback());
+    });
+  }
+
+  @override
+  void dispose() {
+    _googleSignInSubscription?.cancel();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+
+    super.dispose();
+  }
+
   String _createOauthState() {
     final random = Random.secure();
     final bytes = List<int>.generate(32, (_) => random.nextInt(256));
@@ -72,11 +102,11 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _startGithubOAuth() async {
+    final l10n = AppLocalizations.of(context);
+
     context.read<AuthProvider>().clearError();
     if (AppConfig.githubClientId.isEmpty) {
-      context.read<AuthProvider>().setError(
-            'GitHub Login ist nicht konfiguriert.',
-          );
+      context.read<AuthProvider>().setError(l10n.githubNotConfigured);
       return;
     }
 
@@ -119,9 +149,8 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
-      context.read<AuthProvider>().setError(
-            'GitHub Login wurde abgebrochen oder ist fehlgeschlagen.',
-          );
+      final l10n = AppLocalizations.of(context);
+      context.read<AuthProvider>().setError(l10n.githubCancelled);
       clearLoginActionQueryParameters();
       return;
     }
@@ -150,10 +179,10 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
+    final l10n = AppLocalizations.of(context);
+
     if (expectedState == null || expectedState != receivedState) {
-      context.read<AuthProvider>().setError(
-            'GitHub Login wurde aus Sicherheitsgründen abgebrochen.',
-          );
+      context.read<AuthProvider>().setError(l10n.githubSecurityCancelled);
       clearLoginActionQueryParameters();
       return;
     }
@@ -176,8 +205,8 @@ class _LoginScreenState extends State<LoginScreen> {
     if (ok) {
       await _loadDataAfterSuccessfulLogin(
         mode == 'register'
-            ? 'GitHub-Konto wurde erstellt und du bist angemeldet.'
-            : 'Erfolgreich mit GitHub angemeldet.',
+            ? l10n.githubAccountCreated
+            : l10n.githubLoginSuccess,
       );
     }
   }
@@ -235,9 +264,8 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
-      context.read<AuthProvider>().setError(
-            'Google Login konnte nicht vorbereitet werden: $e',
-          );
+      final l10n = AppLocalizations.of(context);
+      context.read<AuthProvider>().setError(l10n.googlePrepareFailed(e));
     }
   }
 
@@ -289,9 +317,8 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
-      context.read<AuthProvider>().setError(
-            'Google hat keinen gültigen ID-Token zurückgegeben.',
-          );
+      final l10n = AppLocalizations.of(context);
+      context.read<AuthProvider>().setError(l10n.googleNoIdToken);
       return;
     }
 
@@ -309,11 +336,13 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
+    final l10n = AppLocalizations.of(context);
+
     if (ok) {
       await _loadDataAfterSuccessfulLogin(
         googleMode == 'register'
-            ? 'Google-Konto wurde erstellt und du bist angemeldet.'
-            : 'Erfolgreich mit Google angemeldet.',
+            ? l10n.googleAccountCreated
+            : l10n.googleLoginSuccess,
       );
     }
   }
@@ -323,9 +352,8 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    context.read<AuthProvider>().setError(
-          'Google Login fehlgeschlagen: $error',
-        );
+    final l10n = AppLocalizations.of(context);
+    context.read<AuthProvider>().setError(l10n.googleLoginFailed(error));
   }
 
   Future<void> _loadDataAfterSuccessfulLogin(String message) async {
@@ -354,40 +382,11 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-
-    final uri = Uri.base;
-    _resetToken =
-        uri.queryParameters['reset_token'] ?? uri.queryParameters['set_token'];
-
-    final email = uri.queryParameters['email'];
-    if (email != null && email.isNotEmpty) {
-      _emailController.text = email;
-    }
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        return;
-      }
-
-      unawaited(_handleGithubOAuthCallback());
-    });
-  }
-
-  @override
-  void dispose() {
-    _googleSignInSubscription?.cancel();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Benutzerkonto')),
+      appBar: AppBar(title: Text(l10n.accountTitle)),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
@@ -445,12 +444,14 @@ class _LoginScreenState extends State<LoginScreen> {
   ) {
     _prepareGoogleSignInForLoginForm();
 
-    final title = _registerMode ? 'Neues Konto erstellen' : 'Login';
+    final l10n = AppLocalizations.of(context);
+    final title = _registerMode ? l10n.createAccountTitle : l10n.loginTitle;
     final emailPasswordTitle = _registerMode
-        ? 'E-Mail/Passwort-Konto erstellen'
-        : 'Mit E-Mail und Passwort einloggen';
+        ? l10n.emailPasswordCreateTitle
+        : l10n.emailPasswordLoginTitle;
 
-    final submitLabel = _registerMode ? 'Konto erstellen' : 'Einloggen';
+    final submitLabel =
+        _registerMode ? l10n.createAccountButton : l10n.loginButton;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -461,35 +462,28 @@ class _LoginScreenState extends State<LoginScreen> {
           style: Theme.of(context).textTheme.headlineSmall,
           textAlign: TextAlign.center,
         ),
-
         const SizedBox(height: 24),
-
-        // Bereich 1: E-Mail/Passwort
         Text(
           emailPasswordTitle,
           style: Theme.of(context).textTheme.titleMedium,
         ),
-
         const SizedBox(height: 12),
-
         TextFormField(
           controller: _emailController,
-          decoration: const InputDecoration(
-            labelText: 'E-Mail',
+          decoration: InputDecoration(
+            labelText: l10n.emailLabel,
           ),
           keyboardType: TextInputType.emailAddress,
           validator: _validateEmail,
         ),
-
         TextFormField(
           controller: _passwordController,
-          decoration: const InputDecoration(
-            labelText: 'Passwort',
+          decoration: InputDecoration(
+            labelText: l10n.passwordLabel,
           ),
           obscureText: true,
           validator: _validatePassword,
         ),
-
         if (!_registerMode)
           CheckboxListTile(
             value: _rememberSession,
@@ -500,20 +494,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       _rememberSession = value ?? true;
                     });
                   },
-            title: const Text('Auf diesem Gerät angemeldet bleiben'),
-            subtitle: const Text(
-              'Wenn deaktiviert, bleibt die Anmeldung nur für die aktuelle App-Sitzung aktiv.',
-            ),
+            title: Text(l10n.rememberSessionTitle),
+            subtitle: Text(l10n.rememberSessionSubtitle),
             controlAffinity: ListTileControlAffinity.leading,
             contentPadding: EdgeInsets.zero,
           ),
-
         const SizedBox(height: 16),
-
         _AuthErrorText(error: provider.error),
-
         const SizedBox(height: 16),
-
         SizedBox(
           width: double.infinity,
           child: FilledButton(
@@ -527,8 +515,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 : Text(submitLabel),
           ),
         ),
-
-        // Aktionen für E-Mail/Passwort
         if (!_registerMode) ...[
           const SizedBox(height: 8),
           TextButton(
@@ -540,10 +526,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       _forgotPasswordMode = true;
                     });
                   },
-            child: const Text('Passwort vergessen?'),
+            child: Text(l10n.forgotPasswordButton),
           ),
         ],
-
         TextButton(
           onPressed: provider.loading
               ? null
@@ -559,30 +544,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   });
                 },
           child: Text(
-            _registerMode
-                ? 'Ich habe bereits ein Konto'
-                : 'Neues Konto erstellen',
+            _registerMode ? l10n.alreadyHaveAccount : l10n.createAccountTitle,
           ),
         ),
-
         const SizedBox(height: 8),
-
-        const Row(
+        Row(
           children: [
-            Expanded(child: Divider()),
+            const Expanded(child: Divider()),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              child: Text('oder'),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(l10n.or),
             ),
-            Expanded(child: Divider()),
+            const Expanded(child: Divider()),
           ],
         ),
-
         const SizedBox(height: 16),
-
-        // Bereich 2: Google
         _buildGoogleAuthSection(provider),
-
         const SizedBox(height: 16),
         _buildGithubAuthSection(provider),
       ],
@@ -590,14 +567,15 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildGithubAuthSection(AuthProvider provider) {
+    final l10n = AppLocalizations.of(context);
     final description =
-        _registerMode ? 'Mit GitHub Konto erstellen' : 'Mit GitHub einloggen';
+        _registerMode ? l10n.githubCreateButton : l10n.githubLoginButton;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'GitHub-Bereich',
+          l10n.githubSection,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 8),
@@ -607,7 +585,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         const SizedBox(height: 12),
         if (AppConfig.githubClientId.isEmpty)
-          const Text('GitHub Login ist nicht konfiguriert.')
+          Text(l10n.githubNotConfigured)
         else
           OutlinedButton.icon(
             onPressed: provider.loading ? null : _startGithubOAuth,
@@ -619,16 +597,15 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildGoogleAuthSection(AuthProvider provider) {
-    final title = _registerMode ? 'Google-Bereich' : 'Google-Bereich';
-
+    final l10n = AppLocalizations.of(context);
     final description =
-        _registerMode ? 'Mit Google Konto erstellen' : 'Mit Google einloggen';
+        _registerMode ? l10n.googleCreateButton : l10n.googleLoginButton;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          title,
+          l10n.googleSection,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         const SizedBox(height: 8),
@@ -638,9 +615,9 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         const SizedBox(height: 12),
         if (AppConfig.googleClientId.isEmpty)
-          const Text('Google Login ist nicht konfiguriert.')
+          Text(l10n.googleNotConfigured)
         else if (!_googleSignInReady)
-          const Text('Google Login wird vorbereitet ...')
+          Text(l10n.googlePreparing)
         else
           GoogleWebSignInButton(
             enabled: !provider.loading,
@@ -653,24 +630,26 @@ class _LoginScreenState extends State<LoginScreen> {
     BuildContext context,
     AuthProvider provider,
   ) {
+    final l10n = AppLocalizations.of(context);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Passwort zurücksetzen',
+          l10n.passwordResetTitle,
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         const SizedBox(height: 8),
         Text(
-          'Gib deine E-Mail-Adresse ein. Wenn ein Konto existiert, bekommst du einen Link zum Zurücksetzen.',
+          l10n.passwordResetDescription,
           style: Theme.of(context).textTheme.bodyMedium,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 16),
         TextFormField(
           controller: _emailController,
-          decoration: const InputDecoration(
-            labelText: 'E-Mail',
+          decoration: InputDecoration(
+            labelText: l10n.emailLabel,
           ),
           keyboardType: TextInputType.emailAddress,
           validator: _validateEmail,
@@ -691,7 +670,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 18,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : const Text('Reset-Link senden'),
+                : Text(l10n.sendResetLink),
           ),
         ),
         TextButton(
@@ -708,7 +687,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     _confirmPasswordController.clear();
                   });
                 },
-          child: const Text('Zurück zum Login'),
+          child: Text(l10n.backToLogin),
         ),
       ],
     );
@@ -718,37 +697,39 @@ class _LoginScreenState extends State<LoginScreen> {
     BuildContext context,
     AuthProvider provider,
   ) {
+    final l10n = AppLocalizations.of(context);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Neues Passwort setzen',
+          l10n.setNewPasswordTitle,
           style: Theme.of(context).textTheme.headlineSmall,
         ),
         const SizedBox(height: 8),
         Text(
-          'Lege ein neues Passwort für dein Konto fest.',
+          l10n.setNewPasswordDescription,
           style: Theme.of(context).textTheme.bodyMedium,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 16),
         TextFormField(
           controller: _passwordController,
-          decoration: const InputDecoration(
-            labelText: 'Neues Passwort',
+          decoration: InputDecoration(
+            labelText: l10n.newPasswordLabel,
           ),
           obscureText: true,
           validator: _validatePassword,
         ),
         TextFormField(
           controller: _confirmPasswordController,
-          decoration: const InputDecoration(
-            labelText: 'Neues Passwort wiederholen',
+          decoration: InputDecoration(
+            labelText: l10n.repeatNewPasswordLabel,
           ),
           obscureText: true,
           validator: (value) {
             if (value != _passwordController.text) {
-              return 'Die Passwörter stimmen nicht überein';
+              return l10n.passwordsDoNotMatch;
             }
 
             return null;
@@ -769,7 +750,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 18,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                : const Text('Passwort speichern'),
+                : Text(l10n.savePassword),
           ),
         ),
         TextButton(
@@ -785,7 +766,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     _confirmPasswordController.clear();
                   });
                 },
-          child: const Text('Zurück zum Login'),
+          child: Text(l10n.backToLogin),
         ),
       ],
     );
@@ -796,6 +777,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
+    final l10n = AppLocalizations.of(context);
     final authProvider = context.read<AuthProvider>();
     final messenger = ScaffoldMessenger.of(context);
 
@@ -820,17 +802,13 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() => _registerMode = false);
 
         messenger.showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Registrierung erfolgreich. Bitte bestätige deine E-Mail-Adresse und logge dich danach ein.',
-            ),
-          ),
+          SnackBar(content: Text(l10n.registrationSuccess)),
         );
 
         return;
       }
 
-      await _loadDataAfterSuccessfulLogin('Erfolgreich angemeldet.');
+      await _loadDataAfterSuccessfulLogin(l10n.loginSuccess);
     }
   }
 
@@ -839,6 +817,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
+    final l10n = AppLocalizations.of(context);
     final authProvider = context.read<AuthProvider>();
     final messenger = ScaffoldMessenger.of(context);
 
@@ -856,11 +835,7 @@ class _LoginScreenState extends State<LoginScreen> {
       });
 
       messenger.showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Wenn ein Konto mit dieser E-Mail existiert, wurde ein Reset-Link gesendet.',
-          ),
-        ),
+        SnackBar(content: Text(l10n.passwordResetRequestSuccess)),
       );
     }
   }
@@ -876,6 +851,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
+    final l10n = AppLocalizations.of(context);
     final authProvider = context.read<AuthProvider>();
     final messenger = ScaffoldMessenger.of(context);
 
@@ -898,11 +874,7 @@ class _LoginScreenState extends State<LoginScreen> {
       });
 
       messenger.showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Passwort wurde geändert. Du kannst dich jetzt einloggen.',
-          ),
-        ),
+        SnackBar(content: Text(l10n.passwordChangedSuccess)),
       );
     }
   }
@@ -924,7 +896,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final email = value?.trim() ?? '';
 
     if (!email.contains('@')) {
-      return 'Bitte gültige E-Mail eingeben';
+      return AppLocalizations.of(context).invalidEmail;
     }
 
     return null;
@@ -932,7 +904,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String? _validatePassword(String? value) {
     if (value == null || value.length < 8) {
-      return 'Mindestens 8 Zeichen';
+      return AppLocalizations.of(context).passwordMinLength;
     }
 
     return null;
@@ -946,6 +918,7 @@ class _LoggedInCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final user = provider.user!;
     final sessionSyncProvider = context.watch<SessionSyncProvider>();
 
@@ -958,19 +931,19 @@ class _LoggedInCard extends StatelessWidget {
             const Icon(Icons.verified_user, size: 64),
             const SizedBox(height: 16),
             Text(
-              'Benutzerkonto',
+              l10n.loggedInTitle,
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 8),
             Text(
-              'Du bist aktuell angemeldet.',
+              l10n.loggedInDescription,
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             _AccountInfoRow(
               icon: Icons.email_outlined,
-              label: 'E-Mail-Adresse',
+              label: l10n.emailAddress,
               value: _maskEmail(user.email),
               tooltip: user.email,
             ),
@@ -979,21 +952,22 @@ class _LoggedInCard extends StatelessWidget {
               icon: user.isEmailVerified
                   ? Icons.mark_email_read_outlined
                   : Icons.mark_email_unread_outlined,
-              label: 'E-Mail-Status',
-              value:
-                  user.isEmailVerified ? 'Bestätigt' : 'Noch nicht bestätigt',
+              label: l10n.emailStatus,
+              value: user.isEmailVerified
+                  ? l10n.emailVerified
+                  : l10n.emailNotVerified,
             ),
             const SizedBox(height: 12),
             _AccountInfoRow(
               icon: Icons.calendar_today_outlined,
-              label: 'Konto erstellt',
-              value: _formatAccountDate(user.createdAt),
+              label: l10n.accountCreated,
+              value: _formatAccountDate(user.createdAt, l10n),
             ),
             const SizedBox(height: 12),
             _AccountInfoRow(
               icon: Icons.sync_outlined,
-              label: 'Synchronisierung',
-              value: _syncStatusText(sessionSyncProvider),
+              label: l10n.synchronization,
+              value: _syncStatusText(sessionSyncProvider, l10n),
             ),
             const SizedBox(height: 20),
             Container(
@@ -1010,9 +984,7 @@ class _LoggedInCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Die App kann deine Sitzung automatisch wiederherstellen, '
-                      'wenn ein gültiger Anmeldetoken lokal gespeichert ist. '
-                      'Auf fremden Geräten solltest du dich immer ausloggen.',
+                      l10n.accountInfoWarning,
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
@@ -1033,7 +1005,7 @@ class _LoggedInCard extends StatelessWidget {
                           user.email,
                         ),
                 icon: const Icon(Icons.lock_reset),
-                label: const Text('Passwort ändern'),
+                label: Text(l10n.changePassword),
               ),
             ),
             const SizedBox(height: 8),
@@ -1042,7 +1014,7 @@ class _LoggedInCard extends StatelessWidget {
               child: FilledButton.icon(
                 onPressed: () => _logout(context),
                 icon: const Icon(Icons.logout),
-                label: const Text('Ausloggen'),
+                label: Text(l10n.logout),
               ),
             ),
           ],
@@ -1056,6 +1028,7 @@ class _LoggedInCard extends StatelessWidget {
     AuthProvider provider,
     String email,
   ) async {
+    final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
 
     final ok = await provider.requestPasswordReset(email);
@@ -1066,11 +1039,7 @@ class _LoggedInCard extends StatelessWidget {
 
     if (ok) {
       messenger.showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Wenn das Konto existiert, wurde ein Link zum Zurücksetzen gesendet.',
-          ),
-        ),
+        SnackBar(content: Text(l10n.passwordResetMailSent)),
       );
     }
   }
@@ -1129,6 +1098,27 @@ class _AccountInfoRow extends StatelessWidget {
   }
 }
 
+class _AuthErrorText extends StatelessWidget {
+  const _AuthErrorText({required this.error});
+
+  final String? error;
+
+  @override
+  Widget build(BuildContext context) {
+    if (error == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Text(
+      _localizedAuthError(context, error!),
+      style: TextStyle(
+        color: Theme.of(context).colorScheme.error,
+      ),
+      textAlign: TextAlign.center,
+    );
+  }
+}
+
 String _maskEmail(String email) {
   final parts = email.split('@');
 
@@ -1151,53 +1141,47 @@ String _maskEmail(String email) {
   return '$visibleStart***@$domain';
 }
 
-String _formatAccountDate(DateTime date) {
-  final localDate = date.toLocal();
-
-  final day = localDate.day.toString().padLeft(2, '0');
-  final month = localDate.month.toString().padLeft(2, '0');
-  final year = localDate.year.toString();
-
-  return '$day.$month.$year';
+String _formatAccountDate(DateTime date, AppLocalizations l10n) {
+  return DateFormat.yMd(l10n.localeName).format(date.toLocal());
 }
 
-String _syncStatusText(SessionSyncProvider provider) {
+String _syncStatusText(
+  SessionSyncProvider provider,
+  AppLocalizations l10n,
+) {
   if (provider.syncing) {
-    return 'Synchronisierung läuft';
+    return l10n.syncRunning;
   }
 
   if (provider.pendingCount == 1) {
-    return '1 Sitzung wartet';
+    return l10n.syncOneWaiting;
   }
 
   if (provider.pendingCount > 1) {
-    return '${provider.pendingCount} Sitzungen warten';
+    return l10n.syncManyWaiting(provider.pendingCount);
   }
 
   if (provider.error != null) {
-    return 'Fehler bei der Synchronisierung';
+    return l10n.syncError;
   }
 
-  return 'Alles synchronisiert';
+  return l10n.syncAllSynced;
 }
 
-class _AuthErrorText extends StatelessWidget {
-  const _AuthErrorText({required this.error});
+String _localizedAuthError(BuildContext context, String error) {
+  final l10n = AppLocalizations.of(context);
 
-  final String? error;
-
-  @override
-  Widget build(BuildContext context) {
-    if (error == null) {
-      return const SizedBox.shrink();
-    }
-
-    return Text(
-      error!,
-      style: TextStyle(
-        color: Theme.of(context).colorScheme.error,
-      ),
-      textAlign: TextAlign.center,
-    );
+  if (error == 'Deine Sitzung ist abgelaufen. Bitte logge dich erneut ein.') {
+    return l10n.sessionExpired;
   }
+
+  if (error == 'Google hat keinen gültigen ID-Token zurückgegeben.') {
+    return l10n.googleNoIdToken;
+  }
+
+  if (error == 'GitHub hat keinen gültigen Code zurückgegeben.') {
+    return l10n.githubNoValidCode;
+  }
+
+  return error;
 }

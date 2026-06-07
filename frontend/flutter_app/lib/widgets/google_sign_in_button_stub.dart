@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+
 class GoogleWebSignInButton extends StatelessWidget {
   const GoogleWebSignInButton({
     super.key,
@@ -10,12 +12,14 @@ class GoogleWebSignInButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return SizedBox(
       width: double.infinity,
       child: OutlinedButton.icon(
         onPressed: null,
         icon: const Icon(Icons.login),
-        label: const Text('Google Login ist nur in der Web-App verfügbar'),
+        label: Text(l10n.googleWebOnly),
       ),
     );
   }

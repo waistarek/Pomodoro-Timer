@@ -1,17 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:async';
+
+import '../l10n/app_localizations.dart';
+import '../providers/auth_provider.dart';
 import '../providers/session_sync_provider.dart';
+import '../providers/settings_provider.dart';
+import '../providers/stats_provider.dart';
+import '../providers/task_provider.dart';
+import '../services/browser_url_service.dart';
 import 'home_screen.dart';
 import 'login_screen.dart';
 import 'settings_screen.dart';
 import 'stats_screen.dart';
 import 'tasks_screen.dart';
-import '../providers/stats_provider.dart';
-import '../providers/task_provider.dart';
-import '../services/browser_url_service.dart';
-import '../providers/auth_provider.dart';
-import '../providers/settings_provider.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key, this.initialIndex = 0});
@@ -25,6 +28,54 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   late int _index;
   String? _lastLoadedScope;
+  int _lastHandledSessionSyncVersion = 0;
+
+  static const List<String> _screenKeys = [
+    'timer',
+    'tasks',
+    'stats',
+    'settings',
+    'account',
+  ];
+
+  final _screens = const [
+    HomeScreen(),
+    TasksScreen(),
+    StatsScreen(),
+    SettingsScreen(),
+    LoginScreen(),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    final uri = Uri.base;
+    final emailVerificationStatus = uri.queryParameters['email_verified'];
+
+    _index = _indexFromUri();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (emailVerificationStatus == null || !mounted) {
+        return;
+      }
+
+      final l10n = AppLocalizations.of(context);
+      final message = switch (emailVerificationStatus) {
+        'success' => l10n.emailVerifiedSuccess,
+        'expired' => l10n.emailVerifiedExpired,
+        'invalid' => l10n.emailVerifiedInvalid,
+        _ => null,
+      };
+
+      if (message != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+      }
+      clearLoginActionQueryParameters();
+    });
+  }
 
   void _loadDataForCurrentScope(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
@@ -60,14 +111,6 @@ class _AppShellState extends State<AppShell> {
     });
   }
 
-  static const List<String> _screenKeys = [
-    'timer',
-    'tasks',
-    'stats',
-    'settings',
-    'account',
-  ];
-
   int _indexFromUri() {
     final uri = Uri.base;
     final screen = uri.queryParameters['screen'];
@@ -96,47 +139,6 @@ class _AppShellState extends State<AppShell> {
     setAppScreenInUrl(_screenKeys[value]);
   }
 
-  int _lastHandledSessionSyncVersion = 0;
-
-  final _screens = const [
-    HomeScreen(),
-    TasksScreen(),
-    StatsScreen(),
-    SettingsScreen(),
-    LoginScreen(),
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-
-    final uri = Uri.base;
-    final emailVerificationStatus = uri.queryParameters['email_verified'];
-
-    _index = _indexFromUri();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (emailVerificationStatus == null || !mounted) {
-        return;
-      }
-
-      final message = switch (emailVerificationStatus) {
-        'success' =>
-          'E-Mail erfolgreich bestätigt. Du kannst dich jetzt einloggen.',
-        'expired' => 'Der Bestätigungslink ist abgelaufen.',
-        'invalid' => 'Der Bestätigungslink ist ungültig.',
-        _ => null,
-      };
-
-      if (message != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
-      }
-      clearLoginActionQueryParameters();
-    });
-  }
-
   void _refreshDataAfterSessionSync(BuildContext context) {
     final syncCompletedVersion = context.select(
       (SessionSyncProvider provider) => provider.syncCompletedVersion,
@@ -163,33 +165,34 @@ class _AppShellState extends State<AppShell> {
     _refreshDataAfterSessionSync(context);
     _loadDataForCurrentScope(context);
 
+    final l10n = AppLocalizations.of(context);
     final isWide = MediaQuery.sizeOf(context).width >= 900;
 
-    final destinations = const [
+    final destinations = [
       NavigationDestination(
-        icon: Icon(Icons.timer_outlined),
-        selectedIcon: Icon(Icons.timer),
-        label: 'Timer',
+        icon: const Icon(Icons.timer_outlined),
+        selectedIcon: const Icon(Icons.timer),
+        label: l10n.navTimer,
       ),
       NavigationDestination(
-        icon: Icon(Icons.checklist_outlined),
-        selectedIcon: Icon(Icons.checklist),
-        label: 'Aufgaben',
+        icon: const Icon(Icons.checklist_outlined),
+        selectedIcon: const Icon(Icons.checklist),
+        label: l10n.navTasks,
       ),
       NavigationDestination(
-        icon: Icon(Icons.bar_chart_outlined),
-        selectedIcon: Icon(Icons.bar_chart),
-        label: 'Statistik',
+        icon: const Icon(Icons.bar_chart_outlined),
+        selectedIcon: const Icon(Icons.bar_chart),
+        label: l10n.navStats,
       ),
       NavigationDestination(
-        icon: Icon(Icons.settings_outlined),
-        selectedIcon: Icon(Icons.settings),
-        label: 'Einstellungen',
+        icon: const Icon(Icons.settings_outlined),
+        selectedIcon: const Icon(Icons.settings),
+        label: l10n.navSettings,
       ),
       NavigationDestination(
-        icon: Icon(Icons.person_outline),
-        selectedIcon: Icon(Icons.person),
-        label: 'Konto',
+        icon: const Icon(Icons.person_outline),
+        selectedIcon: const Icon(Icons.person),
+        label: l10n.navAccount,
       ),
     ];
 
@@ -202,31 +205,31 @@ class _AppShellState extends State<AppShell> {
               onDestinationSelected: _selectIndex,
               labelType: NavigationRailLabelType.all,
               minWidth: 112,
-              destinations: const [
+              destinations: [
                 NavigationRailDestination(
-                  icon: Icon(Icons.timer_outlined),
-                  selectedIcon: Icon(Icons.timer),
-                  label: Text('Timer'),
+                  icon: const Icon(Icons.timer_outlined),
+                  selectedIcon: const Icon(Icons.timer),
+                  label: Text(l10n.navTimer),
                 ),
                 NavigationRailDestination(
-                  icon: Icon(Icons.checklist_outlined),
-                  selectedIcon: Icon(Icons.checklist),
-                  label: Text('Aufgaben'),
+                  icon: const Icon(Icons.checklist_outlined),
+                  selectedIcon: const Icon(Icons.checklist),
+                  label: Text(l10n.navTasks),
                 ),
                 NavigationRailDestination(
-                  icon: Icon(Icons.bar_chart_outlined),
-                  selectedIcon: Icon(Icons.bar_chart),
-                  label: Text('Statistik'),
+                  icon: const Icon(Icons.bar_chart_outlined),
+                  selectedIcon: const Icon(Icons.bar_chart),
+                  label: Text(l10n.navStats),
                 ),
                 NavigationRailDestination(
-                  icon: Icon(Icons.settings_outlined),
-                  selectedIcon: Icon(Icons.settings),
-                  label: Text('Einstellungen'),
+                  icon: const Icon(Icons.settings_outlined),
+                  selectedIcon: const Icon(Icons.settings),
+                  label: Text(l10n.navSettings),
                 ),
                 NavigationRailDestination(
-                  icon: Icon(Icons.person_outline),
-                  selectedIcon: Icon(Icons.person),
-                  label: Text('Konto'),
+                  icon: const Icon(Icons.person_outline),
+                  selectedIcon: const Icon(Icons.person),
+                  label: Text(l10n.navAccount),
                 ),
               ],
             ),
@@ -282,6 +285,7 @@ class _SessionSyncBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
     final hasError = sessionSync.error != null;
 
     return Material(
@@ -310,7 +314,9 @@ class _SessionSyncBanner extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  hasError ? sessionSync.error! : sessionSync.statusText,
+                  hasError
+                      ? l10n.sessionSyncFailed
+                      : _sessionSyncStatusText(l10n, sessionSync),
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: hasError
                             ? colorScheme.onErrorContainer
@@ -321,7 +327,7 @@ class _SessionSyncBanner extends StatelessWidget {
               if (hasError)
                 TextButton(
                   onPressed: sessionSync.clearError,
-                  child: const Text('Schließen'),
+                  child: Text(l10n.close),
                 )
               else if (sessionSync.canSync &&
                   sessionSync.pendingCount > 0 &&
@@ -329,7 +335,7 @@ class _SessionSyncBanner extends StatelessWidget {
                 TextButton.icon(
                   onPressed: sessionSync.syncStoredSessions,
                   icon: const Icon(Icons.refresh),
-                  label: const Text('Erneut versuchen'),
+                  label: Text(l10n.retry),
                 ),
             ],
           ),
@@ -337,4 +343,35 @@ class _SessionSyncBanner extends StatelessWidget {
       ),
     );
   }
+}
+
+String _sessionSyncStatusText(
+  AppLocalizations l10n,
+  SessionSyncProvider provider,
+) {
+  if (provider.syncing) {
+    if (provider.pendingCount <= 1) {
+      return l10n.sessionSyncOneWithAccount;
+    }
+
+    return l10n.sessionSyncManyWithAccount(provider.pendingCount);
+  }
+
+  if (!provider.canSync && provider.pendingCount > 0) {
+    if (provider.pendingCount == 1) {
+      return l10n.sessionSyncOneAfterLogin;
+    }
+
+    return l10n.sessionSyncManyAfterLogin(provider.pendingCount);
+  }
+
+  if (provider.pendingCount > 0) {
+    if (provider.pendingCount == 1) {
+      return l10n.sessionSyncOnePending;
+    }
+
+    return l10n.sessionSyncManyPending(provider.pendingCount);
+  }
+
+  return l10n.sessionSyncDone;
 }

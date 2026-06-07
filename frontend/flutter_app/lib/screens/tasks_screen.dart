@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../l10n/app_localizations.dart';
 import '../models/task_item.dart';
 import '../providers/task_provider.dart';
-import '../widgets/task_editor_dialog.dart';
 import '../providers/timer_provider.dart';
+import '../widgets/task_editor_dialog.dart';
 
 enum _TaskFilter {
   all,
@@ -79,22 +80,22 @@ class _TasksScreenState extends State<TasksScreen> {
     TaskProvider provider,
     TaskItem task,
   ) async {
+    final l10n = AppLocalizations.of(context);
+
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Aufgabe löschen?'),
-        content: Text(
-          'Möchtest du die Aufgabe „${task.title}“ wirklich löschen?',
-        ),
+        title: Text(l10n.deleteTaskTitle),
+        content: Text(l10n.deleteTaskMessage(task.title)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('Abbrechen'),
+            child: Text(l10n.cancel),
           ),
           FilledButton.tonalIcon(
             onPressed: () => Navigator.pop(dialogContext, true),
             icon: const Icon(Icons.delete_outline),
-            label: const Text('Löschen'),
+            label: Text(l10n.delete),
           ),
         ],
       ),
@@ -146,14 +147,16 @@ class _TasksScreenState extends State<TasksScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Aufgaben'),
+        title: Text(l10n.tasksTitle),
         actions: [
           Consumer<TaskProvider>(
             builder: (context, provider, _) {
               return IconButton(
-                tooltip: 'Aufgaben aktualisieren',
+                tooltip: l10n.tasksRefreshTooltip,
                 onPressed: provider.loading
                     ? null
                     : () => provider.refreshTaskPomodoroCounts(),
@@ -172,7 +175,7 @@ class _TasksScreenState extends State<TasksScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _openEditor(context),
         icon: const Icon(Icons.add),
-        label: const Text('Aufgabe'),
+        label: Text(l10n.taskSingular),
       ),
       body: Consumer2<TaskProvider, TimerProvider>(
         builder: (context, provider, timerProvider, _) {
@@ -188,7 +191,7 @@ class _TasksScreenState extends State<TasksScreen> {
                 children: [
                   if (provider.error != null) ...[
                     _ErrorBanner(
-                      message: provider.error!,
+                      message: _localizedTaskError(l10n, provider.error!),
                       onClose: provider.clearError,
                     ),
                     const SizedBox(height: 12),
@@ -218,22 +221,20 @@ class _TasksScreenState extends State<TasksScreen> {
                   ),
                   const SizedBox(height: 16),
                   if (provider.loading && provider.tasks.isEmpty)
-                    const _StatusCard(
+                    _StatusCard(
                       icon: Icons.hourglass_empty,
-                      message: 'Aufgaben werden geladen ...',
+                      message: l10n.tasksLoading,
                       showProgress: true,
                     )
                   else if (provider.tasks.isEmpty)
-                    const _StatusCard(
+                    _StatusCard(
                       icon: Icons.task_alt_outlined,
-                      message:
-                          'Noch keine Aufgaben vorhanden. Erstelle deine erste Aufgabe.',
+                      message: l10n.tasksEmpty,
                     )
                   else if (visibleTasks.isEmpty)
-                    const _StatusCard(
+                    _StatusCard(
                       icon: Icons.search_off,
-                      message:
-                          'Keine Aufgaben gefunden. Passe Suche oder Filter an.',
+                      message: l10n.tasksSearchEmpty,
                     )
                   else
                     ...visibleTasks.map(
@@ -286,14 +287,15 @@ class _ActiveTaskBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
 
     final title = activeTask == null
-        ? 'Keine Timer-Aufgabe ausgewählt'
-        : 'Aktive Timer-Aufgabe: ${activeTask!.title}';
+        ? l10n.noTimerTaskSelected
+        : l10n.activeTimerTask(activeTask!.title);
 
     final description = taskSelectionLocked
-        ? 'Eine Timer-Phase läuft oder ist pausiert. Die Aufgabe ist deshalb aktuell gesperrt.'
-        : 'Diese Aufgabe wird für die nächste Arbeitsphase verwendet.';
+        ? l10n.taskSelectionLockedDescription
+        : l10n.taskSelectionNextWorkPhaseDescription;
 
     return Card(
       elevation: 0,
@@ -336,7 +338,7 @@ class _ActiveTaskBanner extends StatelessWidget {
               TextButton.icon(
                 onPressed: onClearSelection,
                 icon: const Icon(Icons.close),
-                label: const Text('Ohne Aufgabe'),
+                label: Text(l10n.withoutTask),
               ),
           ],
         ),
@@ -362,6 +364,8 @@ class _TaskToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Card(
       elevation: 0,
       child: Padding(
@@ -376,12 +380,12 @@ class _TaskToolbar extends StatelessWidget {
               child: TextField(
                 controller: searchController,
                 decoration: InputDecoration(
-                  labelText: 'Aufgaben suchen',
+                  labelText: l10n.searchTasks,
                   prefixIcon: const Icon(Icons.search),
                   suffixIcon: searchController.text.isEmpty
                       ? null
                       : IconButton(
-                          tooltip: 'Suche löschen',
+                          tooltip: l10n.clearSearch,
                           onPressed: searchController.clear,
                           icon: const Icon(Icons.close),
                         ),
@@ -395,41 +399,41 @@ class _TaskToolbar extends StatelessWidget {
               onSelectionChanged: (selection) {
                 onFilterChanged(selection.first);
               },
-              segments: const [
+              segments: [
                 ButtonSegment(
                   value: _TaskFilter.all,
-                  label: Text('Alle'),
+                  label: Text(l10n.filterAll),
                 ),
                 ButtonSegment(
                   value: _TaskFilter.open,
-                  label: Text('Offen'),
+                  label: Text(l10n.filterOpen),
                 ),
                 ButtonSegment(
                   value: _TaskFilter.completed,
-                  label: Text('Erledigt'),
+                  label: Text(l10n.filterCompleted),
                 ),
               ],
             ),
             DropdownMenu<_TaskSort>(
               initialSelection: sort,
-              label: const Text('Sortierung'),
+              label: Text(l10n.sortLabel),
               onSelected: (value) {
                 if (value != null) {
                   onSortChanged(value);
                 }
               },
-              dropdownMenuEntries: const [
+              dropdownMenuEntries: [
                 DropdownMenuEntry(
                   value: _TaskSort.newest,
-                  label: 'Neueste zuerst',
+                  label: l10n.sortNewest,
                 ),
                 DropdownMenuEntry(
                   value: _TaskSort.priority,
-                  label: 'Priorität',
+                  label: l10n.sortPriority,
                 ),
                 DropdownMenuEntry(
                   value: _TaskSort.pomodoros,
-                  label: 'Pomodoros',
+                  label: l10n.sortPomodoros,
                 ),
               ],
             ),
@@ -558,6 +562,7 @@ class _TaskContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -574,16 +579,16 @@ class _TaskContent extends StatelessWidget {
               ),
             ),
             if (selected)
-              const Chip(
+              Chip(
                 visualDensity: VisualDensity.compact,
-                avatar: Icon(Icons.play_arrow, size: 18),
-                label: Text('Aktiv'),
+                avatar: const Icon(Icons.play_arrow, size: 18),
+                label: Text(l10n.active),
               ),
             if (task.completed)
-              const Chip(
+              Chip(
                 visualDensity: VisualDensity.compact,
-                avatar: Icon(Icons.check, size: 18),
-                label: Text('Erledigt'),
+                avatar: const Icon(Icons.check, size: 18),
+                label: Text(l10n.completed),
               ),
           ],
         ),
@@ -602,12 +607,12 @@ class _TaskContent extends StatelessWidget {
             Chip(
               visualDensity: VisualDensity.compact,
               avatar: const Icon(Icons.flag_outlined, size: 18),
-              label: Text(_priorityLabel(task.priority)),
+              label: Text(_priorityLabel(task.priority, l10n)),
             ),
             Chip(
               visualDensity: VisualDensity.compact,
               avatar: const Icon(Icons.timer_outlined, size: 18),
-              label: Text('${task.completedPomodoros} Pomodoros'),
+              label: Text(l10n.pomodoroCount(task.completedPomodoros)),
             ),
             for (final tag in tags)
               Chip(
@@ -639,6 +644,8 @@ class _TaskActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Wrap(
       spacing: 8,
       runSpacing: 8,
@@ -648,27 +655,27 @@ class _TaskActions extends StatelessWidget {
           FilledButton.tonalIcon(
             onPressed: null,
             icon: const Icon(Icons.check_circle),
-            label: const Text('Aktiv'),
+            label: Text(l10n.active),
           )
         else if (!canSelectForTimer)
           OutlinedButton.icon(
             onPressed: null,
             icon: const Icon(Icons.lock_outline),
-            label: const Text('Gesperrt'),
+            label: Text(l10n.locked),
           )
         else
           OutlinedButton.icon(
             onPressed: onSelectForTimer,
             icon: const Icon(Icons.play_arrow),
-            label: const Text('Für Timer'),
+            label: Text(l10n.forTimer),
           ),
         IconButton.outlined(
-          tooltip: 'Bearbeiten',
+          tooltip: l10n.edit,
           onPressed: onEdit,
           icon: const Icon(Icons.edit),
         ),
         IconButton.outlined(
-          tooltip: 'Löschen',
+          tooltip: l10n.delete,
           onPressed: onDelete,
           icon: const Icon(Icons.delete_outline),
         ),
@@ -688,6 +695,8 @@ class _ErrorBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Card(
       color: Theme.of(context).colorScheme.errorContainer,
       child: Padding(
@@ -698,7 +707,7 @@ class _ErrorBanner extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(child: Text(message)),
             IconButton(
-              tooltip: 'Meldung schließen',
+              tooltip: l10n.messageClose,
               onPressed: onClose,
               icon: const Icon(Icons.close),
             ),
@@ -756,11 +765,11 @@ bool _sameTaskIdentity(TaskItem? first, TaskItem second) {
   return first.localId == second.localId;
 }
 
-String _priorityLabel(String priority) {
+String _priorityLabel(String priority, AppLocalizations l10n) {
   return switch (priority) {
-    'low' => 'Niedrig',
-    'medium' => 'Mittel',
-    'high' => 'Hoch',
+    'low' => l10n.priorityLow,
+    'medium' => l10n.priorityMedium,
+    'high' => l10n.priorityHigh,
     _ => priority,
   };
 }
@@ -780,4 +789,18 @@ List<String> _splitTags(String tags) {
       .map((tag) => tag.trim())
       .where((tag) => tag.isNotEmpty)
       .toList();
+}
+
+String _localizedTaskError(AppLocalizations l10n, String error) {
+  return switch (error) {
+    'Aufgaben konnten nicht vom Backend geladen werden. Lokale Daten werden weiter angezeigt.' =>
+      l10n.taskLoadRemoteFailed,
+    'Aufgabe wurde lokal gespeichert, konnte aber nicht mit dem Konto synchronisiert werden.' =>
+      l10n.taskSavedLocallyNotSynced,
+    'Aufgabe konnte nicht gespeichert werden. Die letzte Änderung wurde zurückgenommen.' =>
+      l10n.taskSaveFailedRolledBack,
+    'Aufgabe konnte nicht im Konto gelöscht werden. Die Aufgabe wurde wiederhergestellt.' =>
+      l10n.taskDeleteFailedRestored,
+    _ => error,
+  };
 }

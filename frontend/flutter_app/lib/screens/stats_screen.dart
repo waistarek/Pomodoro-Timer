@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../l10n/app_localizations.dart';
 import '../models/stats.dart';
 import '../providers/stats_provider.dart';
 import '../widgets/stats_chart.dart';
@@ -90,33 +91,35 @@ class _StatsScreenState extends State<StatsScreen> {
     return provider.loading;
   }
 
-  String _chartTitle() {
+  String _chartTitle(AppLocalizations l10n) {
     return switch (_mode) {
-      _StatsMode.week => 'Fokuszeit pro Tag',
-      _StatsMode.month => 'Fokuszeit pro KW',
-      _StatsMode.year => 'Fokuszeit pro Monat',
-      _StatsMode.tasks => 'Fokuszeit pro Aufgabe',
+      _StatsMode.week => l10n.chartFocusPerDay,
+      _StatsMode.month => l10n.chartFocusPerCalendarWeek,
+      _StatsMode.year => l10n.chartFocusPerMonth,
+      _StatsMode.tasks => l10n.chartFocusPerTask,
     };
   }
 
-  String _xAxisText() {
+  String _xAxisText(AppLocalizations l10n) {
     return switch (_mode) {
-      _StatsMode.week => 'X-Achse: Tage der Woche',
-      _StatsMode.month => 'X-Achse: Kalenderwochen im Monat',
-      _StatsMode.year => 'X-Achse: Monate im Jahr',
-      _StatsMode.tasks => 'X-Achse: Aufgaben',
+      _StatsMode.week => l10n.xAxisWeek,
+      _StatsMode.month => l10n.xAxisMonth,
+      _StatsMode.year => l10n.xAxisYear,
+      _StatsMode.tasks => l10n.xAxisTasks,
     };
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Consumer<StatsProvider>(
       builder: (context, provider, _) {
         final loading = _isLoading(provider);
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Statistik'),
+            title: Text(l10n.statsTitle),
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 12),
@@ -129,7 +132,7 @@ class _StatsScreenState extends State<StatsScreen> {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const Icon(Icons.refresh),
-                  label: const Text('Aktualisieren'),
+                  label: Text(l10n.statsRefresh),
                 ),
               ),
             ],
@@ -147,26 +150,26 @@ class _StatsScreenState extends State<StatsScreen> {
                       onSelectionChanged: (selection) {
                         _selectMode(selection.first);
                       },
-                      segments: const [
+                      segments: [
                         ButtonSegment(
                           value: _StatsMode.week,
-                          icon: Icon(Icons.calendar_view_week_outlined),
-                          label: Text('Woche'),
+                          icon: const Icon(Icons.calendar_view_week_outlined),
+                          label: Text(l10n.statsWeek),
                         ),
                         ButtonSegment(
                           value: _StatsMode.month,
-                          icon: Icon(Icons.calendar_month_outlined),
-                          label: Text('Monat'),
+                          icon: const Icon(Icons.calendar_month_outlined),
+                          label: Text(l10n.statsMonth),
                         ),
                         ButtonSegment(
                           value: _StatsMode.year,
-                          icon: Icon(Icons.date_range_outlined),
-                          label: Text('Jahr'),
+                          icon: const Icon(Icons.date_range_outlined),
+                          label: Text(l10n.statsYear),
                         ),
                         ButtonSegment(
                           value: _StatsMode.tasks,
-                          icon: Icon(Icons.task_alt_outlined),
-                          label: Text('Aufgabenzeit'),
+                          icon: const Icon(Icons.task_alt_outlined),
+                          label: Text(l10n.statsTasksTime),
                         ),
                       ],
                     ),
@@ -178,8 +181,8 @@ class _StatsScreenState extends State<StatsScreen> {
                     _GeneralStatsContent(
                       provider: provider,
                       mode: _mode,
-                      chartTitle: _chartTitle(),
-                      xAxisText: _xAxisText(),
+                      chartTitle: _chartTitle(l10n),
+                      xAxisText: _xAxisText(l10n),
                       onPreviousPeriod: () => _changePeriod(-1),
                       onNextPeriod: () => _changePeriod(1),
                     ),
@@ -206,13 +209,14 @@ class _PeriodNavigator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final periodLabel = stats.periodLabel ?? '-';
     final periodStart = _formatIsoDate(stats.periodStart);
     final periodEnd = _formatIsoDate(stats.periodEnd);
 
     final periodText = periodStart == '-' || periodEnd == '-'
-        ? 'Zeitraum: Keine Daten vorhanden'
-        : 'Zeitraum: $periodStart – $periodEnd';
+        ? l10n.periodNoData
+        : l10n.periodRange(periodStart, periodEnd);
 
     return Card(
       child: Padding(
@@ -220,7 +224,7 @@ class _PeriodNavigator extends StatelessWidget {
         child: Row(
           children: [
             IconButton.outlined(
-              tooltip: 'Vorheriger Zeitraum',
+              tooltip: l10n.previousPeriod,
               onPressed: onPrevious,
               icon: const Icon(Icons.chevron_left),
             ),
@@ -242,7 +246,7 @@ class _PeriodNavigator extends StatelessWidget {
               ),
             ),
             IconButton.outlined(
-              tooltip: 'Nächster Zeitraum',
+              tooltip: l10n.nextPeriod,
               onPressed: onNext,
               icon: const Icon(Icons.chevron_right),
             ),
@@ -272,10 +276,12 @@ class _GeneralStatsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     if (provider.loading) {
-      return const _StatusCard(
+      return _StatusCard(
         icon: Icons.hourglass_empty,
-        message: 'Statistiken werden geladen ...',
+        message: l10n.statsLoading,
         showProgress: true,
       );
     }
@@ -283,7 +289,7 @@ class _GeneralStatsContent extends StatelessWidget {
     if (provider.error != null) {
       return _StatusCard(
         icon: Icons.warning_amber_outlined,
-        message: provider.error!,
+        message: _localizedStatsError(l10n, provider.error!),
       );
     }
 
@@ -296,25 +302,25 @@ class _GeneralStatsContent extends StatelessWidget {
           children: [
             _InfoCard(
               icon: Icons.check_circle_outline,
-              title: 'Pomodoros',
+              title: l10n.pomodoros,
               value: stats.totalPomodoros.toString(),
             ),
             _InfoCard(
               icon: Icons.timer_outlined,
-              title: 'Fokuszeit',
+              title: l10n.focusTime,
               value: _formatMinutes(stats.totalFocusMinutes),
             ),
             _InfoCard(
               icon: Icons.local_fire_department_outlined,
-              title: 'Serie',
-              value: '${stats.currentStreakDays} Tage',
+              title: l10n.streak,
+              value: l10n.daysCount(stats.currentStreakDays),
             ),
             _InfoCard(
               icon: Icons.emoji_events_outlined,
-              title: 'Bester Zeitraum',
+              title: l10n.bestPeriod,
               value: stats.bestFocusDay == null
                   ? '-'
-                  : _formatBestLabel(stats.bestFocusDay!, mode),
+                  : _formatBestLabel(stats.bestFocusDay!, mode, l10n),
             ),
           ],
         ),
@@ -337,13 +343,14 @@ class _GeneralStatsContent extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Y-Achse: Fokuszeit in Stunden · $xAxisText',
+                  l10n.yAxisFocusHoursWithXAxis(xAxisText),
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 16),
                 StatsChart(
                   items: stats.items,
-                  labelFormatter: (label) => _formatChartLabel(label, mode),
+                  labelFormatter: (label) =>
+                      _formatChartLabel(label, mode, l10n),
                 ),
               ],
             ),
@@ -361,10 +368,12 @@ class _TaskStatsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     if (provider.taskStatsLoading) {
-      return const _StatusCard(
+      return _StatusCard(
         icon: Icons.hourglass_empty,
-        message: 'Aufgabenstatistik wird geladen ...',
+        message: l10n.taskStatsLoading,
         showProgress: true,
       );
     }
@@ -372,17 +381,16 @@ class _TaskStatsContent extends StatelessWidget {
     if (provider.taskStatsError != null) {
       return _StatusCard(
         icon: Icons.warning_amber_outlined,
-        message: provider.taskStatsError!,
+        message: _localizedStatsError(l10n, provider.taskStatsError!),
       );
     }
 
     final stats = provider.taskStats;
 
     if (stats.items.isEmpty) {
-      return const _StatusCard(
+      return _StatusCard(
         icon: Icons.insights_outlined,
-        message:
-            'Noch keine Arbeitszeit pro Aufgabe vorhanden. Starte einen Pomodoro mit Aufgabe, um Daten zu sehen.',
+        message: l10n.taskStatsEmpty,
       );
     }
 
@@ -399,17 +407,17 @@ class _TaskStatsContent extends StatelessWidget {
           children: [
             _InfoCard(
               icon: Icons.check_circle_outline,
-              title: 'Pomodoros',
+              title: l10n.pomodoros,
               value: stats.totalPomodoros.toString(),
             ),
             _InfoCard(
               icon: Icons.timer_outlined,
-              title: 'Fokuszeit',
+              title: l10n.focusTime,
               value: _formatMinutes(stats.totalFocusMinutes),
             ),
             _InfoCard(
               icon: Icons.access_time_outlined,
-              title: 'Fokuszeit in Minuten',
+              title: l10n.focusTimeMinutes,
               value: '${stats.totalFocusMinutes} min',
             ),
           ],
@@ -422,12 +430,12 @@ class _TaskStatsContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Fokuszeit pro Aufgabe',
+                  l10n.chartFocusPerTask,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Sortiert nach höchster Fokuszeit.',
+                  l10n.sortedByHighestFocusTime,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 16),
@@ -448,7 +456,7 @@ class _TaskStatsContent extends StatelessWidget {
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
-                                  item.taskTitle,
+                                  _localizedTaskTitle(item.taskTitle, l10n),
                                   style:
                                       Theme.of(context).textTheme.titleMedium,
                                 ),
@@ -463,7 +471,10 @@ class _TaskStatsContent extends StatelessWidget {
                           LinearProgressIndicator(value: progress),
                           const SizedBox(height: 4),
                           Text(
-                            '${item.pomodoros} Pomodoros · ${item.focusMinutes} min',
+                            l10n.taskPomodoroMinutes(
+                              item.pomodoros,
+                              item.focusMinutes,
+                            ),
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
@@ -612,7 +623,11 @@ String _formatIsoDate(String? value) {
       '${date.year}';
 }
 
-String _formatChartLabel(String label, _StatsMode mode) {
+String _formatChartLabel(
+  String label,
+  _StatsMode mode,
+  AppLocalizations l10n,
+) {
   switch (mode) {
     case _StatsMode.week:
       final date = DateTime.tryParse(label);
@@ -625,7 +640,7 @@ String _formatChartLabel(String label, _StatsMode mode) {
           '${date.month.toString().padLeft(2, '0')}';
 
     case _StatsMode.month:
-      return _formatIsoWeekLabel(label);
+      return _formatIsoWeekLabel(label, l10n);
 
     case _StatsMode.year:
       final match = RegExp(r'^(\d{4})-(\d{2})$').firstMatch(label);
@@ -641,13 +656,17 @@ String _formatChartLabel(String label, _StatsMode mode) {
   }
 }
 
-String _formatBestLabel(String label, _StatsMode mode) {
+String _formatBestLabel(
+  String label,
+  _StatsMode mode,
+  AppLocalizations l10n,
+) {
   switch (mode) {
     case _StatsMode.week:
       return _formatIsoDate(label);
 
     case _StatsMode.month:
-      return _formatIsoWeekLabel(label, includeYear: true);
+      return _formatIsoWeekLabel(label, l10n, includeYear: true);
 
     case _StatsMode.year:
       final match = RegExp(r'^(\d{4})-(\d{2})$').firstMatch(label);
@@ -663,7 +682,11 @@ String _formatBestLabel(String label, _StatsMode mode) {
   }
 }
 
-String _formatIsoWeekLabel(String label, {bool includeYear = false}) {
+String _formatIsoWeekLabel(
+  String label,
+  AppLocalizations l10n, {
+  bool includeYear = false,
+}) {
   final match = RegExp(r'^(\d{4})-W(\d{2})$').firstMatch(label);
 
   if (match == null) {
@@ -674,8 +697,28 @@ String _formatIsoWeekLabel(String label, {bool includeYear = false}) {
   final week = match.group(2)!;
 
   if (includeYear) {
-    return 'KW $week/$year';
+    return l10n.calendarWeekWithYear(week, year);
   }
 
-  return 'KW $week';
+  return l10n.calendarWeekShort(week);
+}
+
+String _localizedStatsError(AppLocalizations l10n, String error) {
+  return switch (error) {
+    'Statistiken konnten nicht geladen werden. Bitte anmelden und Internetverbindung prüfen.' =>
+      l10n.statsLoadFailed,
+    'Aufgabenstatistik konnte nicht geladen werden.' =>
+      l10n.taskStatsLoadFailed,
+    'Die heutige Pomodoro-Anzahl konnte nicht geladen werden.' =>
+      l10n.todayPomodorosLoadFailed,
+    _ => error,
+  };
+}
+
+String _localizedTaskTitle(String title, AppLocalizations l10n) {
+  if (title == 'Ohne Aufgabe') {
+    return l10n.noTaskTitle;
+  }
+
+  return title;
 }

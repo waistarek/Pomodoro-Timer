@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
 import '../models/stats.dart';
 
 class StatsChart extends StatelessWidget {
@@ -17,11 +18,13 @@ class StatsChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     if (items.isEmpty) {
-      return const SizedBox(
+      return SizedBox(
         height: 280,
         child: Center(
-          child: Text('Noch keine Statistikdaten vorhanden.'),
+          child: Text(l10n.statsNoData),
         ),
       );
     }
@@ -56,7 +59,7 @@ class StatsChart extends StatelessWidget {
                 final label = labelFormatter?.call(item.label) ?? item.label;
 
                 return BarTooltipItem(
-                  '$label\n${_formatMinutes(item.focusMinutes)}\n${item.pomodoros} Pomodoros',
+                  '$label\n${_formatMinutes(item.focusMinutes)}\n${l10n.pomodoroCount(item.pomodoros)}',
                   const TextStyle(color: Colors.white),
                 );
               },

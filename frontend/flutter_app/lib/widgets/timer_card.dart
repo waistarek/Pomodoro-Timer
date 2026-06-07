@@ -3,11 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../providers/stats_provider.dart';
+
+import '../l10n/app_localizations.dart';
 import '../models/task_item.dart';
+import '../providers/stats_provider.dart';
 import '../providers/task_provider.dart';
 import '../providers/timer_provider.dart';
 import '../timer/pomodoro_phase.dart';
+import '../timer/timer_engine.dart';
 import 'big_button.dart';
 
 class TimerCard extends StatelessWidget {
@@ -17,6 +20,7 @@ class TimerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer3<TimerProvider, TaskProvider, StatsProvider>(
       builder: (context, timer, taskProvider, statsProvider, _) {
+        final l10n = AppLocalizations.of(context);
         final phaseColor = _phaseColor(context, timer.phase);
 
         timer.setWorkPhaseCompletedCallback(() async {
@@ -45,10 +49,11 @@ class TimerCard extends StatelessWidget {
                       ),
                       SizedBox(height: isCompact ? 18 : 24),
                       _TimerHeader(
-                        phaseLabel: timer.phase.label,
-                        statusLabel: timer.statusLabel,
-                        phaseDescription: timer.phaseDescriptionLabel,
-                        nextPhaseLabel: timer.nextPhaseLabel,
+                        phaseLabel: _phaseLabel(timer.phase, l10n),
+                        statusLabel: _timerStatusLabel(timer, l10n),
+                        statusIcon: _timerStatusIcon(timer),
+                        phaseDescription: _phaseDescription(timer.phase, l10n),
+                        nextPhaseLabel: _nextPhaseLabel(timer, l10n),
                         color: phaseColor,
                       ),
                       if (timer.isSaving) ...[
@@ -57,12 +62,12 @@ class TimerCard extends StatelessWidget {
                       ] else if (timer.isSessionSyncing) ...[
                         const SizedBox(height: 16),
                         _TimerBackgroundSyncBanner(
-                          message: timer.sessionSyncLabel,
+                          message: _sessionSyncLabel(timer, l10n),
                         ),
                       ] else if (timer.error != null) ...[
                         const SizedBox(height: 16),
                         _TimerErrorBanner(
-                          message: timer.error!,
+                          message: _localizedTimerError(l10n, timer.error!),
                           onClose: timer.clearError,
                         ),
                       ],
@@ -70,7 +75,7 @@ class TimerCard extends StatelessWidget {
                       _ProgressTimer(
                         progress: timer.progress,
                         formattedTime: timer.formattedTime,
-                        progressLabel: timer.phaseProgressLabel,
+                        progressLabel: _phaseProgressLabel(timer, l10n),
                         todayPomodoros: statsProvider.todayPomodoros,
                         todayPomodorosLoading:
                             statsProvider.todayPomodorosLoading,
@@ -193,22 +198,22 @@ Future<void> _confirmResetTimer(
     return;
   }
 
+  final l10n = AppLocalizations.of(context);
+
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (dialogContext) => AlertDialog(
-      title: const Text('Timer zurücksetzen?'),
-      content: const Text(
-        'Die aktuelle Phase wird abgebrochen und nicht als abgeschlossene Sitzung gespeichert.',
-      ),
+      title: Text(l10n.timerResetTitle),
+      content: Text(l10n.timerResetMessage),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(dialogContext, false),
-          child: const Text('Abbrechen'),
+          child: Text(l10n.cancel),
         ),
         FilledButton.tonalIcon(
           onPressed: () => Navigator.pop(dialogContext, true),
           icon: const Icon(Icons.restart_alt),
-          label: const Text('Zurücksetzen'),
+          label: Text(l10n.reset),
         ),
       ],
     ),
@@ -244,6 +249,7 @@ class _TaskSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final canChangeTask = timer.canChangeTask;
     final displayTask = timer.taskForDisplay ?? taskProvider.selectedTask;
 
@@ -272,8 +278,8 @@ class _TaskSelector extends StatelessWidget {
             Expanded(
               child: Text(
                 selectedValue == null
-                    ? 'Keine Aufgabe ausgewählt'
-                    : 'Aktuelle Aufgabe: ${selectedValue.title}',
+                    ? l10n.taskNoneSelected
+                    : l10n.currentTask(selectedValue.title),
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
@@ -284,14 +290,14 @@ class _TaskSelector extends StatelessWidget {
           DropdownButtonFormField<TaskItem?>(
             key: ValueKey(selectedValue?.localId ?? 'no-task'),
             initialValue: selectedValue,
-            decoration: const InputDecoration(
-              labelText: 'Aufgabe für diese Arbeitsphase',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              labelText: l10n.taskForWorkPhase,
+              border: const OutlineInputBorder(),
             ),
             items: [
-              const DropdownMenuItem<TaskItem?>(
+              DropdownMenuItem<TaskItem?>(
                 value: null,
-                child: Text('Ohne Aufgabe'),
+                child: Text(l10n.withoutTask),
               ),
               ...dropdownTasks.map(
                 (task) => DropdownMenuItem<TaskItem?>(
@@ -319,7 +325,7 @@ class _TaskSelector extends StatelessWidget {
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
-                  'Diese Phase ist fest mit der ausgewählten Aufgabe verbunden.',
+                  l10n.taskLockedToPhase,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
@@ -335,6 +341,7 @@ class _TimerHeader extends StatelessWidget {
   const _TimerHeader({
     required this.phaseLabel,
     required this.statusLabel,
+    required this.statusIcon,
     required this.phaseDescription,
     required this.nextPhaseLabel,
     required this.color,
@@ -342,12 +349,15 @@ class _TimerHeader extends StatelessWidget {
 
   final String phaseLabel;
   final String statusLabel;
+  final IconData statusIcon;
   final String phaseDescription;
   final String nextPhaseLabel;
   final Color color;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Column(
       children: [
         Wrap(
@@ -363,7 +373,7 @@ class _TimerHeader extends StatelessWidget {
             ),
             Chip(
               avatar: Icon(
-                _statusIcon(statusLabel),
+                statusIcon,
                 size: 18,
                 color: color,
               ),
@@ -374,7 +384,7 @@ class _TimerHeader extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          '$phaseDescription · Danach: $nextPhaseLabel',
+          l10n.afterNextPhase(phaseDescription, nextPhaseLabel),
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
@@ -406,6 +416,7 @@ class _ProgressTimer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final backgroundColor =
         Theme.of(context).colorScheme.surfaceContainerHighest;
 
@@ -456,8 +467,10 @@ class _ProgressTimer extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   todayPomodorosLoading
-                      ? 'Heute: wird geladen ...'
-                      : 'Heute: ${_formatPomodoroCount(todayPomodoros)}',
+                      ? l10n.todayPomodorosLoading
+                      : l10n.todayPomodoros(
+                          l10n.pomodoroCount(todayPomodoros),
+                        ),
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -470,10 +483,6 @@ class _ProgressTimer extends StatelessWidget {
   }
 }
 
-String _formatPomodoroCount(int count) {
-  return count == 1 ? '1 Pomodoro' : '$count Pomodoros';
-}
-
 class _TimerActions extends StatelessWidget {
   const _TimerActions({required this.timer});
 
@@ -481,6 +490,8 @@ class _TimerActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     if (timer.isSaving) {
       return const SizedBox.shrink();
     }
@@ -491,25 +502,25 @@ class _TimerActions extends StatelessWidget {
       children: [
         if (timer.running)
           BigButton(
-            label: 'Pause',
+            label: l10n.pause,
             icon: Icons.pause,
             onPressed: timer.pause,
           )
         else
           BigButton(
-            label: timer.isPaused ? 'Fortsetzen' : 'Start',
+            label: timer.isPaused ? l10n.continueButton : l10n.start,
             icon: Icons.play_arrow,
             onPressed: timer.startOrResume,
           ),
         BigButton(
-          label: 'Zurücksetzen',
+          label: l10n.reset,
           icon: Icons.restart_alt,
           filled: false,
           onPressed: () => _confirmResetTimer(context, timer),
         ),
         if (timer.canSkipPause)
           BigButton(
-            label: 'Pause überspringen',
+            label: l10n.skipPause,
             icon: Icons.skip_next,
             filled: false,
             onPressed: timer.skipPause,
@@ -530,16 +541,17 @@ class _KeyboardShortcutHelp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final shortcuts = isCompact
         ? [
-            'Space: Start/Pause',
-            'R: Reset',
-            if (showSkipShortcut) 'S: Skip',
+            l10n.shortcutSpaceCompact,
+            l10n.shortcutResetCompact,
+            if (showSkipShortcut) l10n.shortcutSkipCompact,
           ]
         : [
-            'Leertaste: Start/Pause',
-            'R: Zurücksetzen',
-            if (showSkipShortcut) 'S: Pause überspringen',
+            l10n.shortcutSpace,
+            l10n.shortcutReset,
+            if (showSkipShortcut) l10n.shortcutSkip,
           ];
 
     return Text(
@@ -601,6 +613,7 @@ class _TimerSavingBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
 
     return Card(
       elevation: 0,
@@ -618,7 +631,7 @@ class _TimerSavingBanner extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Phase wird gespeichert',
+                    l10n.phaseSavingTitle,
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                 ),
@@ -626,7 +639,7 @@ class _TimerSavingBanner extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Die abgeschlossene Phase wird gespeichert und der Timer wird vorbereitet.',
+              l10n.phaseSavingDescription,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: colorScheme.onSurfaceVariant,
                   ),
@@ -655,6 +668,7 @@ class _TimerErrorBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
 
     return Card(
       color: colorScheme.errorContainer,
@@ -674,7 +688,7 @@ class _TimerErrorBanner extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Speicherproblem',
+                    l10n.storageProblem,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           color: colorScheme.onErrorContainer,
                         ),
@@ -690,7 +704,7 @@ class _TimerErrorBanner extends StatelessWidget {
               ),
             ),
             IconButton(
-              tooltip: 'Meldung schließen',
+              tooltip: l10n.messageClose,
               onPressed: onClose,
               icon: Icon(
                 Icons.close,
@@ -722,11 +736,93 @@ Color _phaseColor(BuildContext context, PomodoroPhase phase) {
   };
 }
 
-IconData _statusIcon(String statusLabel) {
-  return switch (statusLabel) {
-    'Läuft' => Icons.play_circle_outline,
-    'Pausiert' => Icons.pause_circle_outline,
-    'Speichern ...' => Icons.cloud_upload_outlined,
-    _ => Icons.radio_button_checked,
+String _phaseLabel(PomodoroPhase phase, AppLocalizations l10n) {
+  return switch (phase) {
+    PomodoroPhase.work => l10n.phaseWork,
+    PomodoroPhase.shortBreak => l10n.phaseShortBreak,
+    PomodoroPhase.longBreak => l10n.phaseLongBreak,
+  };
+}
+
+String _phaseDescription(PomodoroPhase phase, AppLocalizations l10n) {
+  return switch (phase) {
+    PomodoroPhase.work => l10n.phaseDescriptionWork,
+    PomodoroPhase.shortBreak => l10n.phaseDescriptionShortBreak,
+    PomodoroPhase.longBreak => l10n.phaseDescriptionLongBreak,
+  };
+}
+
+String _timerStatusLabel(TimerProvider timer, AppLocalizations l10n) {
+  if (timer.isSaving) {
+    return l10n.timerStatusSaving;
+  }
+
+  if (timer.running) {
+    return l10n.timerStatusRunning;
+  }
+
+  if (timer.isPaused) {
+    return l10n.timerStatusPaused;
+  }
+
+  return l10n.timerStatusReady;
+}
+
+IconData _timerStatusIcon(TimerProvider timer) {
+  if (timer.isSaving) {
+    return Icons.cloud_upload_outlined;
+  }
+
+  if (timer.running) {
+    return Icons.play_circle_outline;
+  }
+
+  if (timer.isPaused) {
+    return Icons.pause_circle_outline;
+  }
+
+  return Icons.radio_button_checked;
+}
+
+String _nextPhaseLabel(TimerProvider timer, AppLocalizations l10n) {
+  switch (timer.phase) {
+    case PomodoroPhase.work:
+      final nextCompletedPomodoros = timer.completedPomodoros + 1;
+      final shouldUseLongBreak =
+          nextCompletedPomodoros % timer.engine.longBreakAfter == 0;
+
+      return shouldUseLongBreak ? l10n.phaseLongBreak : l10n.phaseShortBreak;
+    case PomodoroPhase.shortBreak:
+    case PomodoroPhase.longBreak:
+      return l10n.phaseWork;
+  }
+}
+
+String _phaseProgressLabel(TimerProvider timer, AppLocalizations l10n) {
+  final totalSeconds = timer.engine.totalPhaseSeconds;
+  final elapsedSeconds =
+      (totalSeconds - timer.remainingSeconds).clamp(0, totalSeconds).toInt();
+
+  return l10n.phaseProgress(
+    TimerEngine.formatMMSS(elapsedSeconds),
+    TimerEngine.formatMMSS(totalSeconds),
+  );
+}
+
+String _sessionSyncLabel(TimerProvider timer, AppLocalizations l10n) {
+  if (timer.activeSessionSyncCount <= 1) {
+    return l10n.oneFinishedPhaseSavingBackground;
+  }
+
+  return l10n.manyFinishedPhasesSavingBackground(timer.activeSessionSyncCount);
+}
+
+String _localizedTimerError(AppLocalizations l10n, String error) {
+  return switch (error) {
+    'Die abgeschlossene Phase konnte nicht lokal gespeichert werden.' =>
+      l10n.timerLocalSaveFailed,
+    'Die abgeschlossene Phase wurde lokal gespeichert, aber noch nicht mit dem Backend synchronisiert.' =>
+      l10n.timerBackendSyncFailed,
+    _ => error,
   };
 }

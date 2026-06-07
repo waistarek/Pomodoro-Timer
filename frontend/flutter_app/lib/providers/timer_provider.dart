@@ -100,6 +100,10 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
     return _activeSessionSyncs > 0;
   }
 
+  int get activeSessionSyncCount {
+    return _activeSessionSyncs;
+  }
+
   String get sessionSyncLabel {
     if (_activeSessionSyncs <= 1) {
       return 'Abgeschlossene Phase wird im Hintergrund gespeichert.';

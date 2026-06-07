@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../l10n/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../providers/settings_provider.dart';
 
@@ -63,17 +64,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Einstellungen gespeichert.'),
-      ),
+      SnackBar(content: Text(AppLocalizations.of(context).settingsSaved)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Einstellungen'),
+        title: Text(l10n.navSettings),
       ),
       body: Consumer<SettingsProvider>(
         builder: (context, provider, _) {
@@ -90,14 +91,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 padding: const EdgeInsets.all(16),
                 children: [
                   _SettingsSection(
-                    title: 'Timer-Zeiten',
-                    description:
-                        'Lege fest, wie lange Arbeitsphasen und Pausen dauern.',
+                    title: l10n.timerTimesTitle,
+                    description: l10n.timerTimesDescription,
                     children: [
                       _NumberInputTile(
-                        title: 'Arbeitszeit',
+                        title: l10n.workTime,
                         value: draft.workMinutes,
-                        suffix: 'Minuten',
+                        suffix: l10n.minutes,
+                        unitLabel: l10n.minutesShort,
                         min: 1,
                         max: 180,
                         onChanged: (value) {
@@ -109,9 +110,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         },
                       ),
                       _NumberInputTile(
-                        title: 'Kurze Pause',
+                        title: l10n.shortBreak,
                         value: draft.shortBreakMinutes,
-                        suffix: 'Minuten',
+                        suffix: l10n.minutes,
+                        unitLabel: l10n.minutesShort,
                         min: 1,
                         max: 120,
                         onChanged: (value) {
@@ -123,9 +125,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         },
                       ),
                       _NumberInputTile(
-                        title: 'Lange Pause',
+                        title: l10n.longBreak,
                         value: draft.longBreakMinutes,
-                        suffix: 'Minuten',
+                        suffix: l10n.minutes,
+                        unitLabel: l10n.minutesShort,
                         min: 1,
                         max: 180,
                         onChanged: (value) {
@@ -137,9 +140,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         },
                       ),
                       _NumberInputTile(
-                        title: 'Lange Pause nach',
+                        title: l10n.longBreakAfter,
                         value: draft.longBreakAfter,
-                        suffix: 'Pomodoros',
+                        suffix: l10n.pomodorosUnit,
+                        unitLabel: l10n.pomodorosUnit,
                         min: 1,
                         max: 20,
                         onChanged: (value) {
@@ -154,15 +158,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const SizedBox(height: 16),
                   _SettingsSection(
-                    title: 'Verhalten',
-                    description:
-                        'Passe an, wie sich der Timer während der Nutzung verhält.',
+                    title: l10n.behaviorTitle,
+                    description: l10n.behaviorDescription,
                     children: [
                       SwitchListTile(
                         contentPadding: EdgeInsets.zero,
-                        title: const Text(
-                          'Nächste Phase automatisch starten',
-                        ),
+                        title: Text(l10n.autoStartNextPhase),
                         value: draft.autoStart,
                         onChanged: (value) {
                           _updateDraft(
@@ -174,7 +175,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       SwitchListTile(
                         contentPadding: EdgeInsets.zero,
-                        title: const Text('Sound aktivieren'),
+                        title: Text(l10n.enableSound),
                         value: draft.soundEnabled,
                         onChanged: (value) {
                           _updateDraft(
@@ -186,10 +187,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       SwitchListTile(
                         contentPadding: EdgeInsets.zero,
-                        title: const Text('Vibration aktivieren'),
-                        subtitle: const Text(
-                          'Die konkrete mobile Vibration wird später über ein Plugin angebunden.',
-                        ),
+                        title: Text(l10n.enableVibration),
+                        subtitle: Text(l10n.vibrationDescription),
                         value: draft.vibrationEnabled,
                         onChanged: (value) {
                           _updateDraft(
@@ -203,29 +202,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const SizedBox(height: 16),
                   _SettingsSection(
-                    title: 'Darstellung',
-                    description:
-                        'Wähle Designmodus und Hauptfarbe der Anwendung.',
+                    title: l10n.appearanceTitle,
+                    description: l10n.appearanceDescription,
                     children: [
                       DropdownButtonFormField<String>(
                         key: ValueKey('theme-${draft.theme}'),
                         initialValue: draft.theme,
-                        decoration: const InputDecoration(
-                          labelText: 'Darstellung',
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: l10n.appearanceLabel,
+                          border: const OutlineInputBorder(),
                         ),
-                        items: const [
+                        items: [
                           DropdownMenuItem(
                             value: 'system',
-                            child: Text('System'),
+                            child: Text(l10n.systemTheme),
                           ),
                           DropdownMenuItem(
                             value: 'light',
-                            child: Text('Light Mode'),
+                            child: Text(l10n.lightMode),
                           ),
                           DropdownMenuItem(
                             value: 'dark',
-                            child: Text('Dark Mode'),
+                            child: Text(l10n.darkMode),
                           ),
                         ],
                         onChanged: (value) {
@@ -240,26 +238,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       DropdownButtonFormField<String>(
                         key: ValueKey('color-${draft.colorName}'),
                         initialValue: draft.colorName,
-                        decoration: const InputDecoration(
-                          labelText: 'Theme-Farbe',
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: l10n.themeColor,
+                          border: const OutlineInputBorder(),
                         ),
-                        items: const [
+                        items: [
                           DropdownMenuItem(
                             value: 'red',
-                            child: Text('Rot'),
+                            child: Text(l10n.red),
                           ),
                           DropdownMenuItem(
                             value: 'blue',
-                            child: Text('Blau'),
+                            child: Text(l10n.blue),
                           ),
                           DropdownMenuItem(
                             value: 'green',
-                            child: Text('Grün'),
+                            child: Text(l10n.green),
                           ),
                           DropdownMenuItem(
                             value: 'purple',
-                            child: Text('Lila'),
+                            child: Text(l10n.purple),
                           ),
                         ],
                         onChanged: (value) {
@@ -282,7 +280,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             const Icon(Icons.warning_amber_outlined),
                             const SizedBox(width: 12),
                             Expanded(
-                              child: Text(provider.error!),
+                              child: Text(_localizedSettingsError(
+                                l10n,
+                                provider.error!,
+                              )),
                             ),
                           ],
                         ),
@@ -300,9 +301,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           )
                         : const Icon(Icons.cloud_upload),
                     label: Text(
-                      hasChanges
-                          ? 'Einstellungen speichern'
-                          : 'Keine Änderungen vorhanden',
+                      hasChanges ? l10n.saveSettings : l10n.noChanges,
                     ),
                   ),
                 ],
@@ -361,6 +360,7 @@ class _NumberInputTile extends StatefulWidget {
     required this.title,
     required this.value,
     required this.suffix,
+    required this.unitLabel,
     required this.min,
     required this.max,
     required this.onChanged,
@@ -369,6 +369,7 @@ class _NumberInputTile extends StatefulWidget {
   final String title;
   final int value;
   final String suffix;
+  final String unitLabel;
   final int min;
   final int max;
   final ValueChanged<int> onChanged;
@@ -452,7 +453,7 @@ class _NumberInputTileState extends State<_NumberInputTile> {
           final controls = _NumberControls(
             controller: _controller,
             focusNode: _focusNode,
-            suffix: widget.suffix,
+            unitLabel: widget.unitLabel,
             canDecrease: canDecrease,
             canIncrease: canIncrease,
             onDecrease: () => _changeBy(-1),
@@ -498,7 +499,7 @@ class _NumberControls extends StatelessWidget {
   const _NumberControls({
     required this.controller,
     required this.focusNode,
-    required this.suffix,
+    required this.unitLabel,
     required this.canDecrease,
     required this.canIncrease,
     required this.onDecrease,
@@ -508,7 +509,7 @@ class _NumberControls extends StatelessWidget {
 
   final TextEditingController controller;
   final FocusNode focusNode;
-  final String suffix;
+  final String unitLabel;
   final bool canDecrease;
   final bool canIncrease;
   final VoidCallback onDecrease;
@@ -517,7 +518,7 @@ class _NumberControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final unitLabel = suffix == 'Minuten' ? 'min' : 'Pomodoros';
+    final l10n = AppLocalizations.of(context);
 
     return SizedBox(
       width: 300,
@@ -528,7 +529,7 @@ class _NumberControls extends StatelessWidget {
             width: 48,
             height: 48,
             child: IconButton.outlined(
-              tooltip: 'Verringern',
+              tooltip: l10n.decrease,
               onPressed: canDecrease ? onDecrease : null,
               icon: const Icon(Icons.remove),
             ),
@@ -572,7 +573,7 @@ class _NumberControls extends StatelessWidget {
             width: 48,
             height: 48,
             child: IconButton.outlined(
-              tooltip: 'Erhöhen',
+              tooltip: l10n.increase,
               onPressed: canIncrease ? onIncrease : null,
               icon: const Icon(Icons.add),
             ),
@@ -581,4 +582,14 @@ class _NumberControls extends StatelessWidget {
       ),
     );
   }
+}
+
+String _localizedSettingsError(AppLocalizations l10n, String error) {
+  return switch (error) {
+    'Einstellungen lokal gespeichert, aber noch nicht synchronisiert.' =>
+      l10n.settingsSavedButNotSynced,
+    'Einstellungen konnten nicht vom Backend geladen werden. Lokale Einstellungen werden verwendet.' =>
+      l10n.settingsLoadRemoteFailed,
+    _ => error,
+  };
 }

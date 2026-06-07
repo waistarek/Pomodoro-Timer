@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
 import '../models/task_item.dart';
 
 class TaskEditorDialog extends StatefulWidget {
@@ -86,9 +87,11 @@ class _TaskEditorDialogState extends State<TaskEditorDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return AlertDialog(
       title: Text(
-        widget.task == null ? 'Aufgabe erstellen' : 'Aufgabe bearbeiten',
+        widget.task == null ? l10n.taskCreateTitle : l10n.taskEditTitle,
       ),
       content: SizedBox(
         width: 520,
@@ -101,18 +104,18 @@ class _TaskEditorDialogState extends State<TaskEditorDialog> {
                 TextFormField(
                   controller: _titleController,
                   autofocus: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Titel',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.taskTitleLabel,
+                    border: const OutlineInputBorder(),
                   ),
                   textInputAction: TextInputAction.next,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Bitte Titel eingeben';
+                      return l10n.taskTitleRequired;
                     }
 
                     if (value.trim().length < 2) {
-                      return 'Der Titel ist zu kurz.';
+                      return l10n.taskTitleTooShort;
                     }
 
                     return null;
@@ -123,9 +126,9 @@ class _TaskEditorDialogState extends State<TaskEditorDialog> {
                   controller: _descriptionController,
                   minLines: 3,
                   maxLines: 5,
-                  decoration: const InputDecoration(
-                    labelText: 'Beschreibung',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.taskDescriptionLabel,
+                    border: const OutlineInputBorder(),
                     alignLabelWithHint: true,
                   ),
                 ),
@@ -133,7 +136,7 @@ class _TaskEditorDialogState extends State<TaskEditorDialog> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Priorität',
+                    l10n.priorityLabel,
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
                 ),
@@ -145,31 +148,31 @@ class _TaskEditorDialogState extends State<TaskEditorDialog> {
                       _priority = selection.first;
                     });
                   },
-                  segments: const [
+                  segments: [
                     ButtonSegment(
                       value: 'low',
-                      icon: Icon(Icons.keyboard_arrow_down),
-                      label: Text('Niedrig'),
+                      icon: const Icon(Icons.keyboard_arrow_down),
+                      label: Text(l10n.priorityLow),
                     ),
                     ButtonSegment(
                       value: 'medium',
-                      icon: Icon(Icons.remove),
-                      label: Text('Mittel'),
+                      icon: const Icon(Icons.remove),
+                      label: Text(l10n.priorityMedium),
                     ),
                     ButtonSegment(
                       value: 'high',
-                      icon: Icon(Icons.keyboard_arrow_up),
-                      label: Text('Hoch'),
+                      icon: const Icon(Icons.keyboard_arrow_up),
+                      label: Text(l10n.priorityHigh),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _tagsController,
-                  decoration: const InputDecoration(
-                    labelText: 'Tags/Kategorien',
-                    hintText: 'z. B. Uni, Arbeit, Entwicklung',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: l10n.tagsLabel,
+                    hintText: l10n.tagsHint,
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 if (_tags.isNotEmpty) ...[
@@ -198,12 +201,12 @@ class _TaskEditorDialogState extends State<TaskEditorDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Abbrechen'),
+          child: Text(l10n.cancel),
         ),
         FilledButton.icon(
           onPressed: _save,
           icon: const Icon(Icons.save_outlined),
-          label: const Text('Speichern'),
+          label: Text(l10n.save),
         ),
       ],
     );
