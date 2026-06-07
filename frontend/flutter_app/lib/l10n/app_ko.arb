@@ -1,0 +1,423 @@
+{
+  "@@locale": "ko",
+  "appTitle": "Pomodoro 앱",
+  "navTimer": "타이머",
+  "navTasks": "작업",
+  "navStats": "통계",
+  "navSettings": "설정",
+  "navAccount": "계정",
+  "close": "닫기",
+  "retry": "다시 시도",
+  "cancel": "취소",
+  "delete": "삭제",
+  "edit": "편집",
+  "save": "저장",
+  "reset": "초기화",
+  "refresh": "새로고침",
+  "messageClose": "메시지 닫기",
+  "or": "또는",
+  "yes": "예",
+  "no": "아니요",
+  "emailVerifiedSuccess": "이메일이 성공적으로 확인되었습니다. 이제 로그인할 수 있습니다.",
+  "emailVerifiedExpired": "확인 링크가 만료되었습니다.",
+  "emailVerifiedInvalid": "확인 링크가 유효하지 않습니다.",
+  "sessionSyncOneWithAccount": "세션 1개가 계정과 동기화되고 있습니다.",
+  "sessionSyncManyWithAccount": "{count}개의 세션이 계정과 동기화되고 있습니다.",
+  "@sessionSyncManyWithAccount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOneAfterLogin": "로그인 후 로컬 세션 1개가 동기화됩니다.",
+  "sessionSyncManyAfterLogin": "로그인 후 {count}개의 로컬 세션이 동기화됩니다.",
+  "@sessionSyncManyAfterLogin": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOnePending": "세션 1개가 동기화를 기다리고 있습니다.",
+  "sessionSyncManyPending": "{count}개의 세션이 동기화를 기다리고 있습니다.",
+  "@sessionSyncManyPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncDone": "동기화가 완료되었습니다.",
+  "sessionSyncFailed": "현재 세션을 동기화할 수 없습니다. 나중에 다시 시도합니다.",
+  "accountTitle": "사용자 계정",
+  "loginTitle": "로그인",
+  "createAccountTitle": "새 계정 만들기",
+  "emailPasswordLoginTitle": "이메일과 비밀번호로 로그인",
+  "emailPasswordCreateTitle": "이메일/비밀번호 계정 만들기",
+  "emailLabel": "이메일",
+  "passwordLabel": "비밀번호",
+  "loginButton": "로그인",
+  "createAccountButton": "계정 만들기",
+  "rememberSessionTitle": "이 기기에서 로그인 상태 유지",
+  "rememberSessionSubtitle": "비활성화하면 로그인은 현재 앱 세션 동안만 유지됩니다.",
+  "forgotPasswordButton": "비밀번호를 잊으셨나요?",
+  "alreadyHaveAccount": "이미 계정이 있습니다",
+  "googleSection": "Google 영역",
+  "googleLoginButton": "Google로 로그인",
+  "googleCreateButton": "Google로 계정 만들기",
+  "googleNotConfigured": "Google 로그인이 설정되어 있지 않습니다.",
+  "googlePreparing": "Google 로그인을 준비하는 중 ...",
+  "googleNoIdToken": "Google에서 유효한 ID 토큰을 반환하지 않았습니다.",
+  "googlePrepareFailed": "Google 로그인을 준비할 수 없습니다: {error}",
+  "@googlePrepareFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginFailed": "Google 로그인 실패: {error}",
+  "@googleLoginFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginSuccess": "Google로 성공적으로 로그인했습니다.",
+  "googleAccountCreated": "Google 계정이 생성되었고 로그인되었습니다.",
+  "googleWebOnly": "Google 로그인은 웹 앱에서만 사용할 수 있습니다",
+  "githubSection": "GitHub 영역",
+  "githubLoginButton": "GitHub로 로그인",
+  "githubCreateButton": "GitHub로 계정 만들기",
+  "githubNotConfigured": "GitHub 로그인이 설정되어 있지 않습니다.",
+  "githubCancelled": "GitHub 로그인이 취소되었거나 실패했습니다.",
+  "githubSecurityCancelled": "보안상의 이유로 GitHub 로그인이 취소되었습니다.",
+  "githubNoValidCode": "GitHub에서 유효한 코드를 반환하지 않았습니다.",
+  "githubLoginSuccess": "GitHub로 성공적으로 로그인했습니다.",
+  "githubAccountCreated": "GitHub 계정이 생성되었고 로그인되었습니다.",
+  "passwordResetTitle": "비밀번호 재설정",
+  "passwordResetDescription": "이메일 주소를 입력하세요. 계정이 존재하면 비밀번호 재설정 링크를 받게 됩니다.",
+  "sendResetLink": "재설정 링크 보내기",
+  "backToLogin": "로그인으로 돌아가기",
+  "setNewPasswordTitle": "새 비밀번호 설정",
+  "setNewPasswordDescription": "계정에 사용할 새 비밀번호를 설정하세요.",
+  "newPasswordLabel": "새 비밀번호",
+  "repeatNewPasswordLabel": "새 비밀번호 다시 입력",
+  "passwordsDoNotMatch": "비밀번호가 일치하지 않습니다",
+  "savePassword": "비밀번호 저장",
+  "registrationSuccess": "회원가입이 완료되었습니다. 이메일 주소를 확인한 후 로그인하세요.",
+  "passwordResetRequestSuccess": "이 이메일에 해당하는 계정이 존재하면 재설정 링크가 전송되었습니다.",
+  "passwordChangedSuccess": "비밀번호가 변경되었습니다. 이제 로그인할 수 있습니다.",
+  "passwordResetMailSent": "계정이 존재하면 재설정 링크가 전송되었습니다.",
+  "loginSuccess": "성공적으로 로그인했습니다.",
+  "invalidEmail": "유효한 이메일 주소를 입력하세요",
+  "passwordMinLength": "최소 8자",
+  "loggedInTitle": "사용자 계정",
+  "loggedInDescription": "현재 로그인되어 있습니다.",
+  "emailAddress": "이메일 주소",
+  "emailStatus": "이메일 상태",
+  "emailVerified": "확인됨",
+  "emailNotVerified": "아직 확인되지 않음",
+  "accountCreated": "계정 생성됨",
+  "synchronization": "동기화",
+  "accountInfoWarning": "유효한 로그인 토큰이 로컬에 저장되어 있으면 앱이 세션을 자동으로 복원할 수 있습니다. 공유 기기에서는 항상 로그아웃해야 합니다.",
+  "changePassword": "비밀번호 변경",
+  "logout": "로그아웃",
+  "syncRunning": "동기화 실행 중",
+  "syncOneWaiting": "세션 1개 대기 중",
+  "syncManyWaiting": "{count}개의 세션 대기 중",
+  "@syncManyWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncError": "동기화 오류",
+  "syncAllSynced": "모두 동기화됨",
+  "sessionExpired": "세션이 만료되었습니다. 다시 로그인하세요.",
+  "settingsSaved": "설정이 저장되었습니다.",
+  "timerTimesTitle": "타이머 시간",
+  "timerTimesDescription": "작업 단계와 휴식 시간이 얼마나 지속될지 설정하세요.",
+  "workTime": "작업 시간",
+  "shortBreak": "짧은 휴식",
+  "longBreak": "긴 휴식",
+  "longBreakAfter": "긴 휴식 기준",
+  "minutes": "분",
+  "pomodorosUnit": "Pomodoro",
+  "behaviorTitle": "동작",
+  "behaviorDescription": "사용 중 타이머가 어떻게 동작할지 조정하세요.",
+  "autoStartNextPhase": "다음 단계 자동 시작",
+  "enableSound": "소리 활성화",
+  "enableVibration": "진동 활성화",
+  "vibrationDescription": "실제 모바일 진동은 나중에 플러그인을 통해 연결됩니다.",
+  "languageTitle": "언어",
+  "languageDescription": "앱 언어를 선택하세요. “시스템 언어”를 선택하면 앱이 브라우저 또는 기기 언어를 사용합니다.",
+  "languageLabel": "앱 언어",
+  "languageSystem": "시스템 언어",
+  "languageGerman": "독일어",
+  "languageEnglish": "영어",
+  "languageArabic": "아랍어",
+  "languageChinese": "중국어",
+  "languageFrench": "프랑스어",
+  "languageSpanish": "스페인어",
+  "languageHindi": "힌디어",
+  "languagePortuguese": "포르투갈어",
+  "languageRussian": "러시아어",
+  "languageJapanese": "일본어",
+  "languageTurkish": "터키어",
+  "languageItalian": "이탈리아어",
+  "languageKorean": "한국어",
+  "languageIndonesian": "인도네시아어",
+  "languagePersian": "페르시아어",
+  "appearanceTitle": "화면 표시",
+  "appearanceDescription": "앱의 표시 모드와 기본 색상을 선택하세요.",
+  "appearanceLabel": "화면 표시",
+  "systemTheme": "시스템",
+  "lightMode": "라이트 모드",
+  "darkMode": "다크 모드",
+  "themeColor": "테마 색상",
+  "red": "빨간색",
+  "blue": "파란색",
+  "green": "초록색",
+  "purple": "보라색",
+  "saveSettings": "설정 저장",
+  "noChanges": "변경 사항 없음",
+  "decrease": "줄이기",
+  "increase": "늘리기",
+  "minutesShort": "분",
+  "settingsSavedButNotSynced": "설정이 로컬에 저장되었지만 아직 동기화되지 않았습니다.",
+  "settingsLoadRemoteFailed": "백엔드에서 설정을 불러올 수 없습니다. 로컬 설정을 사용합니다.",
+  "statsTitle": "통계",
+  "statsRefresh": "새로고침",
+  "statsWeek": "주",
+  "statsMonth": "월",
+  "statsYear": "년",
+  "statsTasksTime": "작업 시간",
+  "chartFocusPerDay": "일별 집중 시간",
+  "chartFocusPerCalendarWeek": "달력 주별 집중 시간",
+  "chartFocusPerMonth": "월별 집중 시간",
+  "chartFocusPerTask": "작업별 집중 시간",
+  "xAxisWeek": "X축: 요일",
+  "xAxisMonth": "X축: 월의 달력 주",
+  "xAxisYear": "X축: 연도의 월",
+  "xAxisTasks": "X축: 작업",
+  "periodNoData": "기간: 데이터 없음",
+  "periodRange": "기간: {start} – {end}",
+  "@periodRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "previousPeriod": "이전 기간",
+  "nextPeriod": "다음 기간",
+  "statsLoading": "통계를 불러오는 중 ...",
+  "taskStatsLoading": "작업 통계를 불러오는 중 ...",
+  "taskStatsEmpty": "아직 작업별 작업 시간이 없습니다. 데이터를 보려면 작업과 함께 Pomodoro를 시작하세요.",
+  "pomodoros": "Pomodoro",
+  "focusTime": "집중 시간",
+  "streak": "연속 기록",
+  "bestPeriod": "최고 기간",
+  "daysCount": "{count, plural, =1{1일} other{{count}일}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "yAxisFocusHoursWithXAxis": "Y축: 시간 단위 집중 시간 · {xAxisText}",
+  "@yAxisFocusHoursWithXAxis": {
+    "placeholders": {
+      "xAxisText": {
+        "type": "String"
+      }
+    }
+  },
+  "focusTimeMinutes": "분 단위 집중 시간",
+  "sortedByHighestFocusTime": "집중 시간이 높은 순서로 정렬됨.",
+  "taskPomodoroMinutes": "{pomodoros} Pomodoro · {minutes}분",
+  "@taskPomodoroMinutes": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "statsNoData": "아직 통계 데이터가 없습니다.",
+  "statsLoadFailed": "통계를 불러올 수 없습니다. 로그인하고 인터넷 연결을 확인하세요.",
+  "taskStatsLoadFailed": "작업 통계를 불러올 수 없습니다.",
+  "todayPomodorosLoadFailed": "오늘의 Pomodoro 수를 불러올 수 없습니다.",
+  "noTaskTitle": "작업 없음",
+  "calendarWeekShort": "{week}주차",
+  "@calendarWeekShort": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarWeekWithYear": "{year}년 {week}주차",
+  "@calendarWeekWithYear": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "tasksTitle": "작업",
+  "tasksRefreshTooltip": "작업 새로고침",
+  "taskSingular": "작업",
+  "deleteTaskTitle": "작업을 삭제할까요?",
+  "deleteTaskMessage": "“{title}” 작업을 정말 삭제하시겠습니까?",
+  "@deleteTaskMessage": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksLoading": "작업을 불러오는 중 ...",
+  "tasksEmpty": "아직 작업이 없습니다. 첫 번째 작업을 만들어 보세요.",
+  "tasksSearchEmpty": "작업을 찾을 수 없습니다. 검색어나 필터를 조정하세요.",
+  "noTimerTaskSelected": "타이머 작업이 선택되지 않았습니다",
+  "activeTimerTask": "활성 타이머 작업: {title}",
+  "@activeTimerTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskSelectionLockedDescription": "타이머 단계가 실행 중이거나 일시 중지되었습니다. 그래서 현재 작업이 잠겨 있습니다.",
+  "taskSelectionNextWorkPhaseDescription": "이 작업은 다음 작업 단계에 사용됩니다.",
+  "withoutTask": "작업 없이",
+  "searchTasks": "작업 검색",
+  "clearSearch": "검색 지우기",
+  "filterAll": "전체",
+  "filterOpen": "열림",
+  "filterCompleted": "완료됨",
+  "sortLabel": "정렬",
+  "sortNewest": "최신순",
+  "sortPriority": "우선순위",
+  "sortPomodoros": "Pomodoro",
+  "active": "활성",
+  "completed": "완료됨",
+  "locked": "잠김",
+  "forTimer": "타이머용",
+  "priorityLow": "낮음",
+  "priorityMedium": "중간",
+  "priorityHigh": "높음",
+  "taskLoadRemoteFailed": "백엔드에서 작업을 불러올 수 없습니다. 로컬 데이터는 계속 표시됩니다.",
+  "taskSavedLocallyNotSynced": "작업이 로컬에 저장되었지만 계정과 동기화할 수 없습니다.",
+  "taskSaveFailedRolledBack": "작업을 저장할 수 없습니다. 마지막 변경 사항이 되돌려졌습니다.",
+  "taskDeleteFailedRestored": "계정에서 작업을 삭제할 수 없습니다. 작업이 복원되었습니다.",
+  "taskCreateTitle": "작업 만들기",
+  "taskEditTitle": "작업 편집",
+  "taskTitleLabel": "제목",
+  "taskTitleRequired": "제목을 입력하세요",
+  "taskTitleTooShort": "제목이 너무 짧습니다.",
+  "taskDescriptionLabel": "설명",
+  "priorityLabel": "우선순위",
+  "tagsLabel": "태그/카테고리",
+  "tagsHint": "예: 대학, 업무, 개발",
+  "timerResetTitle": "타이머를 초기화할까요?",
+  "timerResetMessage": "현재 단계가 취소되며 완료된 세션으로 저장되지 않습니다.",
+  "taskNoneSelected": "선택된 작업 없음",
+  "currentTask": "현재 작업: {title}",
+  "@currentTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskForWorkPhase": "이 작업 단계의 작업",
+  "taskLockedToPhase": "이 단계는 선택한 작업에 고정되어 있습니다.",
+  "phaseWork": "작업 단계",
+  "phaseShortBreak": "짧은 휴식",
+  "phaseLongBreak": "긴 휴식",
+  "timerStatusSaving": "저장 중 ...",
+  "timerStatusRunning": "실행 중",
+  "timerStatusPaused": "일시 중지됨",
+  "timerStatusReady": "준비됨",
+  "phaseDescriptionWork": "집중 시간",
+  "phaseDescriptionShortBreak": "짧은 회복",
+  "phaseDescriptionLongBreak": "긴 회복",
+  "afterNextPhase": "{phaseDescription} · 다음: {nextPhase}",
+  "@afterNextPhase": {
+    "placeholders": {
+      "phaseDescription": {
+        "type": "String"
+      },
+      "nextPhase": {
+        "type": "String"
+      }
+    }
+  },
+  "todayPomodorosLoading": "오늘: 불러오는 중 ...",
+  "todayPomodoros": "오늘: {pomodoros}",
+  "@todayPomodoros": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "String"
+      }
+    }
+  },
+  "pomodoroCount": "{count, plural, =1{Pomodoro 1개} other{Pomodoro {count}개}}",
+  "@pomodoroCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pause": "일시 중지",
+  "continueButton": "계속",
+  "start": "시작",
+  "skipPause": "휴식 건너뛰기",
+  "shortcutSpaceCompact": "Space: 시작/일시 중지",
+  "shortcutResetCompact": "R: 초기화",
+  "shortcutSkipCompact": "S: 건너뛰기",
+  "shortcutSpace": "스페이스바: 시작/일시 중지",
+  "shortcutReset": "R: 초기화",
+  "shortcutSkip": "S: 휴식 건너뛰기",
+  "phaseSavingTitle": "단계 저장 중",
+  "phaseSavingDescription": "완료된 단계가 저장되고 타이머가 준비됩니다.",
+  "storageProblem": "저장소 문제",
+  "oneFinishedPhaseSavingBackground": "완료된 단계가 백그라운드에서 저장되고 있습니다.",
+  "manyFinishedPhasesSavingBackground": "{count}개의 완료된 단계가 백그라운드에서 저장되고 있습니다.",
+  "@manyFinishedPhasesSavingBackground": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timerLocalSaveFailed": "완료된 단계를 로컬에 저장할 수 없습니다.",
+  "timerBackendSyncFailed": "완료된 단계가 로컬에 저장되었지만 아직 백엔드와 동기화되지 않았습니다.",
+  "phaseProgress": "{elapsed} / {total}",
+  "@phaseProgress": {
+    "placeholders": {
+      "elapsed": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  }
+}
