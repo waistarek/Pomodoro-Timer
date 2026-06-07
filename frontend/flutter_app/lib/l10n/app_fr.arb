@@ -1,0 +1,423 @@
+{
+  "@@locale": "fr",
+  "appTitle": "Application Pomodoro",
+  "navTimer": "Minuteur",
+  "navTasks": "Tâches",
+  "navStats": "Statistiques",
+  "navSettings": "Paramètres",
+  "navAccount": "Compte",
+  "close": "Fermer",
+  "retry": "Réessayer",
+  "cancel": "Annuler",
+  "delete": "Supprimer",
+  "edit": "Modifier",
+  "save": "Enregistrer",
+  "reset": "Réinitialiser",
+  "refresh": "Actualiser",
+  "messageClose": "Fermer le message",
+  "or": "ou",
+  "yes": "Oui",
+  "no": "Non",
+  "emailVerifiedSuccess": "E-mail confirmé avec succès. Tu peux maintenant te connecter.",
+  "emailVerifiedExpired": "Le lien de confirmation a expiré.",
+  "emailVerifiedInvalid": "Le lien de confirmation est invalide.",
+  "sessionSyncOneWithAccount": "Une session est synchronisée avec ton compte.",
+  "sessionSyncManyWithAccount": "{count} sessions sont synchronisées avec ton compte.",
+  "@sessionSyncManyWithAccount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOneAfterLogin": "Une session locale sera synchronisée après la connexion.",
+  "sessionSyncManyAfterLogin": "{count} sessions locales seront synchronisées après la connexion.",
+  "@sessionSyncManyAfterLogin": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOnePending": "Une session attend la synchronisation.",
+  "sessionSyncManyPending": "{count} sessions attendent la synchronisation.",
+  "@sessionSyncManyPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncDone": "Synchronisation terminée.",
+  "sessionSyncFailed": "Les sessions n’ont pas pu être synchronisées pour le moment. Une nouvelle tentative aura lieu plus tard.",
+  "accountTitle": "Compte utilisateur",
+  "loginTitle": "Connexion",
+  "createAccountTitle": "Créer un nouveau compte",
+  "emailPasswordLoginTitle": "Se connecter avec e-mail et mot de passe",
+  "emailPasswordCreateTitle": "Créer un compte e-mail/mot de passe",
+  "emailLabel": "E-mail",
+  "passwordLabel": "Mot de passe",
+  "loginButton": "Se connecter",
+  "createAccountButton": "Créer un compte",
+  "rememberSessionTitle": "Rester connecté sur cet appareil",
+  "rememberSessionSubtitle": "Si cette option est désactivée, la connexion reste active uniquement pour la session actuelle de l’application.",
+  "forgotPasswordButton": "Mot de passe oublié ?",
+  "alreadyHaveAccount": "J’ai déjà un compte",
+  "googleSection": "Section Google",
+  "googleLoginButton": "Se connecter avec Google",
+  "googleCreateButton": "Créer un compte avec Google",
+  "googleNotConfigured": "La connexion Google n’est pas configurée.",
+  "googlePreparing": "Préparation de la connexion Google ...",
+  "googleNoIdToken": "Google n’a pas renvoyé de jeton ID valide.",
+  "googlePrepareFailed": "La connexion Google n’a pas pu être préparée : {error}",
+  "@googlePrepareFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginFailed": "Échec de la connexion Google : {error}",
+  "@googleLoginFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginSuccess": "Connexion avec Google réussie.",
+  "googleAccountCreated": "Le compte Google a été créé et tu es connecté.",
+  "googleWebOnly": "La connexion Google est disponible uniquement dans l’application web",
+  "githubSection": "Section GitHub",
+  "githubLoginButton": "Se connecter avec GitHub",
+  "githubCreateButton": "Créer un compte avec GitHub",
+  "githubNotConfigured": "La connexion GitHub n’est pas configurée.",
+  "githubCancelled": "La connexion GitHub a été annulée ou a échoué.",
+  "githubSecurityCancelled": "La connexion GitHub a été annulée pour des raisons de sécurité.",
+  "githubNoValidCode": "GitHub n’a pas renvoyé de code valide.",
+  "githubLoginSuccess": "Connexion avec GitHub réussie.",
+  "githubAccountCreated": "Le compte GitHub a été créé et tu es connecté.",
+  "passwordResetTitle": "Réinitialiser le mot de passe",
+  "passwordResetDescription": "Saisis ton adresse e-mail. Si un compte existe, tu recevras un lien de réinitialisation.",
+  "sendResetLink": "Envoyer le lien de réinitialisation",
+  "backToLogin": "Retour à la connexion",
+  "setNewPasswordTitle": "Définir un nouveau mot de passe",
+  "setNewPasswordDescription": "Définis un nouveau mot de passe pour ton compte.",
+  "newPasswordLabel": "Nouveau mot de passe",
+  "repeatNewPasswordLabel": "Répéter le nouveau mot de passe",
+  "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
+  "savePassword": "Enregistrer le mot de passe",
+  "registrationSuccess": "Inscription réussie. Confirme ton adresse e-mail, puis connecte-toi.",
+  "passwordResetRequestSuccess": "Si un compte avec cet e-mail existe, un lien de réinitialisation a été envoyé.",
+  "passwordChangedSuccess": "Le mot de passe a été modifié. Tu peux maintenant te connecter.",
+  "passwordResetMailSent": "Si le compte existe, un lien de réinitialisation a été envoyé.",
+  "loginSuccess": "Connexion réussie.",
+  "invalidEmail": "Veuillez saisir une adresse e-mail valide",
+  "passwordMinLength": "Au moins 8 caractères",
+  "loggedInTitle": "Compte utilisateur",
+  "loggedInDescription": "Tu es actuellement connecté.",
+  "emailAddress": "Adresse e-mail",
+  "emailStatus": "Statut de l’e-mail",
+  "emailVerified": "Confirmé",
+  "emailNotVerified": "Pas encore confirmé",
+  "accountCreated": "Compte créé",
+  "synchronization": "Synchronisation",
+  "accountInfoWarning": "L’application peut restaurer automatiquement ta session si un jeton de connexion valide est stocké localement. Sur les appareils partagés, tu dois toujours te déconnecter.",
+  "changePassword": "Changer le mot de passe",
+  "logout": "Se déconnecter",
+  "syncRunning": "Synchronisation en cours",
+  "syncOneWaiting": "1 session en attente",
+  "syncManyWaiting": "{count} sessions en attente",
+  "@syncManyWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncError": "Erreur de synchronisation",
+  "syncAllSynced": "Tout est synchronisé",
+  "sessionExpired": "Ta session a expiré. Connecte-toi à nouveau.",
+  "settingsSaved": "Paramètres enregistrés.",
+  "timerTimesTitle": "Durées du minuteur",
+  "timerTimesDescription": "Définis la durée des phases de travail et des pauses.",
+  "workTime": "Temps de travail",
+  "shortBreak": "Courte pause",
+  "longBreak": "Longue pause",
+  "longBreakAfter": "Longue pause après",
+  "minutes": "Minutes",
+  "pomodorosUnit": "Pomodoros",
+  "behaviorTitle": "Comportement",
+  "behaviorDescription": "Personnalise le comportement du minuteur pendant l’utilisation.",
+  "autoStartNextPhase": "Démarrer automatiquement la phase suivante",
+  "enableSound": "Activer le son",
+  "enableVibration": "Activer la vibration",
+  "vibrationDescription": "La vibration mobile réelle sera ajoutée plus tard via un plugin.",
+  "languageTitle": "Langue",
+  "languageDescription": "Choisis la langue de l’application. Avec « Langue du système », l’application utilise la langue du navigateur ou de l’appareil.",
+  "languageLabel": "Langue de l’application",
+  "languageSystem": "Langue du système",
+  "languageGerman": "Allemand",
+  "languageEnglish": "Anglais",
+  "languageArabic": "Arabe",
+  "languageChinese": "Chinois",
+  "languageFrench": "Français",
+  "languageSpanish": "Espagnol",
+  "languageHindi": "Hindi",
+  "languagePortuguese": "Portugais",
+  "languageRussian": "Russe",
+  "languageJapanese": "Japonais",
+  "languageTurkish": "Turc",
+  "languageItalian": "Italien",
+  "languageKorean": "Coréen",
+  "languageIndonesian": "Indonésien",
+  "languagePersian": "Persan",
+  "appearanceTitle": "Apparence",
+  "appearanceDescription": "Choisis le mode d’affichage et la couleur principale de l’application.",
+  "appearanceLabel": "Apparence",
+  "systemTheme": "Système",
+  "lightMode": "Mode clair",
+  "darkMode": "Mode sombre",
+  "themeColor": "Couleur du thème",
+  "red": "Rouge",
+  "blue": "Bleu",
+  "green": "Vert",
+  "purple": "Violet",
+  "saveSettings": "Enregistrer les paramètres",
+  "noChanges": "Aucune modification disponible",
+  "decrease": "Diminuer",
+  "increase": "Augmenter",
+  "minutesShort": "min",
+  "settingsSavedButNotSynced": "Paramètres enregistrés localement, mais pas encore synchronisés.",
+  "settingsLoadRemoteFailed": "Les paramètres n’ont pas pu être chargés depuis le backend. Les paramètres locaux sont utilisés.",
+  "statsTitle": "Statistiques",
+  "statsRefresh": "Actualiser",
+  "statsWeek": "Semaine",
+  "statsMonth": "Mois",
+  "statsYear": "Année",
+  "statsTasksTime": "Temps par tâche",
+  "chartFocusPerDay": "Temps de concentration par jour",
+  "chartFocusPerCalendarWeek": "Temps de concentration par semaine calendaire",
+  "chartFocusPerMonth": "Temps de concentration par mois",
+  "chartFocusPerTask": "Temps de concentration par tâche",
+  "xAxisWeek": "Axe X : jours de la semaine",
+  "xAxisMonth": "Axe X : semaines calendaires du mois",
+  "xAxisYear": "Axe X : mois de l’année",
+  "xAxisTasks": "Axe X : tâches",
+  "periodNoData": "Période : aucune donnée disponible",
+  "periodRange": "Période : {start} – {end}",
+  "@periodRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "previousPeriod": "Période précédente",
+  "nextPeriod": "Période suivante",
+  "statsLoading": "Chargement des statistiques ...",
+  "taskStatsLoading": "Chargement des statistiques des tâches ...",
+  "taskStatsEmpty": "Aucun temps de travail par tâche disponible pour le moment. Lance un Pomodoro avec une tâche pour voir des données.",
+  "pomodoros": "Pomodoros",
+  "focusTime": "Temps de concentration",
+  "streak": "Série",
+  "bestPeriod": "Meilleure période",
+  "daysCount": "{count, plural, =1{1 jour} other{{count} jours}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "yAxisFocusHoursWithXAxis": "Axe Y : temps de concentration en heures · {xAxisText}",
+  "@yAxisFocusHoursWithXAxis": {
+    "placeholders": {
+      "xAxisText": {
+        "type": "String"
+      }
+    }
+  },
+  "focusTimeMinutes": "Temps de concentration en minutes",
+  "sortedByHighestFocusTime": "Trié par temps de concentration le plus élevé.",
+  "taskPomodoroMinutes": "{pomodoros} Pomodoros · {minutes} min",
+  "@taskPomodoroMinutes": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "statsNoData": "Aucune donnée statistique disponible pour le moment.",
+  "statsLoadFailed": "Les statistiques n’ont pas pu être chargées. Connecte-toi et vérifie ta connexion Internet.",
+  "taskStatsLoadFailed": "Les statistiques des tâches n’ont pas pu être chargées.",
+  "todayPomodorosLoadFailed": "Le nombre de Pomodoros d’aujourd’hui n’a pas pu être chargé.",
+  "noTaskTitle": "Sans tâche",
+  "calendarWeekShort": "SC {week}",
+  "@calendarWeekShort": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarWeekWithYear": "SC {week}/{year}",
+  "@calendarWeekWithYear": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "tasksTitle": "Tâches",
+  "tasksRefreshTooltip": "Actualiser les tâches",
+  "taskSingular": "Tâche",
+  "deleteTaskTitle": "Supprimer la tâche ?",
+  "deleteTaskMessage": "Veux-tu vraiment supprimer la tâche « {title} » ?",
+  "@deleteTaskMessage": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksLoading": "Chargement des tâches ...",
+  "tasksEmpty": "Aucune tâche disponible pour le moment. Crée ta première tâche.",
+  "tasksSearchEmpty": "Aucune tâche trouvée. Ajuste la recherche ou les filtres.",
+  "noTimerTaskSelected": "Aucune tâche sélectionnée pour le minuteur",
+  "activeTimerTask": "Tâche active du minuteur : {title}",
+  "@activeTimerTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskSelectionLockedDescription": "Une phase du minuteur est en cours ou en pause. La tâche est donc actuellement verrouillée.",
+  "taskSelectionNextWorkPhaseDescription": "Cette tâche sera utilisée pour la prochaine phase de travail.",
+  "withoutTask": "Sans tâche",
+  "searchTasks": "Rechercher des tâches",
+  "clearSearch": "Effacer la recherche",
+  "filterAll": "Toutes",
+  "filterOpen": "Ouvertes",
+  "filterCompleted": "Terminées",
+  "sortLabel": "Tri",
+  "sortNewest": "Les plus récentes d’abord",
+  "sortPriority": "Priorité",
+  "sortPomodoros": "Pomodoros",
+  "active": "Active",
+  "completed": "Terminée",
+  "locked": "Verrouillée",
+  "forTimer": "Pour le minuteur",
+  "priorityLow": "Faible",
+  "priorityMedium": "Moyenne",
+  "priorityHigh": "Élevée",
+  "taskLoadRemoteFailed": "Les tâches n’ont pas pu être chargées depuis le backend. Les données locales restent affichées.",
+  "taskSavedLocallyNotSynced": "La tâche a été enregistrée localement, mais n’a pas pu être synchronisée avec le compte.",
+  "taskSaveFailedRolledBack": "La tâche n’a pas pu être enregistrée. La dernière modification a été annulée.",
+  "taskDeleteFailedRestored": "La tâche n’a pas pu être supprimée du compte. Elle a été restaurée.",
+  "taskCreateTitle": "Créer une tâche",
+  "taskEditTitle": "Modifier la tâche",
+  "taskTitleLabel": "Titre",
+  "taskTitleRequired": "Veuillez saisir un titre",
+  "taskTitleTooShort": "Le titre est trop court.",
+  "taskDescriptionLabel": "Description",
+  "priorityLabel": "Priorité",
+  "tagsLabel": "Tags/catégories",
+  "tagsHint": "p. ex. université, travail, développement",
+  "timerResetTitle": "Réinitialiser le minuteur ?",
+  "timerResetMessage": "La phase actuelle sera annulée et ne sera pas enregistrée comme session terminée.",
+  "taskNoneSelected": "Aucune tâche sélectionnée",
+  "currentTask": "Tâche actuelle : {title}",
+  "@currentTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskForWorkPhase": "Tâche pour cette phase de travail",
+  "taskLockedToPhase": "Cette phase est liée à la tâche sélectionnée.",
+  "phaseWork": "Phase de travail",
+  "phaseShortBreak": "Courte pause",
+  "phaseLongBreak": "Longue pause",
+  "timerStatusSaving": "Enregistrement ...",
+  "timerStatusRunning": "En cours",
+  "timerStatusPaused": "En pause",
+  "timerStatusReady": "Prêt",
+  "phaseDescriptionWork": "Temps de concentration",
+  "phaseDescriptionShortBreak": "Courte récupération",
+  "phaseDescriptionLongBreak": "Récupération plus longue",
+  "afterNextPhase": "{phaseDescription} · Ensuite : {nextPhase}",
+  "@afterNextPhase": {
+    "placeholders": {
+      "phaseDescription": {
+        "type": "String"
+      },
+      "nextPhase": {
+        "type": "String"
+      }
+    }
+  },
+  "todayPomodorosLoading": "Aujourd’hui : chargement ...",
+  "todayPomodoros": "Aujourd’hui : {pomodoros}",
+  "@todayPomodoros": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "String"
+      }
+    }
+  },
+  "pomodoroCount": "{count, plural, =1{1 Pomodoro} other{{count} Pomodoros}}",
+  "@pomodoroCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pause": "Pause",
+  "continueButton": "Continuer",
+  "start": "Démarrer",
+  "skipPause": "Passer la pause",
+  "shortcutSpaceCompact": "Espace : démarrer/pause",
+  "shortcutResetCompact": "R : réinitialiser",
+  "shortcutSkipCompact": "S : passer",
+  "shortcutSpace": "Barre d’espace : démarrer/pause",
+  "shortcutReset": "R : réinitialiser",
+  "shortcutSkip": "S : passer la pause",
+  "phaseSavingTitle": "Enregistrement de la phase",
+  "phaseSavingDescription": "La phase terminée est enregistrée et le minuteur est préparé.",
+  "storageProblem": "Problème de stockage",
+  "oneFinishedPhaseSavingBackground": "La phase terminée est enregistrée en arrière-plan.",
+  "manyFinishedPhasesSavingBackground": "{count} phases terminées sont enregistrées en arrière-plan.",
+  "@manyFinishedPhasesSavingBackground": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timerLocalSaveFailed": "La phase terminée n’a pas pu être enregistrée localement.",
+  "timerBackendSyncFailed": "La phase terminée a été enregistrée localement, mais n’a pas encore été synchronisée avec le backend.",
+  "phaseProgress": "{elapsed} sur {total}",
+  "@phaseProgress": {
+    "placeholders": {
+      "elapsed": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  }
+}
