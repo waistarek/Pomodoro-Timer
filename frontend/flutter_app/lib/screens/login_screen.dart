@@ -72,6 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _startGithubOAuth() async {
+    context.read<AuthProvider>().clearError();
     if (AppConfig.githubClientId.isEmpty) {
       context.read<AuthProvider>().setError(
             'GitHub Login ist nicht konfiguriert.',
@@ -97,6 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
         'redirect_uri': redirectUri,
         'scope': 'user:email',
         'state': state,
+        'prompt': 'select_account',
       },
     );
 
@@ -546,6 +548,8 @@ class _LoginScreenState extends State<LoginScreen> {
           onPressed: provider.loading
               ? null
               : () {
+                  context.read<AuthProvider>().clearError();
+
                   provider.clearError();
                   setState(() {
                     _registerMode = !_registerMode;
