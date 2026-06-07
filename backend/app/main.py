@@ -250,13 +250,44 @@ def _login_or_register_oauth_user(
         existing_user = db.query(User).filter(User.email == email).first()
 
         if existing_user is not None:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail=(
-                    "Diese E-Mail ist bereits als E-Mail/Passwort-Konto registriert. "
-                    "Bitte mit Passwort einloggen."
-                ),
+            existing_identities = (
+                db.query(AuthIdentity)
+                .filter(AuthIdentity.user_id == existing_user.id)
+                .all()
             )
+
+            existing_providers = {identity.provider for identity in existing_identities}
+
+            if provider in existing_providers:
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail=(
+                        f"Dieses {provider_label}-Konto ist bereits registriert. "
+                        f"Bitte mit {provider_label} einloggen."
+                    ),
+                )
+
+            if existing_providers:
+                provider_names = ", ".join(sorted(existing_providers))
+
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail=(
+                        "Für diese E-Mail existiert bereits ein Konto über "
+                        f"{provider_names}. Bitte zuerst damit einloggen. "
+                        "Das Verbinden mehrerer Login-Anbieter kann später "
+                        "in den Kontoeinstellungen ergänzt werden."
+                    ),
+                )
+
+            if existing_user.password_hash:
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail=(
+                        "Diese E-Mail ist bereits als E-Mail/Passwort-Konto registriert. "
+                        "Bitte mit Passwort einloggen."
+                    ),
+                )
 
         user = User(
             email=email,

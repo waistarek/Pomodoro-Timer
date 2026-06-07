@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../l10n/app_localizations.dart';
 import '../models/app_settings.dart';
-import '../providers/locale_provider.dart';
 import '../providers/settings_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -27,7 +26,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         a.soundEnabled == b.soundEnabled &&
         a.vibrationEnabled == b.vibrationEnabled &&
         a.theme == b.theme &&
-        a.colorName == b.colorName;
+        a.colorName == b.colorName &&
+        a.appLocale == b.appLocale;
   }
 
   void _updateDraft(AppSettings Function(AppSettings current) update) {
@@ -205,11 +205,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   _SettingsSection(
                     title: l10n.languageTitle,
                     description: l10n.languageDescription,
-                    children: const [
-                      _LanguageDropdown(),
+                    children: [
+                      _LanguageDropdown(
+                        value: draft.appLocale,
+                        onChanged: (value) {
+                          _updateDraft(
+                            (settings) => settings.copyWith(appLocale: value),
+                          );
+                        },
+                      ),
                     ],
                   ),
-
                   const SizedBox(height: 16),
                   _SettingsSection(
                     title: l10n.appearanceTitle,
@@ -324,44 +330,50 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 }
 
-
 class _LanguageDropdown extends StatelessWidget {
-  const _LanguageDropdown();
+  const _LanguageDropdown({
+    required this.value,
+    required this.onChanged,
+  });
+
+  final String value;
+  final ValueChanged<String> onChanged;
+
+  static const String _systemLocaleCode = 'system';
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Consumer<LocaleProvider>(
-      builder: (context, localeProvider, _) {
-        final localeCodes = [
-          LocaleProvider.systemLocaleCode,
-          ...AppLocalizations.supportedLocales.map(
-            (locale) => locale.languageCode,
-          ),
-        ];
+    final localeCodes = [
+      _systemLocaleCode,
+      ...AppLocalizations.supportedLocales.map(
+        (locale) => locale.languageCode,
+      ),
+    ];
 
-        return DropdownButtonFormField<String>(
-          key: ValueKey('language-${localeProvider.localeCode}'),
-          initialValue: localeProvider.localeCode,
-          decoration: InputDecoration(
-            labelText: l10n.languageLabel,
-            border: const OutlineInputBorder(),
-          ),
-          items: localeCodes.map((localeCode) {
-            return DropdownMenuItem<String>(
-              value: localeCode,
-              child: Text(_localizedLanguageName(l10n, localeCode)),
-            );
-          }).toList(),
-          onChanged: (value) {
-            if (value == null) {
-              return;
-            }
+    final currentValue =
+        localeCodes.contains(value) ? value : _systemLocaleCode;
 
-            localeProvider.setLocaleCode(value);
-          },
+    return DropdownButtonFormField<String>(
+      key: ValueKey('language-$currentValue'),
+      initialValue: currentValue,
+      decoration: InputDecoration(
+        labelText: l10n.languageLabel,
+        border: const OutlineInputBorder(),
+      ),
+      items: localeCodes.map((localeCode) {
+        return DropdownMenuItem<String>(
+          value: localeCode,
+          child: Text(_localizedLanguageName(l10n, localeCode)),
         );
+      }).toList(),
+      onChanged: (value) {
+        if (value == null) {
+          return;
+        }
+
+        onChanged(value);
       },
     );
   }
@@ -369,13 +381,22 @@ class _LanguageDropdown extends StatelessWidget {
 
 String _localizedLanguageName(AppLocalizations l10n, String localeCode) {
   return switch (localeCode) {
-    LocaleProvider.systemLocaleCode => l10n.languageSystem,
+    'system' => l10n.languageSystem,
     'de' => l10n.languageGerman,
     'en' => l10n.languageEnglish,
+    'ar' => l10n.languageArabic,
+    'zh' => l10n.languageChinese,
     'fr' => l10n.languageFrench,
     'es' => l10n.languageSpanish,
+    'hi' => l10n.languageHindi,
+    'pt' => l10n.languagePortuguese,
+    'ru' => l10n.languageRussian,
+    'ja' => l10n.languageJapanese,
     'tr' => l10n.languageTurkish,
-    'ar' => l10n.languageArabic,
+    'it' => l10n.languageItalian,
+    'ko' => l10n.languageKorean,
+    'id' => l10n.languageIndonesian,
+    'fa' => l10n.languagePersian,
     _ => localeCode.toUpperCase(),
   };
 }

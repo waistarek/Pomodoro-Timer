@@ -166,12 +166,12 @@ class AppLocalizationsDe extends AppLocalizations {
       'Google hat keinen gültigen ID-Token zurückgegeben.';
 
   @override
-  String googlePrepareFailed(Object error) {
+  String googlePrepareFailed(String error) {
     return 'Google Login konnte nicht vorbereitet werden: $error';
   }
 
   @override
-  String googleLoginFailed(Object error) {
+  String googleLoginFailed(String error) {
     return 'Google Login fehlgeschlagen: $error';
   }
 
@@ -377,6 +377,64 @@ class AppLocalizationsDe extends AppLocalizations {
       'Die konkrete mobile Vibration wird später über ein Plugin angebunden.';
 
   @override
+  String get languageTitle => 'Sprache';
+
+  @override
+  String get languageDescription =>
+      'Wähle die Sprache der App. Mit „Systemsprache“ verwendet die App die Sprache des Browsers oder Geräts.';
+
+  @override
+  String get languageLabel => 'App-Sprache';
+
+  @override
+  String get languageSystem => 'Systemsprache';
+
+  @override
+  String get languageGerman => 'Deutsch';
+
+  @override
+  String get languageEnglish => 'Englisch';
+
+  @override
+  String get languageArabic => 'Arabisch';
+
+  @override
+  String get languageChinese => 'Chinesisch';
+
+  @override
+  String get languageFrench => 'Französisch';
+
+  @override
+  String get languageSpanish => 'Spanisch';
+
+  @override
+  String get languageHindi => 'Hindi';
+
+  @override
+  String get languagePortuguese => 'Portugiesisch';
+
+  @override
+  String get languageRussian => 'Russisch';
+
+  @override
+  String get languageJapanese => 'Japanisch';
+
+  @override
+  String get languageTurkish => 'Türkisch';
+
+  @override
+  String get languageItalian => 'Italienisch';
+
+  @override
+  String get languageKorean => 'Koreanisch';
+
+  @override
+  String get languageIndonesian => 'Indonesisch';
+
+  @override
+  String get languagePersian => 'Persisch';
+
+  @override
   String get appearanceTitle => 'Darstellung';
 
   @override
@@ -557,12 +615,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noTaskTitle => 'Ohne Aufgabe';
 
   @override
-  String calendarWeekShort(String week) {
+  String calendarWeekShort(int week) {
     return 'KW $week';
   }
 
   @override
-  String calendarWeekWithYear(String week, String year) {
+  String calendarWeekWithYear(int week, int year) {
     return 'KW $week/$year';
   }
 

@@ -204,7 +204,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (ok) {
       await _loadDataAfterSuccessfulLogin(
-        mode == 'register' ? l10n.githubAccountCreated : l10n.githubLoginSuccess,
+        mode == 'register'
+            ? l10n.githubAccountCreated
+            : l10n.githubLoginSuccess,
       );
     }
   }
@@ -263,7 +265,9 @@ class _LoginScreenState extends State<LoginScreen> {
       }
 
       final l10n = AppLocalizations.of(context);
-      context.read<AuthProvider>().setError(l10n.googlePrepareFailed(e));
+      context
+          .read<AuthProvider>()
+          .setError(l10n.googlePrepareFailed(e.toString()));
     }
   }
 
@@ -351,7 +355,9 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     final l10n = AppLocalizations.of(context);
-    context.read<AuthProvider>().setError(l10n.googleLoginFailed(error));
+    context
+        .read<AuthProvider>()
+        .setError(l10n.googleLoginFailed(error.toString()));
   }
 
   Future<void> _loadDataAfterSuccessfulLogin(String message) async {

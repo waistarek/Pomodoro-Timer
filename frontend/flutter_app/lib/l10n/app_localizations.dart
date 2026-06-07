@@ -5,8 +5,21 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_ar.dart';
 import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
+import 'app_localizations_fa.dart';
+import 'app_localizations_fr.dart';
+import 'app_localizations_hi.dart';
+import 'app_localizations_id.dart';
+import 'app_localizations_it.dart';
+import 'app_localizations_ja.dart';
+import 'app_localizations_ko.dart';
+import 'app_localizations_pt.dart';
+import 'app_localizations_ru.dart';
+import 'app_localizations_tr.dart';
+import 'app_localizations_zh.dart';
 
 // ignore_for_file: type=lint
 
@@ -95,7 +108,20 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('de'),
-    Locale('en')
+    Locale('en'),
+    Locale('ar'),
+    Locale('zh'),
+    Locale('fr'),
+    Locale('es'),
+    Locale('hi'),
+    Locale('pt'),
+    Locale('ru'),
+    Locale('ja'),
+    Locale('tr'),
+    Locale('it'),
+    Locale('ko'),
+    Locale('id'),
+    Locale('fa')
   ];
 
   /// No description provided for @appTitle.
@@ -390,13 +416,13 @@ abstract class AppLocalizations {
   ///
   /// In de, this message translates to:
   /// **'Google Login konnte nicht vorbereitet werden: {error}'**
-  String googlePrepareFailed(Object error);
+  String googlePrepareFailed(String error);
 
   /// No description provided for @googleLoginFailed.
   ///
   /// In de, this message translates to:
   /// **'Google Login fehlgeschlagen: {error}'**
-  String googleLoginFailed(Object error);
+  String googleLoginFailed(String error);
 
   /// No description provided for @googleLoginSuccess.
   ///
@@ -764,6 +790,120 @@ abstract class AppLocalizations {
   /// **'Die konkrete mobile Vibration wird später über ein Plugin angebunden.'**
   String get vibrationDescription;
 
+  /// No description provided for @languageTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Sprache'**
+  String get languageTitle;
+
+  /// No description provided for @languageDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Wähle die Sprache der App. Mit „Systemsprache“ verwendet die App die Sprache des Browsers oder Geräts.'**
+  String get languageDescription;
+
+  /// No description provided for @languageLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'App-Sprache'**
+  String get languageLabel;
+
+  /// No description provided for @languageSystem.
+  ///
+  /// In de, this message translates to:
+  /// **'Systemsprache'**
+  String get languageSystem;
+
+  /// No description provided for @languageGerman.
+  ///
+  /// In de, this message translates to:
+  /// **'Deutsch'**
+  String get languageGerman;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In de, this message translates to:
+  /// **'Englisch'**
+  String get languageEnglish;
+
+  /// No description provided for @languageArabic.
+  ///
+  /// In de, this message translates to:
+  /// **'Arabisch'**
+  String get languageArabic;
+
+  /// No description provided for @languageChinese.
+  ///
+  /// In de, this message translates to:
+  /// **'Chinesisch'**
+  String get languageChinese;
+
+  /// No description provided for @languageFrench.
+  ///
+  /// In de, this message translates to:
+  /// **'Französisch'**
+  String get languageFrench;
+
+  /// No description provided for @languageSpanish.
+  ///
+  /// In de, this message translates to:
+  /// **'Spanisch'**
+  String get languageSpanish;
+
+  /// No description provided for @languageHindi.
+  ///
+  /// In de, this message translates to:
+  /// **'Hindi'**
+  String get languageHindi;
+
+  /// No description provided for @languagePortuguese.
+  ///
+  /// In de, this message translates to:
+  /// **'Portugiesisch'**
+  String get languagePortuguese;
+
+  /// No description provided for @languageRussian.
+  ///
+  /// In de, this message translates to:
+  /// **'Russisch'**
+  String get languageRussian;
+
+  /// No description provided for @languageJapanese.
+  ///
+  /// In de, this message translates to:
+  /// **'Japanisch'**
+  String get languageJapanese;
+
+  /// No description provided for @languageTurkish.
+  ///
+  /// In de, this message translates to:
+  /// **'Türkisch'**
+  String get languageTurkish;
+
+  /// No description provided for @languageItalian.
+  ///
+  /// In de, this message translates to:
+  /// **'Italienisch'**
+  String get languageItalian;
+
+  /// No description provided for @languageKorean.
+  ///
+  /// In de, this message translates to:
+  /// **'Koreanisch'**
+  String get languageKorean;
+
+  /// No description provided for @languageIndonesian.
+  ///
+  /// In de, this message translates to:
+  /// **'Indonesisch'**
+  String get languageIndonesian;
+
+  /// No description provided for @languagePersian.
+  ///
+  /// In de, this message translates to:
+  /// **'Persisch'**
+  String get languagePersian;
+
   /// No description provided for @appearanceTitle.
   ///
   /// In de, this message translates to:
@@ -1086,13 +1226,13 @@ abstract class AppLocalizations {
   ///
   /// In de, this message translates to:
   /// **'KW {week}'**
-  String calendarWeekShort(String week);
+  String calendarWeekShort(int week);
 
   /// No description provided for @calendarWeekWithYear.
   ///
   /// In de, this message translates to:
   /// **'KW {week}/{year}'**
-  String calendarWeekWithYear(String week, String year);
+  String calendarWeekWithYear(int week, int year);
 
   /// No description provided for @tasksTitle.
   ///
@@ -1586,7 +1726,7 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['de', 'en'].contains(locale.languageCode);
+      <String>['de'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -1597,8 +1737,6 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'de':
       return AppLocalizationsDe();
-    case 'en':
-      return AppLocalizationsEn();
   }
 
   throw FlutterError(

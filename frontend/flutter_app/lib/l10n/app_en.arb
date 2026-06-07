@@ -3,7 +3,7 @@
   "appTitle": "Pomodoro App",
   "navTimer": "Timer",
   "navTasks": "Tasks",
-  "navStats": "Stats",
+  "navStats": "Statistics",
   "navSettings": "Settings",
   "navAccount": "Account",
   "close": "Close",
@@ -18,18 +18,39 @@
   "or": "or",
   "yes": "Yes",
   "no": "No",
-  "emailVerifiedSuccess": "Email confirmed successfully. You can now log in.",
-  "emailVerifiedExpired": "The confirmation link has expired.",
-  "emailVerifiedInvalid": "The confirmation link is invalid.",
+  "emailVerifiedSuccess": "Email successfully verified. You can now log in.",
+  "emailVerifiedExpired": "The verification link has expired.",
+  "emailVerifiedInvalid": "The verification link is invalid.",
   "sessionSyncOneWithAccount": "One session is being synced with your account.",
   "sessionSyncManyWithAccount": "{count} sessions are being synced with your account.",
+  "@sessionSyncManyWithAccount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "sessionSyncOneAfterLogin": "One local session will be synced after login.",
   "sessionSyncManyAfterLogin": "{count} local sessions will be synced after login.",
-  "sessionSyncOnePending": "One session is waiting for sync.",
-  "sessionSyncManyPending": "{count} sessions are waiting for sync.",
-  "sessionSyncDone": "Sync completed.",
+  "@sessionSyncManyAfterLogin": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOnePending": "One session is waiting to be synced.",
+  "sessionSyncManyPending": "{count} sessions are waiting to be synced.",
+  "@sessionSyncManyPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncDone": "Synchronization completed.",
   "sessionSyncFailed": "Sessions could not be synced right now. The app will try again later.",
-  "accountTitle": "Account",
+  "accountTitle": "User account",
   "loginTitle": "Login",
   "createAccountTitle": "Create new account",
   "emailPasswordLoginTitle": "Log in with email and password",
@@ -39,7 +60,7 @@
   "loginButton": "Log in",
   "createAccountButton": "Create account",
   "rememberSessionTitle": "Stay signed in on this device",
-  "rememberSessionSubtitle": "When disabled, the login only stays active for the current app session.",
+  "rememberSessionSubtitle": "If disabled, the login only stays active for the current app session.",
   "forgotPasswordButton": "Forgot password?",
   "alreadyHaveAccount": "I already have an account",
   "googleSection": "Google section",
@@ -49,9 +70,23 @@
   "googlePreparing": "Preparing Google login ...",
   "googleNoIdToken": "Google did not return a valid ID token.",
   "googlePrepareFailed": "Google login could not be prepared: {error}",
+  "@googlePrepareFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "googleLoginFailed": "Google login failed: {error}",
-  "googleLoginSuccess": "Successfully logged in with Google.",
-  "googleAccountCreated": "Google account was created and you are logged in.",
+  "@googleLoginFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginSuccess": "Successfully signed in with Google.",
+  "googleAccountCreated": "Google account was created and you are signed in.",
   "googleWebOnly": "Google login is only available in the web app",
   "githubSection": "GitHub section",
   "githubLoginButton": "Log in with GitHub",
@@ -60,10 +95,10 @@
   "githubCancelled": "GitHub login was cancelled or failed.",
   "githubSecurityCancelled": "GitHub login was cancelled for security reasons.",
   "githubNoValidCode": "GitHub did not return a valid code.",
-  "githubLoginSuccess": "Successfully logged in with GitHub.",
-  "githubAccountCreated": "GitHub account was created and you are logged in.",
+  "githubLoginSuccess": "Successfully signed in with GitHub.",
+  "githubAccountCreated": "GitHub account was created and you are signed in.",
   "passwordResetTitle": "Reset password",
-  "passwordResetDescription": "Enter your email address. If an account exists, you will receive a reset link.",
+  "passwordResetDescription": "Enter your email address. If an account exists, you will receive a password reset link.",
   "sendResetLink": "Send reset link",
   "backToLogin": "Back to login",
   "setNewPasswordTitle": "Set new password",
@@ -72,33 +107,40 @@
   "repeatNewPasswordLabel": "Repeat new password",
   "passwordsDoNotMatch": "The passwords do not match",
   "savePassword": "Save password",
-  "registrationSuccess": "Registration successful. Please confirm your email address and log in afterwards.",
+  "registrationSuccess": "Registration successful. Please verify your email address and then log in.",
   "passwordResetRequestSuccess": "If an account with this email exists, a reset link has been sent.",
-  "passwordChangedSuccess": "Password changed. You can now log in.",
+  "passwordChangedSuccess": "Password has been changed. You can now log in.",
   "passwordResetMailSent": "If the account exists, a reset link has been sent.",
-  "loginSuccess": "Successfully logged in.",
+  "loginSuccess": "Successfully signed in.",
   "invalidEmail": "Please enter a valid email address",
   "passwordMinLength": "At least 8 characters",
-  "loggedInTitle": "Account",
-  "loggedInDescription": "You are currently logged in.",
+  "loggedInTitle": "User account",
+  "loggedInDescription": "You are currently signed in.",
   "emailAddress": "Email address",
   "emailStatus": "Email status",
-  "emailVerified": "Confirmed",
-  "emailNotVerified": "Not confirmed yet",
+  "emailVerified": "Verified",
+  "emailNotVerified": "Not verified yet",
   "accountCreated": "Account created",
   "synchronization": "Synchronization",
-  "accountInfoWarning": "The app can restore your session automatically if a valid login token is stored locally. Always log out on shared devices.",
+  "accountInfoWarning": "The app can automatically restore your session if a valid login token is stored locally. On shared devices, you should always log out.",
   "changePassword": "Change password",
   "logout": "Log out",
-  "syncRunning": "Sync is running",
+  "syncRunning": "Synchronization running",
   "syncOneWaiting": "1 session waiting",
   "syncManyWaiting": "{count} sessions waiting",
-  "syncError": "Sync error",
-  "syncAllSynced": "Everything is synced",
+  "@syncManyWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncError": "Synchronization error",
+  "syncAllSynced": "Everything synced",
   "sessionExpired": "Your session has expired. Please log in again.",
   "settingsSaved": "Settings saved.",
   "timerTimesTitle": "Timer durations",
-  "timerTimesDescription": "Define how long work phases and breaks should last.",
+  "timerTimesDescription": "Define how long work sessions and breaks should last.",
   "workTime": "Work time",
   "shortBreak": "Short break",
   "longBreak": "Long break",
@@ -106,23 +148,32 @@
   "minutes": "Minutes",
   "pomodorosUnit": "Pomodoros",
   "behaviorTitle": "Behavior",
-  "behaviorDescription": "Adjust how the timer behaves while you use it.",
+  "behaviorDescription": "Customize how the timer behaves while you use it.",
   "autoStartNextPhase": "Start next phase automatically",
   "enableSound": "Enable sound",
   "enableVibration": "Enable vibration",
-  "vibrationDescription": "The actual mobile vibration will be connected later through a plugin.",
+  "vibrationDescription": "Actual mobile vibration will be connected later through a plugin.",
   "languageTitle": "Language",
-  "languageDescription": "Choose the app language. “System language” uses the browser or device language.",
+  "languageDescription": "Choose the app language. With “System language”, the app uses the browser or device language.",
   "languageLabel": "App language",
   "languageSystem": "System language",
   "languageGerman": "German",
   "languageEnglish": "English",
+  "languageArabic": "Arabic",
+  "languageChinese": "Chinese",
   "languageFrench": "French",
   "languageSpanish": "Spanish",
+  "languageHindi": "Hindi",
+  "languagePortuguese": "Portuguese",
+  "languageRussian": "Russian",
+  "languageJapanese": "Japanese",
   "languageTurkish": "Turkish",
-  "languageArabic": "Arabic",
+  "languageItalian": "Italian",
+  "languageKorean": "Korean",
+  "languageIndonesian": "Indonesian",
+  "languagePersian": "Persian",
   "appearanceTitle": "Appearance",
-  "appearanceDescription": "Choose display mode and the main app color.",
+  "appearanceDescription": "Choose the design mode and main color of the app.",
   "appearanceLabel": "Appearance",
   "systemTheme": "System",
   "lightMode": "Light mode",
@@ -133,13 +184,13 @@
   "green": "Green",
   "purple": "Purple",
   "saveSettings": "Save settings",
-  "noChanges": "No changes",
+  "noChanges": "No changes available",
   "decrease": "Decrease",
   "increase": "Increase",
   "minutesShort": "min",
-  "settingsSavedButNotSynced": "Settings were saved locally but have not been synced yet.",
-  "settingsLoadRemoteFailed": "Settings could not be loaded from the backend. Local settings are used.",
-  "statsTitle": "Stats",
+  "settingsSavedButNotSynced": "Settings saved locally but not synced yet.",
+  "settingsLoadRemoteFailed": "Settings could not be loaded from the backend. Local settings are being used.",
+  "statsTitle": "Statistics",
   "statsRefresh": "Refresh",
   "statsWeek": "Week",
   "statsMonth": "Month",
@@ -155,46 +206,111 @@
   "xAxisTasks": "X-axis: tasks",
   "periodNoData": "Period: No data available",
   "periodRange": "Period: {start} – {end}",
+  "@periodRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
   "previousPeriod": "Previous period",
   "nextPeriod": "Next period",
   "statsLoading": "Loading statistics ...",
   "taskStatsLoading": "Loading task statistics ...",
-  "taskStatsEmpty": "No work time per task yet. Start a Pomodoro with a task to see data.",
+  "taskStatsEmpty": "No work time per task available yet. Start a Pomodoro with a task to see data.",
   "pomodoros": "Pomodoros",
   "focusTime": "Focus time",
   "streak": "Streak",
   "bestPeriod": "Best period",
   "daysCount": "{count, plural, =1{1 day} other{{count} days}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "yAxisFocusHoursWithXAxis": "Y-axis: focus time in hours · {xAxisText}",
+  "@yAxisFocusHoursWithXAxis": {
+    "placeholders": {
+      "xAxisText": {
+        "type": "String"
+      }
+    }
+  },
   "focusTimeMinutes": "Focus time in minutes",
   "sortedByHighestFocusTime": "Sorted by highest focus time.",
   "taskPomodoroMinutes": "{pomodoros} Pomodoros · {minutes} min",
+  "@taskPomodoroMinutes": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
   "statsNoData": "No statistics data available yet.",
   "statsLoadFailed": "Statistics could not be loaded. Please log in and check your internet connection.",
   "taskStatsLoadFailed": "Task statistics could not be loaded.",
-  "todayPomodorosLoadFailed": "Today's Pomodoro count could not be loaded.",
+  "todayPomodorosLoadFailed": "Today’s Pomodoro count could not be loaded.",
   "noTaskTitle": "No task",
   "calendarWeekShort": "CW {week}",
+  "@calendarWeekShort": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
   "calendarWeekWithYear": "CW {week}/{year}",
+  "@calendarWeekWithYear": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
   "tasksTitle": "Tasks",
   "tasksRefreshTooltip": "Refresh tasks",
   "taskSingular": "Task",
   "deleteTaskTitle": "Delete task?",
   "deleteTaskMessage": "Do you really want to delete the task “{title}”?",
+  "@deleteTaskMessage": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "tasksLoading": "Loading tasks ...",
-  "tasksEmpty": "No tasks yet. Create your first task.",
-  "tasksSearchEmpty": "No tasks found. Adjust search or filters.",
+  "tasksEmpty": "No tasks available yet. Create your first task.",
+  "tasksSearchEmpty": "No tasks found. Adjust your search or filters.",
   "noTimerTaskSelected": "No timer task selected",
   "activeTimerTask": "Active timer task: {title}",
+  "@activeTimerTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "taskSelectionLockedDescription": "A timer phase is running or paused. The task is currently locked.",
   "taskSelectionNextWorkPhaseDescription": "This task will be used for the next work phase.",
-  "withoutTask": "No task",
+  "withoutTask": "Without task",
   "searchTasks": "Search tasks",
   "clearSearch": "Clear search",
   "filterAll": "All",
   "filterOpen": "Open",
   "filterCompleted": "Completed",
-  "sortLabel": "Sort",
+  "sortLabel": "Sorting",
   "sortNewest": "Newest first",
   "sortPriority": "Priority",
   "sortPomodoros": "Pomodoros",
@@ -205,10 +321,10 @@
   "priorityLow": "Low",
   "priorityMedium": "Medium",
   "priorityHigh": "High",
-  "taskLoadRemoteFailed": "Tasks could not be loaded from the backend. Local data remains visible.",
-  "taskSavedLocallyNotSynced": "Task was saved locally but could not be synced with your account.",
-  "taskSaveFailedRolledBack": "Task could not be saved. The last change has been rolled back.",
-  "taskDeleteFailedRestored": "Task could not be deleted from your account. The task has been restored.",
+  "taskLoadRemoteFailed": "Tasks could not be loaded from the backend. Local data will still be shown.",
+  "taskSavedLocallyNotSynced": "Task was saved locally but could not be synced with the account.",
+  "taskSaveFailedRolledBack": "Task could not be saved. The last change was rolled back.",
+  "taskDeleteFailedRestored": "Task could not be deleted from the account. The task was restored.",
   "taskCreateTitle": "Create task",
   "taskEditTitle": "Edit task",
   "taskTitleLabel": "Title",
@@ -219,11 +335,18 @@
   "tagsLabel": "Tags/categories",
   "tagsHint": "e.g. university, work, development",
   "timerResetTitle": "Reset timer?",
-  "timerResetMessage": "The current phase will be cancelled and will not be saved as a completed session.",
+  "timerResetMessage": "The current phase will be cancelled and not saved as a completed session.",
   "taskNoneSelected": "No task selected",
   "currentTask": "Current task: {title}",
+  "@currentTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
   "taskForWorkPhase": "Task for this work phase",
-  "taskLockedToPhase": "This phase is fixed to the selected task.",
+  "taskLockedToPhase": "This phase is locked to the selected task.",
   "phaseWork": "Work phase",
   "phaseShortBreak": "Short break",
   "phaseLongBreak": "Long break",
@@ -235,9 +358,33 @@
   "phaseDescriptionShortBreak": "Short recovery",
   "phaseDescriptionLongBreak": "Longer recovery",
   "afterNextPhase": "{phaseDescription} · Next: {nextPhase}",
+  "@afterNextPhase": {
+    "placeholders": {
+      "phaseDescription": {
+        "type": "String"
+      },
+      "nextPhase": {
+        "type": "String"
+      }
+    }
+  },
   "todayPomodorosLoading": "Today: loading ...",
   "todayPomodoros": "Today: {pomodoros}",
+  "@todayPomodoros": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "String"
+      }
+    }
+  },
   "pomodoroCount": "{count, plural, =1{1 Pomodoro} other{{count} Pomodoros}}",
+  "@pomodoroCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "pause": "Pause",
   "continueButton": "Continue",
   "start": "Start",
@@ -245,7 +392,7 @@
   "shortcutSpaceCompact": "Space: Start/Pause",
   "shortcutResetCompact": "R: Reset",
   "shortcutSkipCompact": "S: Skip",
-  "shortcutSpace": "Spacebar: Start/Pause",
+  "shortcutSpace": "Space: Start/Pause",
   "shortcutReset": "R: Reset",
   "shortcutSkip": "S: Skip break",
   "phaseSavingTitle": "Saving phase",
@@ -253,7 +400,24 @@
   "storageProblem": "Storage problem",
   "oneFinishedPhaseSavingBackground": "Completed phase is being saved in the background.",
   "manyFinishedPhasesSavingBackground": "{count} completed phases are being saved in the background.",
+  "@manyFinishedPhasesSavingBackground": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "timerLocalSaveFailed": "The completed phase could not be saved locally.",
   "timerBackendSyncFailed": "The completed phase was saved locally but has not been synced with the backend yet.",
-  "phaseProgress": "{elapsed} of {total}"
+  "phaseProgress": "{elapsed} of {total}",
+  "@phaseProgress": {
+    "placeholders": {
+      "elapsed": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  }
 }

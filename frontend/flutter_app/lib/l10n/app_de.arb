@@ -73,7 +73,7 @@
   "@googlePrepareFailed": {
     "placeholders": {
       "error": {
-        "type": "Object"
+        "type": "String"
       }
     }
   },
@@ -81,7 +81,7 @@
   "@googleLoginFailed": {
     "placeholders": {
       "error": {
-        "type": "Object"
+        "type": "String"
       }
     }
   },
@@ -159,10 +159,19 @@
   "languageSystem": "Systemsprache",
   "languageGerman": "Deutsch",
   "languageEnglish": "Englisch",
+  "languageArabic": "Arabisch",
+  "languageChinese": "Chinesisch",
   "languageFrench": "Französisch",
   "languageSpanish": "Spanisch",
+  "languageHindi": "Hindi",
+  "languagePortuguese": "Portugiesisch",
+  "languageRussian": "Russisch",
+  "languageJapanese": "Japanisch",
   "languageTurkish": "Türkisch",
-  "languageArabic": "Arabisch",
+  "languageItalian": "Italienisch",
+  "languageKorean": "Koreanisch",
+  "languageIndonesian": "Indonesisch",
+  "languagePersian": "Persisch",
   "appearanceTitle": "Darstellung",
   "appearanceDescription": "Wähle Designmodus und Hauptfarbe der Anwendung.",
   "appearanceLabel": "Darstellung",
@@ -254,7 +263,7 @@
   "@calendarWeekShort": {
     "placeholders": {
       "week": {
-        "type": "String"
+        "type": "int"
       }
     }
   },
@@ -262,10 +271,10 @@
   "@calendarWeekWithYear": {
     "placeholders": {
       "week": {
-        "type": "String"
+        "type": "int"
       },
       "year": {
-        "type": "String"
+        "type": "int"
       }
     }
   },

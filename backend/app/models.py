@@ -96,5 +96,6 @@ class Setting(Base):
     vibration_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     theme: Mapped[str] = mapped_column(String(50), default="system")
     color_name: Mapped[str] = mapped_column(String(50), default="red")
+    app_locale: Mapped[str] = mapped_column(String(20), default="system", nullable=False)
 
     user: Mapped[User] = relationship(back_populates="settings")

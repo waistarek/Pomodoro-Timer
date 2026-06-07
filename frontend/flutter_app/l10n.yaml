@@ -5,5 +5,18 @@ output-class: AppLocalizations
 preferred-supported-locales:
   - de
   - en
+  - ar
+  - zh
+  - fr
+  - es
+  - hi
+  - pt
+  - ru
+  - ja
+  - tr
+  - it
+  - ko
+  - id
+  - fa
 synthetic-package: false
 nullable-getter: false

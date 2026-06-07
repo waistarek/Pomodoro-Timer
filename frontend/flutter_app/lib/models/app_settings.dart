@@ -11,6 +11,7 @@ class AppSettings {
     this.vibrationEnabled = true,
     this.theme = 'system',
     this.colorName = 'red',
+    this.appLocale = 'system',
   });
 
   final int workMinutes;
@@ -22,6 +23,15 @@ class AppSettings {
   final bool vibrationEnabled;
   final String theme;
   final String colorName;
+  final String appLocale;
+
+  Locale? get selectedLocale {
+    if (appLocale == 'system') {
+      return null;
+    }
+
+    return Locale(appLocale);
+  }
 
   ThemeMode get themeMode {
     switch (theme) {
@@ -62,7 +72,8 @@ class AppSettings {
         other.soundEnabled == soundEnabled &&
         other.vibrationEnabled == vibrationEnabled &&
         other.theme == theme &&
-        other.colorName == colorName;
+        other.colorName == colorName &&
+        other.appLocale == appLocale;
   }
 
   @override
@@ -77,6 +88,7 @@ class AppSettings {
       vibrationEnabled,
       theme,
       colorName,
+      appLocale,
     );
   }
 
@@ -90,6 +102,7 @@ class AppSettings {
     bool? vibrationEnabled,
     String? theme,
     String? colorName,
+    String? appLocale,
   }) {
     return AppSettings(
       workMinutes: workMinutes ?? this.workMinutes,
@@ -101,6 +114,7 @@ class AppSettings {
       vibrationEnabled: vibrationEnabled ?? this.vibrationEnabled,
       theme: theme ?? this.theme,
       colorName: colorName ?? this.colorName,
+      appLocale: appLocale ?? this.appLocale,
     );
   }
 
@@ -114,6 +128,7 @@ class AppSettings {
         'vibration_enabled': vibrationEnabled,
         'theme': theme,
         'color_name': colorName,
+        'app_locale': appLocale,
       };
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
@@ -127,6 +142,7 @@ class AppSettings {
       vibrationEnabled: json['vibration_enabled'] ?? true,
       theme: json['theme'] ?? 'system',
       colorName: json['color_name'] ?? 'red',
+      appLocale: json['app_locale'] ?? 'system',
     );
   }
 }

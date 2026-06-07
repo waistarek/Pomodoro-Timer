@@ -99,6 +99,12 @@ class SettingsBase(BaseModel):
     vibration_enabled: bool = True
     theme: str = "system"
     color_name: str = "red"
+    app_locale: str = Field(
+        default="system",
+        min_length=2,
+        max_length=20,
+        pattern=r"^(system|[a-z]{2,3}([_-][A-Za-z]{2,8}){0,2})$",
+    )
 
 
 class SettingsRead(SettingsBase):

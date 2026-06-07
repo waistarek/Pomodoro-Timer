@@ -35,7 +35,7 @@ class SettingsProvider extends ChangeNotifier {
     await _localStorage.setJsonObject('settings', settings.toJson());
     notifyListeners();
 
-    final shouldSync = sync || _localStorage.token != null;
+    final shouldSync = _localStorage.token != null;
 
     if (!shouldSync) {
       return;
