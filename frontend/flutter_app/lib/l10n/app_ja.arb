@@ -1,0 +1,423 @@
+{
+  "@@locale": "ja",
+  "appTitle": "Pomodoroアプリ",
+  "navTimer": "タイマー",
+  "navTasks": "タスク",
+  "navStats": "統計",
+  "navSettings": "設定",
+  "navAccount": "アカウント",
+  "close": "閉じる",
+  "retry": "再試行",
+  "cancel": "キャンセル",
+  "delete": "削除",
+  "edit": "編集",
+  "save": "保存",
+  "reset": "リセット",
+  "refresh": "更新",
+  "messageClose": "メッセージを閉じる",
+  "or": "または",
+  "yes": "はい",
+  "no": "いいえ",
+  "emailVerifiedSuccess": "メールアドレスが正常に確認されました。これでログインできます。",
+  "emailVerifiedExpired": "確認リンクの有効期限が切れています。",
+  "emailVerifiedInvalid": "確認リンクが無効です。",
+  "sessionSyncOneWithAccount": "1件のセッションをアカウントと同期しています。",
+  "sessionSyncManyWithAccount": "{count}件のセッションをアカウントと同期しています。",
+  "@sessionSyncManyWithAccount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOneAfterLogin": "ログイン後、1件のローカルセッションが同期されます。",
+  "sessionSyncManyAfterLogin": "ログイン後、{count}件のローカルセッションが同期されます。",
+  "@sessionSyncManyAfterLogin": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncOnePending": "1件のセッションが同期を待っています。",
+  "sessionSyncManyPending": "{count}件のセッションが同期を待っています。",
+  "@sessionSyncManyPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionSyncDone": "同期が完了しました。",
+  "sessionSyncFailed": "現在セッションを同期できませんでした。後でもう一度試行します。",
+  "accountTitle": "ユーザーアカウント",
+  "loginTitle": "ログイン",
+  "createAccountTitle": "新しいアカウントを作成",
+  "emailPasswordLoginTitle": "メールアドレスとパスワードでログイン",
+  "emailPasswordCreateTitle": "メールアドレス/パスワードのアカウントを作成",
+  "emailLabel": "メールアドレス",
+  "passwordLabel": "パスワード",
+  "loginButton": "ログイン",
+  "createAccountButton": "アカウントを作成",
+  "rememberSessionTitle": "このデバイスでログイン状態を保持する",
+  "rememberSessionSubtitle": "無効にすると、ログインは現在のアプリセッション中のみ有効です。",
+  "forgotPasswordButton": "パスワードをお忘れですか？",
+  "alreadyHaveAccount": "すでにアカウントを持っています",
+  "googleSection": "Googleセクション",
+  "googleLoginButton": "Googleでログイン",
+  "googleCreateButton": "Googleでアカウントを作成",
+  "googleNotConfigured": "Googleログインが設定されていません。",
+  "googlePreparing": "Googleログインを準備しています ...",
+  "googleNoIdToken": "Googleから有効なIDトークンが返されませんでした。",
+  "googlePrepareFailed": "Googleログインを準備できませんでした: {error}",
+  "@googlePrepareFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginFailed": "Googleログインに失敗しました: {error}",
+  "@googleLoginFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "googleLoginSuccess": "Googleで正常にログインしました。",
+  "googleAccountCreated": "Googleアカウントが作成され、ログインしました。",
+  "googleWebOnly": "GoogleログインはWebアプリでのみ利用できます",
+  "githubSection": "GitHubセクション",
+  "githubLoginButton": "GitHubでログイン",
+  "githubCreateButton": "GitHubでアカウントを作成",
+  "githubNotConfigured": "GitHubログインが設定されていません。",
+  "githubCancelled": "GitHubログインがキャンセルされたか失敗しました。",
+  "githubSecurityCancelled": "セキュリティ上の理由によりGitHubログインがキャンセルされました。",
+  "githubNoValidCode": "GitHubから有効なコードが返されませんでした。",
+  "githubLoginSuccess": "GitHubで正常にログインしました。",
+  "githubAccountCreated": "GitHubアカウントが作成され、ログインしました。",
+  "passwordResetTitle": "パスワードをリセット",
+  "passwordResetDescription": "メールアドレスを入力してください。アカウントが存在する場合、パスワードリセット用リンクが届きます。",
+  "sendResetLink": "リセットリンクを送信",
+  "backToLogin": "ログインに戻る",
+  "setNewPasswordTitle": "新しいパスワードを設定",
+  "setNewPasswordDescription": "アカウント用の新しいパスワードを設定してください。",
+  "newPasswordLabel": "新しいパスワード",
+  "repeatNewPasswordLabel": "新しいパスワードを再入力",
+  "passwordsDoNotMatch": "パスワードが一致しません",
+  "savePassword": "パスワードを保存",
+  "registrationSuccess": "登録が完了しました。メールアドレスを確認してからログインしてください。",
+  "passwordResetRequestSuccess": "このメールアドレスのアカウントが存在する場合、リセットリンクが送信されました。",
+  "passwordChangedSuccess": "パスワードが変更されました。これでログインできます。",
+  "passwordResetMailSent": "アカウントが存在する場合、リセットリンクが送信されました。",
+  "loginSuccess": "正常にログインしました。",
+  "invalidEmail": "有効なメールアドレスを入力してください",
+  "passwordMinLength": "8文字以上",
+  "loggedInTitle": "ユーザーアカウント",
+  "loggedInDescription": "現在ログイン中です。",
+  "emailAddress": "メールアドレス",
+  "emailStatus": "メールの状態",
+  "emailVerified": "確認済み",
+  "emailNotVerified": "未確認",
+  "accountCreated": "アカウント作成日",
+  "synchronization": "同期",
+  "accountInfoWarning": "有効なログイントークンがローカルに保存されている場合、アプリはセッションを自動的に復元できます。共有デバイスでは必ずログアウトしてください。",
+  "changePassword": "パスワードを変更",
+  "logout": "ログアウト",
+  "syncRunning": "同期中",
+  "syncOneWaiting": "1件のセッションが待機中",
+  "syncManyWaiting": "{count}件のセッションが待機中",
+  "@syncManyWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncError": "同期エラー",
+  "syncAllSynced": "すべて同期済み",
+  "sessionExpired": "セッションの有効期限が切れました。もう一度ログインしてください。",
+  "settingsSaved": "設定を保存しました。",
+  "timerTimesTitle": "タイマー時間",
+  "timerTimesDescription": "作業フェーズと休憩の長さを設定します。",
+  "workTime": "作業時間",
+  "shortBreak": "短い休憩",
+  "longBreak": "長い休憩",
+  "longBreakAfter": "長い休憩まで",
+  "minutes": "分",
+  "pomodorosUnit": "ポモドーロ",
+  "behaviorTitle": "動作",
+  "behaviorDescription": "利用中のタイマーの動作を調整します。",
+  "autoStartNextPhase": "次のフェーズを自動開始",
+  "enableSound": "サウンドを有効にする",
+  "enableVibration": "バイブレーションを有効にする",
+  "vibrationDescription": "実際のモバイルバイブレーションは後でプラグイン経由で接続されます。",
+  "languageTitle": "言語",
+  "languageDescription": "アプリの言語を選択します。「システム言語」では、ブラウザまたはデバイスの言語を使用します。",
+  "languageLabel": "アプリの言語",
+  "languageSystem": "システム言語",
+  "languageGerman": "ドイツ語",
+  "languageEnglish": "英語",
+  "languageArabic": "アラビア語",
+  "languageChinese": "中国語",
+  "languageFrench": "フランス語",
+  "languageSpanish": "スペイン語",
+  "languageHindi": "ヒンディー語",
+  "languagePortuguese": "ポルトガル語",
+  "languageRussian": "ロシア語",
+  "languageJapanese": "日本語",
+  "languageTurkish": "トルコ語",
+  "languageItalian": "イタリア語",
+  "languageKorean": "韓国語",
+  "languageIndonesian": "インドネシア語",
+  "languagePersian": "ペルシア語",
+  "appearanceTitle": "表示",
+  "appearanceDescription": "アプリの表示モードとメインカラーを選択します。",
+  "appearanceLabel": "表示",
+  "systemTheme": "システム",
+  "lightMode": "ライトモード",
+  "darkMode": "ダークモード",
+  "themeColor": "テーマカラー",
+  "red": "赤",
+  "blue": "青",
+  "green": "緑",
+  "purple": "紫",
+  "saveSettings": "設定を保存",
+  "noChanges": "変更はありません",
+  "decrease": "減らす",
+  "increase": "増やす",
+  "minutesShort": "分",
+  "settingsSavedButNotSynced": "設定はローカルに保存されましたが、まだ同期されていません。",
+  "settingsLoadRemoteFailed": "バックエンドから設定を読み込めませんでした。ローカル設定を使用します。",
+  "statsTitle": "統計",
+  "statsRefresh": "更新",
+  "statsWeek": "週",
+  "statsMonth": "月",
+  "statsYear": "年",
+  "statsTasksTime": "タスク時間",
+  "chartFocusPerDay": "日ごとの集中時間",
+  "chartFocusPerCalendarWeek": "暦週ごとの集中時間",
+  "chartFocusPerMonth": "月ごとの集中時間",
+  "chartFocusPerTask": "タスクごとの集中時間",
+  "xAxisWeek": "X軸: 週の日",
+  "xAxisMonth": "X軸: 月内の暦週",
+  "xAxisYear": "X軸: 年内の月",
+  "xAxisTasks": "X軸: タスク",
+  "periodNoData": "期間: データがありません",
+  "periodRange": "期間: {start} – {end}",
+  "@periodRange": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "previousPeriod": "前の期間",
+  "nextPeriod": "次の期間",
+  "statsLoading": "統計を読み込み中 ...",
+  "taskStatsLoading": "タスク統計を読み込み中 ...",
+  "taskStatsEmpty": "タスクごとの作業時間はまだありません。データを見るには、タスク付きでポモドーロを開始してください。",
+  "pomodoros": "ポモドーロ",
+  "focusTime": "集中時間",
+  "streak": "連続記録",
+  "bestPeriod": "最良期間",
+  "daysCount": "{count, plural, =1{1日} other{{count}日}}",
+  "@daysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "yAxisFocusHoursWithXAxis": "Y軸: 集中時間（時間） · {xAxisText}",
+  "@yAxisFocusHoursWithXAxis": {
+    "placeholders": {
+      "xAxisText": {
+        "type": "String"
+      }
+    }
+  },
+  "focusTimeMinutes": "集中時間（分）",
+  "sortedByHighestFocusTime": "集中時間が長い順に並べ替えられています。",
+  "taskPomodoroMinutes": "{pomodoros} ポモドーロ · {minutes} 分",
+  "@taskPomodoroMinutes": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "statsNoData": "統計データはまだありません。",
+  "statsLoadFailed": "統計を読み込めませんでした。ログインしてインターネット接続を確認してください。",
+  "taskStatsLoadFailed": "タスク統計を読み込めませんでした。",
+  "todayPomodorosLoadFailed": "今日のポモドーロ数を読み込めませんでした。",
+  "noTaskTitle": "タスクなし",
+  "calendarWeekShort": "第{week}週",
+  "@calendarWeekShort": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarWeekWithYear": "第{week}週/{year}",
+  "@calendarWeekWithYear": {
+    "placeholders": {
+      "week": {
+        "type": "int"
+      },
+      "year": {
+        "type": "int"
+      }
+    }
+  },
+  "tasksTitle": "タスク",
+  "tasksRefreshTooltip": "タスクを更新",
+  "taskSingular": "タスク",
+  "deleteTaskTitle": "タスクを削除しますか？",
+  "deleteTaskMessage": "タスク「{title}」を本当に削除しますか？",
+  "@deleteTaskMessage": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "tasksLoading": "タスクを読み込み中 ...",
+  "tasksEmpty": "タスクはまだありません。最初のタスクを作成してください。",
+  "tasksSearchEmpty": "タスクが見つかりません。検索またはフィルターを調整してください。",
+  "noTimerTaskSelected": "タイマー用タスクが選択されていません",
+  "activeTimerTask": "アクティブなタイマータスク: {title}",
+  "@activeTimerTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskSelectionLockedDescription": "タイマーフェーズが実行中または一時停止中です。そのため現在タスクはロックされています。",
+  "taskSelectionNextWorkPhaseDescription": "このタスクは次の作業フェーズで使用されます。",
+  "withoutTask": "タスクなし",
+  "searchTasks": "タスクを検索",
+  "clearSearch": "検索をクリア",
+  "filterAll": "すべて",
+  "filterOpen": "未完了",
+  "filterCompleted": "完了",
+  "sortLabel": "並べ替え",
+  "sortNewest": "新しい順",
+  "sortPriority": "優先度",
+  "sortPomodoros": "ポモドーロ",
+  "active": "アクティブ",
+  "completed": "完了",
+  "locked": "ロック中",
+  "forTimer": "タイマー用",
+  "priorityLow": "低",
+  "priorityMedium": "中",
+  "priorityHigh": "高",
+  "taskLoadRemoteFailed": "バックエンドからタスクを読み込めませんでした。ローカルデータは引き続き表示されます。",
+  "taskSavedLocallyNotSynced": "タスクはローカルに保存されましたが、アカウントと同期できませんでした。",
+  "taskSaveFailedRolledBack": "タスクを保存できませんでした。最後の変更は取り消されました。",
+  "taskDeleteFailedRestored": "アカウントからタスクを削除できませんでした。タスクは復元されました。",
+  "taskCreateTitle": "タスクを作成",
+  "taskEditTitle": "タスクを編集",
+  "taskTitleLabel": "タイトル",
+  "taskTitleRequired": "タイトルを入力してください",
+  "taskTitleTooShort": "タイトルが短すぎます。",
+  "taskDescriptionLabel": "説明",
+  "priorityLabel": "優先度",
+  "tagsLabel": "タグ/カテゴリ",
+  "tagsHint": "例: 大学、仕事、開発",
+  "timerResetTitle": "タイマーをリセットしますか？",
+  "timerResetMessage": "現在のフェーズはキャンセルされ、完了セッションとして保存されません。",
+  "taskNoneSelected": "タスクが選択されていません",
+  "currentTask": "現在のタスク: {title}",
+  "@currentTask": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "taskForWorkPhase": "この作業フェーズのタスク",
+  "taskLockedToPhase": "このフェーズは選択したタスクに固定されています。",
+  "phaseWork": "作業フェーズ",
+  "phaseShortBreak": "短い休憩",
+  "phaseLongBreak": "長い休憩",
+  "timerStatusSaving": "保存中 ...",
+  "timerStatusRunning": "実行中",
+  "timerStatusPaused": "一時停止中",
+  "timerStatusReady": "準備完了",
+  "phaseDescriptionWork": "集中時間",
+  "phaseDescriptionShortBreak": "短い回復",
+  "phaseDescriptionLongBreak": "長めの回復",
+  "afterNextPhase": "{phaseDescription} · 次: {nextPhase}",
+  "@afterNextPhase": {
+    "placeholders": {
+      "phaseDescription": {
+        "type": "String"
+      },
+      "nextPhase": {
+        "type": "String"
+      }
+    }
+  },
+  "todayPomodorosLoading": "今日: 読み込み中 ...",
+  "todayPomodoros": "今日: {pomodoros}",
+  "@todayPomodoros": {
+    "placeholders": {
+      "pomodoros": {
+        "type": "String"
+      }
+    }
+  },
+  "pomodoroCount": "{count, plural, =1{1ポモドーロ} other{{count}ポモドーロ}}",
+  "@pomodoroCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pause": "一時停止",
+  "continueButton": "続行",
+  "start": "開始",
+  "skipPause": "休憩をスキップ",
+  "shortcutSpaceCompact": "Space: 開始/一時停止",
+  "shortcutResetCompact": "R: リセット",
+  "shortcutSkipCompact": "S: スキップ",
+  "shortcutSpace": "スペースキー: 開始/一時停止",
+  "shortcutReset": "R: リセット",
+  "shortcutSkip": "S: 休憩をスキップ",
+  "phaseSavingTitle": "フェーズを保存中",
+  "phaseSavingDescription": "完了したフェーズを保存し、タイマーを準備しています。",
+  "storageProblem": "保存の問題",
+  "oneFinishedPhaseSavingBackground": "完了したフェーズをバックグラウンドで保存しています。",
+  "manyFinishedPhasesSavingBackground": "{count}件の完了フェーズをバックグラウンドで保存しています。",
+  "@manyFinishedPhasesSavingBackground": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "timerLocalSaveFailed": "完了したフェーズをローカルに保存できませんでした。",
+  "timerBackendSyncFailed": "完了したフェーズはローカルに保存されましたが、まだバックエンドと同期されていません。",
+  "phaseProgress": "{elapsed} / {total}",
+  "@phaseProgress": {
+    "placeholders": {
+      "elapsed": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  }
+}
