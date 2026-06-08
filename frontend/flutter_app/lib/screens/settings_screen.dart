@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../providers/settings_provider.dart';
-
+import 'dart:async';
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
