@@ -97,7 +97,9 @@ class ApiClient {
       return jsonDecode(response.body);
     }
 
-    if (auth && _isAuthError(response.statusCode)) {
+    final hadToken = auth && localStorage.token != null;
+
+    if (hadToken && _isAuthError(response.statusCode)) {
       await _handleUnauthorized();
     }
 

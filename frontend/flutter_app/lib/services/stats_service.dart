@@ -12,6 +12,10 @@ class StatsService {
   final LocalStorageService localStorage;
 
   Future<StatsResponse> week(DateTime date) async {
+    if (localStorage.token == null) {
+      return StatsResponse.empty();
+    }
+
     final queryDate = _formatDate(date);
 
     return StatsResponse.fromJson(
@@ -20,12 +24,20 @@ class StatsService {
   }
 
   Future<StatsResponse> month(int year, int month) async {
+    if (localStorage.token == null) {
+      return StatsResponse.empty();
+    }
+
     return StatsResponse.fromJson(
       await apiClient.get('/stats/month?year=$year&month=$month'),
     );
   }
 
   Future<StatsResponse> year(int year) async {
+    if (localStorage.token == null) {
+      return StatsResponse.empty();
+    }
+
     return StatsResponse.fromJson(
       await apiClient.get('/stats/year?year=$year'),
     );
