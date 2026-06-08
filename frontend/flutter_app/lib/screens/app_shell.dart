@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../l10n/app_localizations.dart';
@@ -9,73 +10,27 @@ import '../providers/session_sync_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/stats_provider.dart';
 import '../providers/task_provider.dart';
-import '../services/browser_url_service.dart';
-import 'home_screen.dart';
-import 'login_screen.dart';
-import 'settings_screen.dart';
-import 'stats_screen.dart';
-import 'tasks_screen.dart';
+import '../router/app_routes.dart';
 
 class AppShell extends StatefulWidget {
-  const AppShell({super.key, this.initialIndex = 0});
+  const AppShell({
+    super.key,
+    required this.child,
+    required this.currentPath,
+  });
 
-  final int initialIndex;
+  final Widget child;
+  final String currentPath;
 
   @override
   State<AppShell> createState() => _AppShellState();
 }
 
 class _AppShellState extends State<AppShell> {
-  late int _index;
   String? _lastLoadedScope;
   int _lastHandledSessionSyncVersion = 0;
 
-  static const List<String> _screenKeys = [
-    'timer',
-    'tasks',
-    'stats',
-    'settings',
-    'account',
-  ];
-
-  final _screens = const [
-    HomeScreen(),
-    TasksScreen(),
-    StatsScreen(),
-    SettingsScreen(),
-    LoginScreen(),
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-
-    final uri = Uri.base;
-    final emailVerificationStatus = uri.queryParameters['email_verified'];
-
-    _index = _indexFromUri();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (emailVerificationStatus == null || !mounted) {
-        return;
-      }
-
-      final l10n = AppLocalizations.of(context);
-      final message = switch (emailVerificationStatus) {
-        'success' => l10n.emailVerifiedSuccess,
-        'expired' => l10n.emailVerifiedExpired,
-        'invalid' => l10n.emailVerifiedInvalid,
-        _ => null,
-      };
-
-      if (message != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
-      }
-      clearLoginActionQueryParameters();
-    });
-  }
+  int get _selectedIndex => AppRoutes.indexFromPath(widget.currentPath);
 
   void _loadDataForCurrentScope(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
@@ -111,32 +66,14 @@ class _AppShellState extends State<AppShell> {
     });
   }
 
-  int _indexFromUri() {
-    final uri = Uri.base;
-    final screen = uri.queryParameters['screen'];
-    final emailVerificationStatus = uri.queryParameters['email_verified'];
-    final resetToken =
-        uri.queryParameters['reset_token'] ?? uri.queryParameters['set_token'];
+  void _selectIndex(int value) {
+    final path = AppRoutes.pathFromIndex(value);
 
-    if (emailVerificationStatus != null || resetToken != null) {
-      return 4;
+    if (path == widget.currentPath) {
+      return;
     }
 
-    return switch (screen) {
-      'tasks' => 1,
-      'stats' => 2,
-      'settings' => 3,
-      'account' => 4,
-      _ => widget.initialIndex.clamp(0, 4).toInt(),
-    };
-  }
-
-  void _selectIndex(int value) {
-    setState(() {
-      _index = value;
-    });
-
-    setAppScreenInUrl(_screenKeys[value]);
+    context.go(path);
   }
 
   void _refreshDataAfterSessionSync(BuildContext context) {
@@ -167,6 +104,7 @@ class _AppShellState extends State<AppShell> {
 
     final l10n = AppLocalizations.of(context);
     final isWide = MediaQuery.sizeOf(context).width >= 900;
+    final selectedIndex = _selectedIndex;
 
     final destinations = [
       NavigationDestination(
@@ -201,7 +139,7 @@ class _AppShellState extends State<AppShell> {
         body: Row(
           children: [
             NavigationRail(
-              selectedIndex: _index,
+              selectedIndex: selectedIndex,
               onDestinationSelected: _selectIndex,
               labelType: NavigationRailLabelType.all,
               minWidth: 112,
@@ -235,7 +173,7 @@ class _AppShellState extends State<AppShell> {
             ),
             const VerticalDivider(width: 1),
             Expanded(
-              child: _ShellContent(child: _screens[_index]),
+              child: _ShellContent(child: widget.child),
             ),
           ],
         ),
@@ -243,9 +181,9 @@ class _AppShellState extends State<AppShell> {
     }
 
     return Scaffold(
-      body: _ShellContent(child: _screens[_index]),
+      body: _ShellContent(child: widget.child),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: _index,
+        selectedIndex: selectedIndex,
         onDestinationSelected: _selectIndex,
         destinations: destinations,
       ),

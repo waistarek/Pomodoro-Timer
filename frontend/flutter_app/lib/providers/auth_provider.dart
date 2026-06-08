@@ -14,6 +14,7 @@ class AuthProvider extends ChangeNotifier {
   String? error;
 
   bool get isLoggedIn => user != null;
+  bool get hasLocalToken => _authService.hasLocalToken;
 
   Future<void> loadLocalSession() async {
     if (!_authService.hasLocalToken) {

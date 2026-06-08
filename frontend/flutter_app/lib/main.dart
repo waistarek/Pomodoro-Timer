@@ -9,7 +9,6 @@ import 'providers/settings_provider.dart';
 import 'providers/stats_provider.dart';
 import 'providers/task_provider.dart';
 import 'providers/timer_provider.dart';
-import 'screens/app_shell.dart';
 import 'services/api_client.dart';
 import 'services/app_session_controller.dart';
 import 'services/auth_service.dart';
@@ -20,6 +19,7 @@ import 'services/settings_service.dart';
 import 'services/sound_service.dart';
 import 'services/stats_service.dart';
 import 'services/task_service.dart';
+import 'router/app_router.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -110,8 +110,15 @@ Future<void> main() async {
   );
 }
 
-class PomodoroRoot extends StatelessWidget {
+class PomodoroRoot extends StatefulWidget {
   const PomodoroRoot({super.key});
+
+  @override
+  State<PomodoroRoot> createState() => _PomodoroRootState();
+}
+
+class _PomodoroRootState extends State<PomodoroRoot> {
+  late final _router = createAppRouter(context.read<AuthProvider>());
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +126,7 @@ class PomodoroRoot extends StatelessWidget {
       builder: (context, settingsProvider, _) {
         final settings = settingsProvider.settings;
 
-        return MaterialApp(
+        return MaterialApp.router(
           debugShowCheckedModeBanner: false,
           onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
           localizationsDelegates: const [
@@ -155,7 +162,7 @@ class PomodoroRoot extends StatelessWidget {
             ),
             useMaterial3: true,
           ),
-          home: const AppShell(),
+          routerConfig: _router,
         );
       },
     );

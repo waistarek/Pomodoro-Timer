@@ -17,7 +17,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   AppSettings? _draftSettings;
   AppSettings? _lastProviderSettings;
   bool _saving = false;
-  
 
   bool _settingsEqual(AppSettings a, AppSettings b) {
     return a.workMinutes == b.workMinutes &&
@@ -31,6 +30,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         a.colorName == b.colorName &&
         a.appLocale == b.appLocale;
   }
+
   void _syncDraftWithProvider(AppSettings providerSettings) {
     final draft = _draftSettings;
     final lastProvider = _lastProviderSettings;
@@ -55,8 +55,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _draftSettings = update(current);
     });
   }
-
-  
 
   Future<void> _saveSettings(SettingsProvider provider) async {
     final draft = _draftSettings;
@@ -222,7 +220,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title: l10n.languageTitle,
                     description: l10n.languageDescription,
                     children: [
-                     _LanguageDropdown(
+                      _LanguageDropdown(
                         value: draft.appLocale,
                         onChanged: (value) {
                           _updateDraft(

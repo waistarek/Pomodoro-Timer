@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
-
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
@@ -16,11 +16,33 @@ import '../providers/settings_provider.dart';
 import '../providers/task_provider.dart';
 import '../services/app_session_controller.dart';
 import '../services/browser_redirect_service.dart';
-import '../services/browser_url_service.dart';
+
 import '../widgets/google_sign_in_button.dart';
+import '../router/app_routes.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({
+    super.key,
+    this.resetToken,
+    this.initialEmail,
+    this.emailVerificationStatus,
+    this.oauthProvider,
+    this.githubCode,
+    this.githubState,
+    this.githubError,
+    this.githubErrorDescription,
+    this.redirectPath,
+  });
+
+  final String? resetToken;
+  final String? initialEmail;
+  final String? emailVerificationStatus;
+  final String? oauthProvider;
+  final String? githubCode;
+  final String? githubState;
+  final String? githubError;
+  final String? githubErrorDescription;
+  final String? redirectPath;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -39,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
   static const _githubOauthModeKey = 'github_oauth_mode';
   static const _githubOauthRememberKey = 'github_oauth_remember';
   static const _githubOauthRedirectUriKey = 'github_oauth_redirect_uri';
-
+  static const _githubOauthRedirectPathKey = 'github_oauth_redirect_path';
   static Future<void>? _googleInitFuture;
   static bool _googleInitialized = false;
 
@@ -56,21 +78,54 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
 
-    final uri = Uri.base;
-    _resetToken =
-        uri.queryParameters['reset_token'] ?? uri.queryParameters['set_token'];
+    _applyRouteParameters();
 
-    final email = uri.queryParameters['email'];
-    if (email != null && email.isNotEmpty) {
-      _emailController.text = email;
-    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) {
         return;
       }
 
+      _showEmailVerificationMessage();
       unawaited(_handleGithubOAuthCallback());
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant LoginScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.resetToken != widget.resetToken ||
+        oldWidget.initialEmail != widget.initialEmail) {
+      setState(_applyRouteParameters);
+    }
+
+    if (oldWidget.emailVerificationStatus != widget.emailVerificationStatus) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _showEmailVerificationMessage();
+        }
+      });
+    }
+
+    if (oldWidget.oauthProvider != widget.oauthProvider ||
+        oldWidget.githubCode != widget.githubCode ||
+        oldWidget.githubState != widget.githubState ||
+        oldWidget.githubError != widget.githubError) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          unawaited(_handleGithubOAuthCallback());
+        }
+      });
+    }
+  }
+
+  void _applyRouteParameters() {
+    _resetToken = widget.resetToken;
+
+    final email = widget.initialEmail;
+    if (email != null && email.isNotEmpty) {
+      _emailController.text = email;
+    }
   }
 
   @override
@@ -93,12 +148,13 @@ class _LoginScreenState extends State<LoginScreen> {
   String _githubRedirectUri() {
     final uri = Uri.base;
 
-    return uri.replace(
-      queryParameters: {
-        'screen': 'account',
-        'oauth_provider': 'github',
-      },
-    ).toString();
+    return uri
+        .replace(
+          path: AppRoutes.githubCallback,
+          queryParameters: const {},
+          fragment: '',
+        )
+        .toString();
   }
 
   Future<void> _startGithubOAuth() async {
@@ -119,6 +175,13 @@ class _LoginScreenState extends State<LoginScreen> {
     await prefs.setString(_githubOauthModeKey, mode);
     await prefs.setBool(_githubOauthRememberKey, _rememberSession);
     await prefs.setString(_githubOauthRedirectUriKey, redirectUri);
+    final safeRedirectPath =
+        AppRoutes.safeInternalRedirect(widget.redirectPath);
+    if (safeRedirectPath == null) {
+      await prefs.remove(_githubOauthRedirectPathKey);
+    } else {
+      await prefs.setString(_githubOauthRedirectPathKey, safeRedirectPath);
+    }
 
     final authorizationUri = Uri.https(
       'github.com',
@@ -136,13 +199,11 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleGithubOAuthCallback() async {
-    final uri = Uri.base;
-
-    if (uri.queryParameters['oauth_provider'] != 'github') {
+    if (widget.oauthProvider != 'github') {
       return;
     }
 
-    final oauthError = uri.queryParameters['error'];
+    final oauthError = widget.githubError;
 
     if (oauthError != null) {
       if (!mounted) {
@@ -151,12 +212,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
       final l10n = AppLocalizations.of(context);
       context.read<AuthProvider>().setError(l10n.githubCancelled);
-      clearLoginActionQueryParameters();
+      _goToAccountWithoutActionParameters();
       return;
     }
 
-    final code = uri.queryParameters['code'];
-    final receivedState = uri.queryParameters['state'];
+    final code = widget.githubCode;
+    final receivedState = widget.githubState;
 
     if (code == null || receivedState == null) {
       return;
@@ -169,11 +230,13 @@ class _LoginScreenState extends State<LoginScreen> {
     final rememberSession = prefs.getBool(_githubOauthRememberKey) ?? true;
     final redirectUri =
         prefs.getString(_githubOauthRedirectUriKey) ?? _githubRedirectUri();
+    final redirectPath = prefs.getString(_githubOauthRedirectPathKey);
 
     await prefs.remove(_githubOauthStateKey);
     await prefs.remove(_githubOauthModeKey);
     await prefs.remove(_githubOauthRememberKey);
     await prefs.remove(_githubOauthRedirectUriKey);
+    await prefs.remove(_githubOauthRedirectPathKey);
 
     if (!mounted) {
       return;
@@ -183,7 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (expectedState == null || expectedState != receivedState) {
       context.read<AuthProvider>().setError(l10n.githubSecurityCancelled);
-      clearLoginActionQueryParameters();
+      _goToAccountWithoutActionParameters();
       return;
     }
 
@@ -200,15 +263,17 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    clearLoginActionQueryParameters();
-
     if (ok) {
-      await _loadDataAfterSuccessfulLogin(
+      await _finishSuccessfulLogin(
         mode == 'register'
             ? l10n.githubAccountCreated
             : l10n.githubLoginSuccess,
+        redirectPath: redirectPath,
       );
+      return;
     }
+
+    _goToAccountWithoutActionParameters();
   }
 
   Future<void> _ensureGoogleSignInInitialized() async {
@@ -341,7 +406,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final l10n = AppLocalizations.of(context);
 
     if (ok) {
-      await _loadDataAfterSuccessfulLogin(
+      await _finishSuccessfulLogin(
         googleMode == 'register'
             ? l10n.googleAccountCreated
             : l10n.googleLoginSuccess,
@@ -383,6 +448,55 @@ class _LoginScreenState extends State<LoginScreen> {
     messenger.showSnackBar(
       SnackBar(content: Text(message)),
     );
+  }
+
+  Future<void> _finishSuccessfulLogin(
+    String message, {
+    String? redirectPath,
+  }) async {
+    await _loadDataAfterSuccessfulLogin(message);
+
+    if (!mounted) {
+      return;
+    }
+
+    context.go(
+      AppRoutes.safeInternalRedirect(redirectPath) ??
+          AppRoutes.safeInternalRedirect(widget.redirectPath) ??
+          AppRoutes.timer,
+    );
+  }
+
+  void _showEmailVerificationMessage() {
+    final emailVerificationStatus = widget.emailVerificationStatus;
+
+    if (emailVerificationStatus == null) {
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context);
+    final message = switch (emailVerificationStatus) {
+      'success' => l10n.emailVerifiedSuccess,
+      'expired' => l10n.emailVerifiedExpired,
+      'invalid' => l10n.emailVerifiedInvalid,
+      _ => null,
+    };
+
+    if (message != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    }
+
+    _goToAccountWithoutActionParameters();
+  }
+
+  void _goToAccountWithoutActionParameters() {
+    if (!mounted) {
+      return;
+    }
+
+    context.go(AppRoutes.account);
   }
 
   @override
@@ -682,7 +796,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ? null
               : () {
                   provider.clearError();
-                  clearLoginActionQueryParameters();
+                  _goToAccountWithoutActionParameters();
 
                   setState(() {
                     _forgotPasswordMode = false;
@@ -762,7 +876,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ? null
               : () {
                   provider.clearError();
-                  clearLoginActionQueryParameters();
+                  _goToAccountWithoutActionParameters();
 
                   setState(() {
                     _resetToken = null;
@@ -812,7 +926,7 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
-      await _loadDataAfterSuccessfulLogin(l10n.loginSuccess);
+      await _finishSuccessfulLogin(l10n.loginSuccess);
     }
   }
 
@@ -869,7 +983,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     if (ok) {
-      clearLoginActionQueryParameters();
+      _goToAccountWithoutActionParameters();
       setState(() {
         _resetToken = null;
         _forgotPasswordMode = false;
