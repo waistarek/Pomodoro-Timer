@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/material.dart';
+
 import '../l10n/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../providers/settings_provider.dart';
-import 'dart:async';
+
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -15,7 +15,9 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   AppSettings? _draftSettings;
+  AppSettings? _lastProviderSettings;
   bool _saving = false;
+  
 
   bool _settingsEqual(AppSettings a, AppSettings b) {
     return a.workMinutes == b.workMinutes &&
@@ -28,6 +30,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
         a.theme == b.theme &&
         a.colorName == b.colorName &&
         a.appLocale == b.appLocale;
+  }
+  void _syncDraftWithProvider(AppSettings providerSettings) {
+    final draft = _draftSettings;
+    final lastProvider = _lastProviderSettings;
+
+    if (draft == null ||
+        lastProvider == null ||
+        _settingsEqual(draft, lastProvider)) {
+      _draftSettings = providerSettings;
+    }
+
+    _lastProviderSettings = providerSettings;
   }
 
   void _updateDraft(AppSettings Function(AppSettings current) update) {
@@ -42,27 +56,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
-  Future<void> _changeLanguage(
-    SettingsProvider provider,
-    String value,
-  ) async {
-    final current = _draftSettings ?? provider.settings;
-    final updated = current.copyWith(appLocale: value);
-
-    setState(() {
-      _draftSettings = updated;
-    });
-
-    await provider.save(updated, sync: true);
-
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      _draftSettings = provider.settings;
-    });
-  }
+  
 
   Future<void> _saveSettings(SettingsProvider provider) async {
     final draft = _draftSettings;
@@ -80,10 +74,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (!mounted) {
       return;
     }
-
     setState(() {
       _saving = false;
       _draftSettings = provider.settings;
+      _lastProviderSettings = provider.settings;
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -101,7 +95,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: Consumer<SettingsProvider>(
         builder: (context, provider, _) {
-          _draftSettings ??= provider.settings;
+          _syncDraftWithProvider(provider.settings);
 
           final draft = _draftSettings!;
           final hasChanges = !_settingsEqual(draft, provider.settings);
@@ -228,10 +222,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title: l10n.languageTitle,
                     description: l10n.languageDescription,
                     children: [
-                      _LanguageDropdown(
+                     _LanguageDropdown(
                         value: draft.appLocale,
                         onChanged: (value) {
-                          unawaited(_changeLanguage(provider, value));
+                          _updateDraft(
+                            (settings) => settings.copyWith(appLocale: value),
+                          );
                         },
                       ),
                     ],
