@@ -62,7 +62,7 @@ def send_password_reset_email(to_email: str, token: str) -> None:
         "http://localhost:8080",
     )
 
-    reset_url = f"{frontend_url.rstrip('/')}/?screen=login&reset_token={token}"
+    reset_url = f"{frontend_url.rstrip('/')}/reset-password?token={token}"
 
     subject = "Passwort zurücksetzen"
 

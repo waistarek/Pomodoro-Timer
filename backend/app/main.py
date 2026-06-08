@@ -536,7 +536,7 @@ def verify_email(token: str, db: Session = Depends(get_db)):
 
     if user is None:
         return RedirectResponse(
-            f"{frontend_url}/?screen=login&email_verified=invalid"
+            f"{frontend_url}/account?email_verified=invalid"
         )
     if user.email_verification_expires_at is None:
         return RedirectResponse(
@@ -544,9 +544,9 @@ def verify_email(token: str, db: Session = Depends(get_db)):
         )
 
     if user.email_verification_expires_at < datetime.utcnow():
-        return RedirectResponse(
-            f"{frontend_url}/?screen=login&email_verified=expired"
-        )
+            return RedirectResponse(
+                f"{frontend_url}/account?email_verified=expired"
+            )
 
     user.is_email_verified = True
     user.email_verification_token_hash = None
@@ -555,7 +555,7 @@ def verify_email(token: str, db: Session = Depends(get_db)):
     db.commit()
 
     return RedirectResponse(
-        f"{frontend_url}/?screen=login&email_verified=success"
+        f"{frontend_url}/account?email_verified=success"
     )
 
 @app.get("/users/me", response_model=UserRead)
