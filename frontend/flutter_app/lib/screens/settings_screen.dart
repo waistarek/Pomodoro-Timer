@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../models/app_settings.dart';
 import '../providers/settings_provider.dart';
@@ -39,6 +39,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     setState(() {
       _draftSettings = update(current);
+    });
+  }
+
+  Future<void> _changeLanguage(
+    SettingsProvider provider,
+    String value,
+  ) async {
+    final current = _draftSettings ?? provider.settings;
+    final updated = current.copyWith(appLocale: value);
+
+    setState(() {
+      _draftSettings = updated;
+    });
+
+    await provider.save(updated, sync: true);
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _draftSettings = provider.settings;
     });
   }
 
@@ -209,9 +231,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       _LanguageDropdown(
                         value: draft.appLocale,
                         onChanged: (value) {
-                          _updateDraft(
-                            (settings) => settings.copyWith(appLocale: value),
-                          );
+                          unawaited(_changeLanguage(provider, value));
                         },
                       ),
                     ],
