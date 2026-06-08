@@ -391,7 +391,7 @@ def test_google_only_user_cannot_login_with_password(monkeypatch):
 
     assert password_response.status_code == 401
 
-    def test_settings_persist_app_locale():
+def test_settings_persist_app_locale():
     headers = register_and_login("locale@example.com")
 
     response = client.get("/settings", headers=headers)
