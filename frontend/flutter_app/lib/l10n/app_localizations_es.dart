@@ -9,7 +9,7 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get appTitle => 'Aplicación Pomodoro';
+  String get appTitle => 'Time2Focus';
 
   @override
   String get navTimer => 'Temporizador';
@@ -1092,143 +1092,143 @@ class AppLocalizationsEs extends AppLocalizations {
       'Sign in or create an account with GitHub';
 
   @override
-  String get landingLogoSemantics => 'Time2Focus Logo und Startbereich';
+  String get landingLogoSemantics => 'Logo de Time2Focus y área de inicio';
 
   @override
-  String get landingLoginButton => 'Login';
+  String get landingLoginButton => 'Iniciar sesión';
 
   @override
-  String get landingHeroBadge => 'Pomodoro Timer & Fokus-App';
+  String get landingHeroBadge =>
+      'Temporizador Pomodoro y aplicación de enfoque';
 
   @override
-  String get landingHeroTitle => 'Konzentrierter arbeiten mit Time2Focus';
+  String get landingHeroTitle =>
+      'Trabaja con más concentración usando Time2Focus';
 
   @override
   String get landingHeroDescription =>
-      'Time2Focus ist eine Pomodoro Timer App für Fokus-Sessions, Aufgabenverwaltung und bessere Produktivität. Plane konzentrierte Arbeitsphasen, halte Pausen ein und behalte deinen Fortschritt im Blick.';
+      'Time2Focus es una aplicación de temporizador Pomodoro para sesiones de enfoque, gestión de tareas y mejor productividad. Planifica fases de trabajo concentrado, respeta tus pausas y mantén tu progreso a la vista.';
 
   @override
-  String get landingPrimaryCta => 'Pomodoro Timer starten';
+  String get landingPrimaryCta => 'Iniciar temporizador Pomodoro';
 
   @override
-  String get landingSecondaryCta => 'Konto erstellen oder einloggen';
+  String get landingSecondaryCta => 'Crear cuenta o iniciar sesión';
 
   @override
   String get landingHeroHint =>
-      'Direkt im Browser nutzbar. Ohne Installation starten und bei Bedarf mit deinem Konto synchronisieren.';
+      'Úsalo directamente en el navegador. Empieza sin instalación y sincroniza tus datos con tu cuenta cuando lo necesites.';
 
   @override
   String get landingPreviewSemantics =>
-      'Vorschau der Time2Focus App mit Timer, Aufgaben und Statistikfunktionen';
+      'Vista previa de la aplicación Time2Focus con temporizador, tareas y estadísticas';
 
   @override
-  String get landingPreviewLabel => 'App-Vorschau';
+  String get landingPreviewLabel => 'Vista previa de la app';
 
   @override
-  String get landingPreviewTitle => 'Deine nächste Fokus-Session';
+  String get landingPreviewTitle => 'Tu próxima sesión de enfoque';
 
   @override
-  String get landingPreviewPhase => 'Fokuszeit';
+  String get landingPreviewPhase => 'Tiempo de enfoque';
 
   @override
-  String get landingPreviewTask => 'Aufgabe verknüpfen';
+  String get landingPreviewTask => 'Vincular tarea';
 
   @override
-  String get landingPreviewBreak => 'Pausen planen';
+  String get landingPreviewBreak => 'Planificar pausas';
 
   @override
-  String get landingPreviewStats => 'Fortschritt sehen';
+  String get landingPreviewStats => 'Ver progreso';
 
   @override
   String get landingFeaturesSectionTitle =>
-      'Alles, was du für konzentriertes Arbeiten brauchst';
+      'Todo lo que necesitas para trabajar con concentración';
 
   @override
   String get landingFeaturesSectionSubtitle =>
-      'Time2Focus verbindet Pomodoro Timer, Aufgaben und Produktivitätsstatistiken in einer klaren Web-App ohne unnötige Ablenkung.';
+      'Time2Focus combina un temporizador Pomodoro, tareas y estadísticas de productividad en una aplicación web clara y sin distracciones innecesarias.';
 
   @override
   String get landingFeatureTimerTitle =>
-      'Pomodoro Timer für klare Fokus-Sessions';
+      'Temporizador Pomodoro para sesiones de enfoque claras';
 
   @override
   String get landingFeatureTimerText =>
-      'Arbeite in festen Intervallen mit Arbeitsphasen, kurzen Pausen und langen Pausen. So bleibt dein Fokus planbar und dein Arbeitstag besser strukturiert.';
+      'Trabaja en intervalos definidos con fases de concentración, pausas cortas y pausas largas. Así puedes planificar mejor tu enfoque y estructurar tu jornada de trabajo.';
 
   @override
-  String get landingFeatureTasksTitle => 'Aufgabenverwaltung für deine Arbeit';
+  String get landingFeatureTasksTitle => 'Gestión de tareas para tu trabajo';
 
   @override
   String get landingFeatureTasksText =>
-      'Verknüpfe Fokus-Sessions mit konkreten Aufgaben. Dadurch siehst du später besser, wofür deine konzentrierte Arbeitszeit genutzt wurde.';
+      'Conecta tus sesiones de enfoque con tareas concretas. Así podrás ver después en qué se utilizó tu tiempo de trabajo concentrado.';
 
   @override
-  String get landingFeatureStatsTitle =>
-      'Produktivitätsstatistiken mit Überblick';
+  String get landingFeatureStatsTitle => 'Estadísticas de productividad claras';
 
   @override
   String get landingFeatureStatsText =>
-      'Analysiere abgeschlossene Fokuszeiten, Pomodoros und Aufgabenzeiten. So erkennst du Fortschritt, Routinen und produktive Muster.';
+      'Analiza el tiempo de enfoque completado, los Pomodoros y el tiempo dedicado a tareas. Esto te ayuda a reconocer tu progreso, tus rutinas y tus patrones productivos.';
 
   @override
-  String get landingHowItWorksTitle => 'So funktioniert Time2Focus';
+  String get landingHowItWorksTitle => 'Cómo funciona Time2Focus';
 
   @override
   String get landingHowItWorksSubtitle =>
-      'Der Ablauf bleibt bewusst einfach: Aufgabe auswählen, Fokus-Session starten und nach der Arbeit den Fortschritt auswerten.';
+      'El flujo de trabajo se mantiene intencionadamente simple: elige una tarea, inicia una sesión de enfoque y revisa tu progreso después del trabajo.';
 
   @override
-  String get landingStepOneTitle => 'Aufgabe vorbereiten';
+  String get landingStepOneTitle => 'Prepara una tarea';
 
   @override
   String get landingStepOneText =>
-      'Lege eine Aufgabe an oder starte direkt ohne Aufgabe. Time2Focus unterstützt beide Arbeitsweisen.';
+      'Crea una tarea o empieza directamente sin una. Time2Focus admite ambas formas de trabajar.';
 
   @override
-  String get landingStepTwoTitle => 'Fokus-Session starten';
+  String get landingStepTwoTitle => 'Inicia una sesión de enfoque';
 
   @override
   String get landingStepTwoText =>
-      'Starte den Pomodoro Timer und arbeite konzentriert bis zur nächsten Pause. Die App führt dich durch Arbeits- und Pausenphasen.';
+      'Inicia el temporizador Pomodoro y trabaja con concentración hasta la siguiente pausa. La app te guía a través de las fases de trabajo y descanso.';
 
   @override
-  String get landingStepThreeTitle => 'Fortschritt auswerten';
+  String get landingStepThreeTitle => 'Revisa tu progreso';
 
   @override
   String get landingStepThreeText =>
-      'Nutze Statistiken, um Fokuszeit, erledigte Pomodoros und Aufgabenzeiten besser zu verstehen.';
+      'Usa las estadísticas para comprender mejor tu tiempo de enfoque, los Pomodoros completados y el tiempo dedicado a tareas.';
 
   @override
-  String get landingFaqTitle => 'Häufige Fragen';
+  String get landingFaqTitle => 'Preguntas frecuentes';
 
   @override
   String get landingFaqSubtitle =>
-      'Kurze Antworten für neue Nutzerinnen und Nutzer, die Time2Focus zuerst ausprobieren möchten.';
+      'Respuestas breves para nuevos usuarios que quieren probar primero Time2Focus.';
 
   @override
-  String get landingFaqOneQuestion =>
-      'Kann ich Time2Focus ohne Konto verwenden?';
+  String get landingFaqOneQuestion => '¿Puedo usar Time2Focus sin una cuenta?';
 
   @override
   String get landingFaqOneAnswer =>
-      'Ja. Du kannst den Timer direkt im Browser nutzen. Ein Konto ist hilfreich, wenn du Daten später synchronisieren und auf mehreren Geräten verwenden möchtest.';
+      'Sí. Puedes usar el temporizador directamente en el navegador. Una cuenta es útil si quieres sincronizar tus datos más adelante y usarlos en varios dispositivos.';
 
   @override
-  String get landingFaqTwoQuestion => 'Ist Time2Focus nur ein Pomodoro Timer?';
+  String get landingFaqTwoQuestion =>
+      '¿Time2Focus es solo un temporizador Pomodoro?';
 
   @override
   String get landingFaqTwoAnswer =>
-      'Nein. Time2Focus kombiniert Pomodoro Timer, Fokus-Sessions, Aufgabenverwaltung und Statistiken, damit du Arbeit und Fortschritt besser verbinden kannst.';
+      'No. Time2Focus combina temporizador Pomodoro, sesiones de enfoque, gestión de tareas y estadísticas para conectar mejor tu trabajo con tu progreso.';
 
   @override
-  String get landingFaqThreeQuestion =>
-      'Funktioniert Time2Focus auf dem Smartphone?';
+  String get landingFaqThreeQuestion => '¿Time2Focus funciona en el móvil?';
 
   @override
   String get landingFaqThreeAnswer =>
-      'Ja. Die Web-App ist responsiv aufgebaut und kann im Browser auf Desktop, Tablet und Smartphone genutzt werden.';
+      'Sí. La aplicación web es responsiva y puede usarse en el navegador en ordenador, tableta y smartphone.';
 
   @override
   String get landingFooter =>
-      'Time2Focus – Pomodoro Timer und Fokus-App für konzentriertes Arbeiten.';
+      'Time2Focus – temporizador Pomodoro y aplicación de enfoque para trabajar con más concentración.';
 }
