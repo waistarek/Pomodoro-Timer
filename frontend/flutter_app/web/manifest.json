@@ -1,7 +1,7 @@
 {
-  "name": "Pomodoro Timer",
-  "short_name": "Pomodoro",
-  "description": "Focus better, one session at a time.",
+  "name": "Time2Focus",
+  "short_name": "Time2Focus",
+  "description": "Time2Focus ist eine moderne Pomodoro- und Fokus-App für konzentriertes Arbeiten, Aufgabenverwaltung, Pausen und Produktivitätsstatistiken.",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#FFF7EF",
