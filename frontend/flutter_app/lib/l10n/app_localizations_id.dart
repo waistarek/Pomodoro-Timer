@@ -894,65 +894,65 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String timerSemanticsLabel(
       Object phase, Object status, Object time, Object progress, Object today) {
-    return 'Timer. Phase: $phase. Status: $status. Verbleibende Zeit: $time. $progress. $today.';
+    return 'Timer. Phase: $phase. Status: $status. Remaining time: $time. $progress. $today.';
   }
 
   @override
   String timerProgressSemantics(int percent) {
-    return 'Fortschritt: $percent Prozent abgeschlossen.';
+    return 'Progress: $percent percent completed.';
   }
 
   @override
   String timerHeaderSemantics(Object phase, Object status, Object nextPhase) {
-    return 'Aktuelle Timer-Phase: $phase. Status: $status. Danach folgt: $nextPhase.';
+    return 'Current timer phase: $phase. Status: $status. Next: $nextPhase.';
   }
 
   @override
   String timerTaskSelectorSemantics(Object task) {
-    return 'Aufgabenauswahl für den Timer. Aktuell ausgewählt: $task.';
+    return 'Timer task selection. Currently selected: $task.';
   }
 
   @override
-  String get startTimerSemantics => 'Timer starten';
+  String get startTimerSemantics => 'Start timer';
 
   @override
-  String get pauseTimerSemantics => 'Timer pausieren';
+  String get pauseTimerSemantics => 'Pause timer';
 
   @override
-  String get continueTimerSemantics => 'Timer fortsetzen';
+  String get continueTimerSemantics => 'Continue timer';
 
   @override
-  String get resetTimerSemantics => 'Timer zurücksetzen';
+  String get resetTimerSemantics => 'Reset timer';
 
   @override
-  String get skipPauseSemantics => 'Pause überspringen';
+  String get skipPauseSemantics => 'Skip break';
 
   @override
   String get timerSavingSemantics =>
-      'Die abgeschlossene Timer-Phase wird gespeichert.';
+      'The completed timer phase is being saved.';
 
   @override
   String timerSyncSemantics(Object message) {
-    return 'Timer-Synchronisierung: $message';
+    return 'Timer synchronization: $message';
   }
 
   @override
   String timerErrorSemantics(Object message) {
-    return 'Timer-Fehler: $message';
+    return 'Timer error: $message';
   }
 
   @override
   String timerKeyboardShortcutsSemantics(Object shortcuts) {
-    return 'Tastaturkürzel für den Timer: $shortcuts';
+    return 'Keyboard shortcuts for the timer: $shortcuts';
   }
 
   @override
   String sessionSyncBannerSemantics(Object message) {
-    return 'Synchronisierungsstatus: $message';
+    return 'Synchronization status: $message';
   }
 
   @override
-  String get createTaskSemantics => 'Neue Aufgabe erstellen';
+  String get createTaskSemantics => 'Create new task';
 
   @override
   String activeTaskBannerSemantics(Object title, Object description) {
@@ -960,55 +960,55 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get tasksToolbarSemantics => 'Aufgaben-Suche, Filter und Sortierung';
+  String get tasksToolbarSemantics => 'Task search, filter and sorting';
 
   @override
   String taskCardSemantics(Object title, Object status, Object priority,
       Object pomodoros, Object selected) {
-    return 'Aufgabe: $title. Status: $status. Priorität: $priority. Abgeschlossen: $pomodoros. Für Timer aktiv: $selected.';
+    return 'Task: $title. Status: $status. Priority: $priority. Completed: $pomodoros. Active for timer: $selected.';
   }
 
   @override
   String taskCompletedToggleSemantics(Object title) {
-    return 'Aufgabe $title als erledigt oder offen markieren';
+    return 'Mark task $title as completed or open';
   }
 
   @override
   String selectTaskForTimerSemantics(Object title) {
-    return 'Aufgabe $title für den Timer auswählen';
+    return 'Select task $title for the timer';
   }
 
   @override
   String editTaskSemantics(Object title) {
-    return 'Aufgabe $title bearbeiten';
+    return 'Edit task $title';
   }
 
   @override
   String deleteTaskSemantics(Object title) {
-    return 'Aufgabe $title löschen';
+    return 'Delete task $title';
   }
 
   @override
   String taskErrorSemantics(Object message) {
-    return 'Aufgaben-Fehler: $message';
+    return 'Task error: $message';
   }
 
   @override
   String taskStatusSemantics(Object message) {
-    return 'Aufgaben-Status: $message';
+    return 'Task status: $message';
   }
 
   @override
-  String get taskPrioritySelectorSemantics => 'Priorität der Aufgabe auswählen';
+  String get taskPrioritySelectorSemantics => 'Select task priority';
 
   @override
   String statsChartSemantics(Object summary) {
-    return 'Statistikdiagramm. $summary';
+    return 'Statistics chart. $summary';
   }
 
   @override
   String statsChartWithTitleSemantics(Object title, Object summary) {
-    return '$title. Statistikdiagramm. $summary';
+    return '$title. Statistics chart. $summary';
   }
 
   @override
@@ -1019,7 +1019,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String statsChartSummaryWithMore(Object summary, int count) {
-    return '$summary; und $count weitere Werte.';
+    return '$summary; and $count more values.';
   }
 
   @override
@@ -1029,38 +1029,38 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String taskStatsProgressSemantics(Object title) {
-    return 'Fortschritt für Aufgabe $title';
+    return 'Progress for task $title';
   }
 
   @override
   String settingsDurationControlSemantics(
       Object title, int value, Object unit, int min, int max) {
-    return '$title: aktueller Wert $value $unit. Erlaubter Bereich: $min bis $max.';
+    return '$title: current value $value $unit. Allowed range: $min to $max.';
   }
 
   @override
   String settingsDecreaseValueSemantics(Object title) {
-    return '$title verringern';
+    return 'Decrease $title';
   }
 
   @override
   String settingsIncreaseValueSemantics(Object title) {
-    return '$title erhöhen';
+    return 'Increase $title';
   }
 
   @override
   String settingsNumberInputSemantics(Object title) {
-    return 'Wert für $title eingeben';
+    return 'Enter value for $title';
   }
 
   @override
   String settingsErrorSemantics(Object message) {
-    return 'Einstellungsfehler: $message';
+    return 'Settings error: $message';
   }
 
   @override
   String authErrorSemantics(Object message) {
-    return 'Anmeldefehler: $message';
+    return 'Login error: $message';
   }
 
   @override
@@ -1070,9 +1070,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get googleSignInSemantics =>
-      'Mit Google anmelden oder Konto erstellen';
+      'Sign in or create an account with Google';
 
   @override
   String get githubSignInSemantics =>
-      'Mit GitHub anmelden oder Konto erstellen';
+      'Sign in or create an account with GitHub';
 }
