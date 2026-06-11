@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../providers/auth_provider.dart';
 import '../screens/app_shell.dart';
 import '../screens/home_screen.dart';
+import '../screens/landing_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/settings_screen.dart';
 import '../screens/stats_screen.dart';
@@ -17,7 +18,7 @@ const bool requireLoginForMainRoutes = false;
 
 GoRouter createAppRouter(AuthProvider authProvider) {
   return GoRouter(
-    initialLocation: AppRoutes.timer,
+    initialLocation: AppRoutes.root,
     refreshListenable: authProvider,
     redirect: (BuildContext context, GoRouterState state) {
       final uri = state.uri;
@@ -58,15 +59,7 @@ GoRouter createAppRouter(AuthProvider authProvider) {
       }
 
       if (authProvider.loading) {
-        if (path == AppRoutes.root && authProvider.hasLocalToken) {
-          return AppRoutes.timer;
-        }
-
         return null;
-      }
-
-      if (path == AppRoutes.root) {
-        return authProvider.isLoggedIn ? AppRoutes.timer : AppRoutes.account;
       }
 
       if (requireLoginForMainRoutes &&
@@ -83,6 +76,11 @@ GoRouter createAppRouter(AuthProvider authProvider) {
       return null;
     },
     routes: [
+      GoRoute(
+        path: AppRoutes.root,
+        name: 'landing',
+        builder: (context, state) => const LandingScreen(),
+      ),
       ShellRoute(
         builder: (context, state, child) {
           return AppShell(
