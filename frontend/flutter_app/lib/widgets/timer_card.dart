@@ -9,6 +9,7 @@ import '../models/task_item.dart';
 import '../providers/stats_provider.dart';
 import '../providers/task_provider.dart';
 import '../providers/timer_provider.dart';
+import '../providers/session_sync_provider.dart';
 import '../timer/pomodoro_phase.dart';
 import '../timer/timer_engine.dart';
 import 'big_button.dart';
@@ -18,8 +19,16 @@ class TimerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer3<TimerProvider, TaskProvider, StatsProvider>(
-      builder: (context, timer, taskProvider, statsProvider, _) {
+    return Consumer4<TimerProvider, TaskProvider, StatsProvider,
+        SessionSyncProvider>(
+      builder: (
+        context,
+        timer,
+        taskProvider,
+        statsProvider,
+        sessionSyncProvider,
+        _,
+      ) {
         final l10n = AppLocalizations.of(context);
         final phaseColor = _phaseColor(context, timer.phase);
         final phaseLabel = _phaseLabel(timer.phase, l10n);
@@ -30,6 +39,10 @@ class TimerCard extends StatelessWidget {
             : l10n.todayPomodoros(
                 l10n.pomodoroCount(statsProvider.todayPomodoros),
               );
+
+        timer.setSessionQueueChangedCallback(
+          sessionSyncProvider.refreshPendingCount,
+        );
 
         timer.setWorkPhaseCompletedCallback(() async {
           await Future.wait([

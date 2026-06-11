@@ -33,6 +33,7 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
   final NotificationService _notificationService;
 
   Future<void> Function()? _onWorkPhaseCompleted;
+  VoidCallback? _onSessionQueueChanged;
 
   AppSettings _settings = const AppSettings();
   TaskItem? _selectedTask;
@@ -178,6 +179,16 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
     Future<void> Function() callback,
   ) {
     _onWorkPhaseCompleted = callback;
+  }
+
+  void setSessionQueueChangedCallback(
+    VoidCallback callback,
+  ) {
+    _onSessionQueueChanged = callback;
+  }
+
+  void _notifySessionQueueChanged() {
+    _onSessionQueueChanged?.call();
   }
 
   void syncWithRealTime() {
@@ -458,6 +469,7 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
       }
 
       await _sessionService.queueSessionForRetry(session);
+      _notifySessionQueueChanged();
     } catch (exception, stackTrace) {
       debugPrint('Session konnte nicht lokal vorgemerkt werden: $exception');
       debugPrintStack(stackTrace: stackTrace);
@@ -534,6 +546,7 @@ class TimerProvider extends ChangeNotifier with WidgetsBindingObserver {
         _activeSessionSyncs--;
       }
 
+      _notifySessionQueueChanged();
       notifyListeners();
     }
   }
