@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Disallow: /auth/
+Disallow: /reset-password
+
+Sitemap: https://time2focus.app/sitemap.xml
