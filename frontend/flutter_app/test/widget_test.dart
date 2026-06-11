@@ -39,6 +39,7 @@ void main() {
       matchesSemantics(
         label: 'Start timer',
         isButton: true,
+        hasEnabledState: true,
         isEnabled: true,
         hasTapAction: true,
       ),

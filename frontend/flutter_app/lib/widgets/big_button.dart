@@ -39,6 +39,7 @@ class BigButton extends StatelessWidget {
       button: true,
       enabled: onPressed != null,
       label: effectiveSemanticLabel,
+      onTap: onPressed,
       child: Tooltip(
         message: tooltip ?? effectiveSemanticLabel,
         child: SizedBox(
