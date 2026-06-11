@@ -483,88 +483,88 @@ class _TaskCard extends StatelessWidget {
         l10n.pomodoroCount(task.completedPomodoros),
         selectedStatus,
       ),
-      child:  Card(
-          elevation: selected ? 3 : 0,
-          color: selected
-              ? colorScheme.primaryContainer.withValues(alpha: 0.45)
-              : null,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: selected
-                ? BorderSide(
-                    color: colorScheme.primary,
-                    width: 1.4,
-                  )
-                : BorderSide(
-                    color: colorScheme.outlineVariant,
-                  ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(14),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final isNarrow = constraints.maxWidth < 720;
+      child: Card(
+        elevation: selected ? 3 : 0,
+        color: selected
+            ? colorScheme.primaryContainer.withValues(alpha: 0.45)
+            : null,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: selected
+              ? BorderSide(
+                  color: colorScheme.primary,
+                  width: 1.4,
+                )
+              : BorderSide(
+                  color: colorScheme.outlineVariant,
+                ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isNarrow = constraints.maxWidth < 720;
 
-                final content = Row(
+              final content = Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Semantics(
+                    label: l10n.taskCompletedToggleSemantics(task.title),
+                    checked: task.completed,
+                    child: Checkbox(
+                      value: task.completed,
+                      onChanged: (value) {
+                        onCompletedChanged(value ?? false);
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _TaskContent(
+                      task: task,
+                      selected: selected,
+                      tags: tags,
+                    ),
+                  ),
+                ],
+              );
+
+              final actions = _TaskActions(
+                taskTitle: task.title,
+                selected: selected,
+                canSelectForTimer: canSelectForTimer,
+                onSelectForTimer: onSelectForTimer,
+                onEdit: onEdit,
+                onDelete: onDelete,
+              );
+
+              if (isNarrow) {
+                return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Semantics(
-                      label: l10n.taskCompletedToggleSemantics(task.title),
-                      checked: task.completed,
-                      child: Checkbox(
-                        value: task.completed,
-                        onChanged: (value) {
-                          onCompletedChanged(value ?? false);
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: _TaskContent(
-                        task: task,
-                        selected: selected,
-                        tags: tags,
-                      ),
+                    content,
+                    const SizedBox(height: 12),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: actions,
                     ),
                   ],
                 );
+              }
 
-                final actions = _TaskActions(
-                  taskTitle: task.title,
-                  selected: selected,
-                  canSelectForTimer: canSelectForTimer,
-                  onSelectForTimer: onSelectForTimer,
-                  onEdit: onEdit,
-                  onDelete: onDelete,
-                );
-
-                if (isNarrow) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      content,
-                      const SizedBox(height: 12),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: actions,
-                      ),
-                    ],
-                  );
-                }
-
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(child: content),
-                    const SizedBox(width: 16),
-                    actions,
-                  ],
-                );
-              },
-            ),
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(child: content),
+                  const SizedBox(width: 16),
+                  actions,
+                ],
+              );
+            },
           ),
-        );
-    ),
+        ),
+      ),
+    );
   }
 }
 
@@ -657,6 +657,7 @@ class _TaskActions extends StatelessWidget {
     required this.onDelete,
   });
 
+  final String taskTitle;
   final bool selected;
   final bool canSelectForTimer;
   final VoidCallback onSelectForTimer;
@@ -757,34 +758,37 @@ class _StatusCard extends StatelessWidget {
   final IconData icon;
   final String message;
   final bool showProgress;
-  final l10n = AppLocalizations.of(context);
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Semantics(
       container: true,
       liveRegion: showProgress,
       label: l10n.taskStatusSemantics(message),
       child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Row(
-              children: [
-                if (showProgress)
-                  const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                else
-                  Icon(icon),
-                const SizedBox(width: 16),
-                Expanded(child: Text(message)),
-              ],
-            ),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Row(
+            children: [
+              if (showProgress)
+                const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              else
+                ExcludeSemantics(
+                  child: Icon(icon),
+                ),
+              const SizedBox(width: 16),
+              Expanded(child: Text(message)),
+            ],
           ),
-        );
-    ),
+        ),
+      ),
+    );
   }
 }
 

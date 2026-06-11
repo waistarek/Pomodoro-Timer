@@ -89,140 +89,145 @@ class _TaskEditorDialogState extends State<TaskEditorDialog> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final dialogTitle =
-    widget.task == null ? l10n.taskCreateTitle : l10n.taskEditTitle;
+        widget.task == null ? l10n.taskCreateTitle : l10n.taskEditTitle;
 
     return Semantics(
       scopesRoute: true,
       namesRoute: true,
       label: dialogTitle,
       child: AlertDialog(
+        title: Text(dialogTitle),
+        content: SizedBox(
+          width: 520,
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: _titleController,
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      labelText: l10n.taskTitleLabel,
+                      border: const OutlineInputBorder(),
+                    ),
+                    textInputAction: TextInputAction.next,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return l10n.taskTitleRequired;
+                      }
 
-          title: Text(dialogTitle),
-          content: SizedBox(
-            width: 520,
-            child: Form(
-              key: _formKey,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextFormField(
-                      controller: _titleController,
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        labelText: l10n.taskTitleLabel,
-                        border: const OutlineInputBorder(),
-                      ),
-                      textInputAction: TextInputAction.next,
-                      validator: (value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return l10n.taskTitleRequired;
-                        }
+                      if (value.trim().length < 2) {
+                        return l10n.taskTitleTooShort;
+                      }
 
-                        if (value.trim().length < 2) {
-                          return l10n.taskTitleTooShort;
-                        }
-
-                        return null;
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _descriptionController,
+                    minLines: 3,
+                    maxLines: 5,
+                    decoration: InputDecoration(
+                      labelText: l10n.taskDescriptionLabel,
+                      border: const OutlineInputBorder(),
+                      alignLabelWithHint: true,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      l10n.priorityLabel,
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Semantics(
+                    container: true,
+                    label: l10n.taskPrioritySelectorSemantics,
+                    child: SegmentedButton<String>(
+                      selected: {_priority},
+                      onSelectionChanged: (selection) {
+                        setState(() {
+                          _priority = selection.first;
+                        });
                       },
+                      segments: [
+                        ButtonSegment(
+                          value: 'low',
+                          icon: const ExcludeSemantics(
+                            child: Icon(Icons.keyboard_arrow_down),
+                          ),
+                          label: Text(l10n.priorityLow),
+                        ),
+                        ButtonSegment(
+                          value: 'medium',
+                          icon: const ExcludeSemantics(
+                            child: Icon(Icons.remove),
+                          ),
+                          label: Text(l10n.priorityMedium),
+                        ),
+                        ButtonSegment(
+                          value: 'high',
+                          icon: const ExcludeSemantics(
+                            child: Icon(Icons.keyboard_arrow_up),
+                          ),
+                          label: Text(l10n.priorityHigh),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _descriptionController,
-                      minLines: 3,
-                      maxLines: 5,
-                      decoration: InputDecoration(
-                        labelText: l10n.taskDescriptionLabel,
-                        border: const OutlineInputBorder(),
-                        alignLabelWithHint: true,
-                      ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _tagsController,
+                    decoration: InputDecoration(
+                      labelText: l10n.tagsLabel,
+                      hintText: l10n.tagsHint,
+                      border: const OutlineInputBorder(),
                     ),
-                    const SizedBox(height: 16),
+                  ),
+                  if (_tags.isNotEmpty) ...[
+                    const SizedBox(height: 12),
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Text(
-                        l10n.priorityLabel,
-                        style: Theme.of(context).textTheme.labelLarge,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Semantics(
-                      container: true,
-                      label: l10n.taskPrioritySelectorSemantics,
-                      child: SegmentedButton<String>(
-                        selected: {_priority},
-                        onSelectionChanged: (selection) {
-                          setState(() {
-                            _priority = selection.first;
-                          });
-                        },
-                        segments: [
-                          ButtonSegment(
-                            value: 'low',
-                            icon: const ExcludeSemantics(
-                              child: Icon(Icons.keyboard_arrow_down),
+                      child: Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          for (final tag in _tags)
+                            Chip(
+                              visualDensity: VisualDensity.compact,
+                              avatar: const ExcludeSemantics(
+                                child: Icon(Icons.sell_outlined, size: 18),
+                              ),
+                              label: Text(tag),
                             ),
-                            label: Text(l10n.priorityLow),
-                          ),
-                          ButtonSegment(
-                            value: 'medium',
-                            icon: const ExcludeSemantics(child: Icon(Icons.remove)),
-                            label: Text(l10n.priorityMedium),
-                          ),
-                          ButtonSegment(
-                            value: 'high',
-                            icon: const ExcludeSemantics(
-                              child: Icon(Icons.keyboard_arrow_up),
-                            ),
-                            label: Text(l10n.priorityHigh),
-                          ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _tagsController,
-                      decoration: InputDecoration(
-                        labelText: l10n.tagsLabel,
-                        hintText: l10n.tagsHint,
-                        border: const OutlineInputBorder(),
-                      ),
-                    ),
-                    if (_tags.isNotEmpty) ...[
-                      const SizedBox(height: 12),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: [
-                            for (final tag in _tags)
-                              Chip(
-                                visualDensity: VisualDensity.compact,
-                                avatar: const Icon(Icons.sell_outlined, size: 18),
-                                label: Text(tag),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ],
                   ],
-                ),
+                ],
               ),
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(l10n.cancel),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton.icon(
+            onPressed: _save,
+            icon: const ExcludeSemantics(
+              child: Icon(Icons.save_outlined),
             ),
-            FilledButton.icon(
-              onPressed: _save,
-              icon: const Icon(Icons.save_outlined),
-              label: Text(l10n.save),
-            ),
-          ],
-        );
-    ),
+            label: Text(l10n.save),
+          ),
+        ],
+      ),
+    );
   }
 }

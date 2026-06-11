@@ -40,7 +40,6 @@ class StatsChart extends StatelessWidget {
 
     final maxY = _niceMaxYHours(maxMinutes);
     final interval = _intervalForMaxHours(maxY);
-
     final summary = _chartSummary(l10n, items, labelFormatter);
 
     return Semantics(
@@ -67,7 +66,8 @@ class StatsChart extends StatelessWidget {
                     }
 
                     final item = items[index];
-                    final label = labelFormatter?.call(item.label) ?? item.label;
+                    final label =
+                        labelFormatter?.call(item.label) ?? item.label;
 
                     return BarTooltipItem(
                       '$label\n${_formatMinutes(item.focusMinutes)}\n${l10n.pomodoroCount(item.pomodoros)}',
@@ -159,9 +159,9 @@ class StatsChart extends StatelessWidget {
               borderData: FlBorderData(show: false),
             ),
           ),
-        );
+        ),
       ),
-    ),
+    );
   }
 }
 

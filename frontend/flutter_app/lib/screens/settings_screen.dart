@@ -301,32 +301,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  Semantics(
-                    container: true,
-                    liveRegion: true,
-                    label: l10n.settingsErrorSemantics(
-                      _localizedSettingsError(l10n, provider.error!),
-                    ),
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.warning_amber_outlined),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(_localizedSettingsError(
-                                l10n,
-                                provider.error!,
-                              )),
-                            ),
-                          ],
+                  if (provider.error != null) ...[
+                    Semantics(
+                      container: true,
+                      liveRegion: true,
+                      label: l10n.settingsErrorSemantics(
+                        _localizedSettingsError(l10n, provider.error!),
+                      ),
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            children: [
+                              const ExcludeSemantics(
+                                child: Icon(Icons.warning_amber_outlined),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  _localizedSettingsError(
+                                    l10n,
+                                    provider.error!,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                     const SizedBox(height: 16),
-                  ),
-                  
+                  ],
                   FilledButton.icon(
                     onPressed: canSave ? () => _saveSettings(provider) : null,
                     icon: _saving
@@ -565,50 +570,50 @@ class _NumberInputTileState extends State<_NumberInputTile> {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: LayoutBuilder(
-            builder: (context, constraints) {
-              final controls = _NumberControls(
-                title: widget.title,
-                controller: _controller,
-                focusNode: _focusNode,
-                unitLabel: widget.unitLabel,
-                canDecrease: canDecrease,
-                canIncrease: canIncrease,
-                onDecrease: () => _changeBy(-1),
-                onIncrease: () => _changeBy(1),
-                onSubmit: _commitInput,
-              );
+          builder: (context, constraints) {
+            final controls = _NumberControls(
+              title: widget.title,
+              controller: _controller,
+              focusNode: _focusNode,
+              unitLabel: widget.unitLabel,
+              canDecrease: canDecrease,
+              canIncrease: canIncrease,
+              onDecrease: () => _changeBy(-1),
+              onIncrease: () => _changeBy(1),
+              onSubmit: _commitInput,
+            );
 
-              if (constraints.maxWidth < 560) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.title,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 4),
-                    Text('${widget.value} ${widget.suffix}'),
-                    const SizedBox(height: 12),
-                    controls,
-                  ],
-                );
-              }
-
-              return Row(
+            if (constraints.maxWidth < 560) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(widget.title),
-                      subtitle: Text('${widget.value} ${widget.suffix}'),
-                    ),
+                  Text(
+                    widget.title,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
+                  const SizedBox(height: 4),
+                  Text('${widget.value} ${widget.suffix}'),
+                  const SizedBox(height: 12),
                   controls,
                 ],
               );
-            },
-          ),
-        );
+            }
+
+            return Row(
+              children: [
+                Expanded(
+                  child: ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(widget.title),
+                    subtitle: Text('${widget.value} ${widget.suffix}'),
+                  ),
+                ),
+                controls,
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 }
@@ -666,11 +671,11 @@ class _NumberControls extends StatelessWidget {
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
               ],
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: l10n.settingsNumberInputSemantics(title),
                 isDense: true,
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(
+                border: const OutlineInputBorder(),
+                contentPadding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 14,
                 ),

@@ -535,10 +535,12 @@ class _TimerActions extends StatelessWidget {
           BigButton(
             label: timer.isPaused ? l10n.continueButton : l10n.start,
             icon: Icons.play_arrow,
-            semanticLabel:
-                timer.isPaused ? l10n.continueTimerSemantics : l10n.startTimerSemantics,
-            tooltip:
-                timer.isPaused ? l10n.continueTimerSemantics : l10n.startTimerSemantics,
+            semanticLabel: timer.isPaused
+                ? l10n.continueTimerSemantics
+                : l10n.startTimerSemantics,
+            tooltip: timer.isPaused
+                ? l10n.continueTimerSemantics
+                : l10n.startTimerSemantics,
             onPressed: timer.startOrResume,
           ),
         BigButton(
@@ -607,11 +609,12 @@ class _TimerBackgroundSyncBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = AppLocalizations.of(context);
 
     return Semantics(
       container: true,
       liveRegion: true,
-      label: l10n.timerSavingSemantics,
+      label: l10n.timerSyncSemantics(message),
       child: ExcludeSemantics(
         child: Card(
           elevation: 0,
@@ -641,9 +644,9 @@ class _TimerBackgroundSyncBanner extends StatelessWidget {
               ],
             ),
           ),
-        );
+        ),
       ),
-    ),
+    );
   }
 }
 
@@ -697,9 +700,9 @@ class _TimerSavingBanner extends StatelessWidget {
               ],
             ),
           ),
-        );
+        ),
       ),
-    ),
+    );
   }
 }
 
@@ -721,52 +724,54 @@ class _TimerErrorBanner extends StatelessWidget {
       container: true,
       liveRegion: true,
       label: l10n.timerErrorSemantics(message),
-      child:  Card(
-          color: colorScheme.errorContainer,
-          elevation: 0,
-          child: Padding(
-            padding: const EdgeInsets.all(14),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(
+      child: Card(
+        color: colorScheme.errorContainer,
+        elevation: 0,
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ExcludeSemantics(
+                child: Icon(
                   Icons.warning_amber_outlined,
                   color: colorScheme.onErrorContainer,
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.storageProblem,
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                              color: colorScheme.onErrorContainer,
-                            ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        message,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: colorScheme.onErrorContainer,
-                            ),
-                      ),
-                    ],
-                  ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.storageProblem,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            color: colorScheme.onErrorContainer,
+                          ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      message,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onErrorContainer,
+                          ),
+                    ),
+                  ],
                 ),
-                IconButton(
-                  tooltip: l10n.messageClose,
-                  onPressed: onClose,
-                  icon: Icon(
-                    Icons.close,
-                    color: colorScheme.onErrorContainer,
-                  ),
+              ),
+              IconButton(
+                tooltip: l10n.messageClose,
+                onPressed: onClose,
+                icon: Icon(
+                  Icons.close,
+                  color: colorScheme.onErrorContainer,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        );
-    ),
+        ),
+      ),
+    );
   }
 }
 
