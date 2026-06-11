@@ -1713,6 +1713,250 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'{elapsed} von {total}'**
   String phaseProgress(String elapsed, String total);
+
+  /// No description provided for @timerSemanticsLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'Timer. Phase: {phase}. Status: {status}. Verbleibende Zeit: {time}. {progress}. {today}.'**
+  String timerSemanticsLabel(
+      Object phase, Object status, Object time, Object progress, Object today);
+
+  /// No description provided for @timerProgressSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Fortschritt: {percent} Prozent abgeschlossen.'**
+  String timerProgressSemantics(int percent);
+
+  /// No description provided for @timerHeaderSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Aktuelle Timer-Phase: {phase}. Status: {status}. Danach folgt: {nextPhase}.'**
+  String timerHeaderSemantics(Object phase, Object status, Object nextPhase);
+
+  /// No description provided for @timerTaskSelectorSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufgabenauswahl für den Timer. Aktuell ausgewählt: {task}.'**
+  String timerTaskSelectorSemantics(Object task);
+
+  /// No description provided for @startTimerSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Timer starten'**
+  String get startTimerSemantics;
+
+  /// No description provided for @pauseTimerSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Timer pausieren'**
+  String get pauseTimerSemantics;
+
+  /// No description provided for @continueTimerSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Timer fortsetzen'**
+  String get continueTimerSemantics;
+
+  /// No description provided for @resetTimerSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Timer zurücksetzen'**
+  String get resetTimerSemantics;
+
+  /// No description provided for @skipPauseSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Pause überspringen'**
+  String get skipPauseSemantics;
+
+  /// No description provided for @timerSavingSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Die abgeschlossene Timer-Phase wird gespeichert.'**
+  String get timerSavingSemantics;
+
+  /// No description provided for @timerSyncSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Timer-Synchronisierung: {message}'**
+  String timerSyncSemantics(Object message);
+
+  /// No description provided for @timerErrorSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Timer-Fehler: {message}'**
+  String timerErrorSemantics(Object message);
+
+  /// No description provided for @timerKeyboardShortcutsSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Tastaturkürzel für den Timer: {shortcuts}'**
+  String timerKeyboardShortcutsSemantics(Object shortcuts);
+
+  /// No description provided for @sessionSyncBannerSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Synchronisierungsstatus: {message}'**
+  String sessionSyncBannerSemantics(Object message);
+
+  /// No description provided for @createTaskSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Neue Aufgabe erstellen'**
+  String get createTaskSemantics;
+
+  /// No description provided for @activeTaskBannerSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'{title}. {description}'**
+  String activeTaskBannerSemantics(Object title, Object description);
+
+  /// No description provided for @tasksToolbarSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufgaben-Suche, Filter und Sortierung'**
+  String get tasksToolbarSemantics;
+
+  /// No description provided for @taskCardSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufgabe: {title}. Status: {status}. Priorität: {priority}. Abgeschlossen: {pomodoros}. Für Timer aktiv: {selected}.'**
+  String taskCardSemantics(Object title, Object status, Object priority,
+      Object pomodoros, Object selected);
+
+  /// No description provided for @taskCompletedToggleSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufgabe {title} als erledigt oder offen markieren'**
+  String taskCompletedToggleSemantics(Object title);
+
+  /// No description provided for @selectTaskForTimerSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufgabe {title} für den Timer auswählen'**
+  String selectTaskForTimerSemantics(Object title);
+
+  /// No description provided for @editTaskSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufgabe {title} bearbeiten'**
+  String editTaskSemantics(Object title);
+
+  /// No description provided for @deleteTaskSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufgabe {title} löschen'**
+  String deleteTaskSemantics(Object title);
+
+  /// No description provided for @taskErrorSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufgaben-Fehler: {message}'**
+  String taskErrorSemantics(Object message);
+
+  /// No description provided for @taskStatusSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufgaben-Status: {message}'**
+  String taskStatusSemantics(Object message);
+
+  /// No description provided for @taskPrioritySelectorSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Priorität der Aufgabe auswählen'**
+  String get taskPrioritySelectorSemantics;
+
+  /// No description provided for @statsChartSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Statistikdiagramm. {summary}'**
+  String statsChartSemantics(Object summary);
+
+  /// No description provided for @statsChartWithTitleSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'{title}. Statistikdiagramm. {summary}'**
+  String statsChartWithTitleSemantics(Object title, Object summary);
+
+  /// No description provided for @statsChartItemSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'{label}: {focusTime}, {pomodoros}'**
+  String statsChartItemSemantics(
+      Object label, Object focusTime, Object pomodoros);
+
+  /// No description provided for @statsChartSummaryWithMore.
+  ///
+  /// In de, this message translates to:
+  /// **'{summary}; und {count} weitere Werte.'**
+  String statsChartSummaryWithMore(Object summary, int count);
+
+  /// No description provided for @statsInfoCardSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'{title}: {value}'**
+  String statsInfoCardSemantics(Object title, Object value);
+
+  /// No description provided for @taskStatsProgressSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Fortschritt für Aufgabe {title}'**
+  String taskStatsProgressSemantics(Object title);
+
+  /// No description provided for @settingsDurationControlSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'{title}: aktueller Wert {value} {unit}. Erlaubter Bereich: {min} bis {max}.'**
+  String settingsDurationControlSemantics(
+      Object title, int value, Object unit, int min, int max);
+
+  /// No description provided for @settingsDecreaseValueSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'{title} verringern'**
+  String settingsDecreaseValueSemantics(Object title);
+
+  /// No description provided for @settingsIncreaseValueSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'{title} erhöhen'**
+  String settingsIncreaseValueSemantics(Object title);
+
+  /// No description provided for @settingsNumberInputSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Wert für {title} eingeben'**
+  String settingsNumberInputSemantics(Object title);
+
+  /// No description provided for @settingsErrorSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Einstellungsfehler: {message}'**
+  String settingsErrorSemantics(Object message);
+
+  /// No description provided for @authErrorSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Anmeldefehler: {message}'**
+  String authErrorSemantics(Object message);
+
+  /// No description provided for @accountInfoRowSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'{label}: {value}'**
+  String accountInfoRowSemantics(Object label, Object value);
+
+  /// No description provided for @googleSignInSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Mit Google anmelden oder Konto erstellen'**
+  String get googleSignInSemantics;
+
+  /// No description provided for @githubSignInSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Mit GitHub anmelden oder Konto erstellen'**
+  String get githubSignInSemantics;
 }
 
 class _AppLocalizationsDelegate

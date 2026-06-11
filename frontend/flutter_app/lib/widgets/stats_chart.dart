@@ -11,7 +11,10 @@ class StatsChart extends StatelessWidget {
     super.key,
     required this.items,
     this.labelFormatter,
+    this.semanticTitle,
   });
+
+  final String? semanticTitle;
 
   final List<StatsItem> items;
   final String Function(String label)? labelFormatter;
@@ -38,117 +41,127 @@ class StatsChart extends StatelessWidget {
     final maxY = _niceMaxYHours(maxMinutes);
     final interval = _intervalForMaxHours(maxY);
 
-    return SizedBox(
-      height: 300,
-      child: BarChart(
-        BarChartData(
-          minY: 0,
-          maxY: maxY,
-          alignment: BarChartAlignment.spaceAround,
-          barTouchData: BarTouchData(
-            enabled: true,
-            touchTooltipData: BarTouchTooltipData(
-              getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                final index = group.x.toInt();
+    final summary = _chartSummary(l10n, items, labelFormatter);
 
-                if (index < 0 || index >= items.length) {
-                  return null;
-                }
+    return Semantics(
+      container: true,
+      label: semanticTitle == null
+          ? l10n.statsChartSemantics(summary)
+          : l10n.statsChartWithTitleSemantics(semanticTitle!, summary),
+      child: ExcludeSemantics(
+        child: SizedBox(
+          height: 300,
+          child: BarChart(
+            BarChartData(
+              minY: 0,
+              maxY: maxY,
+              alignment: BarChartAlignment.spaceAround,
+              barTouchData: BarTouchData(
+                enabled: true,
+                touchTooltipData: BarTouchTooltipData(
+                  getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                    final index = group.x.toInt();
 
-                final item = items[index];
-                final label = labelFormatter?.call(item.label) ?? item.label;
+                    if (index < 0 || index >= items.length) {
+                      return null;
+                    }
 
-                return BarTooltipItem(
-                  '$label\n${_formatMinutes(item.focusMinutes)}\n${l10n.pomodoroCount(item.pomodoros)}',
-                  const TextStyle(color: Colors.white),
-                );
-              },
-            ),
-          ),
-          barGroups: [
-            for (var index = 0; index < items.length; index++)
-              BarChartGroupData(
-                x: index,
-                barRods: [
-                  BarChartRodData(
-                    toY: math.max(0, items[index].focusMinutes / 60),
-                    width: 16,
-                    borderRadius: BorderRadius.circular(6),
+                    final item = items[index];
+                    final label = labelFormatter?.call(item.label) ?? item.label;
+
+                    return BarTooltipItem(
+                      '$label\n${_formatMinutes(item.focusMinutes)}\n${l10n.pomodoroCount(item.pomodoros)}',
+                      const TextStyle(color: Colors.white),
+                    );
+                  },
+                ),
+              ),
+              barGroups: [
+                for (var index = 0; index < items.length; index++)
+                  BarChartGroupData(
+                    x: index,
+                    barRods: [
+                      BarChartRodData(
+                        toY: math.max(0, items[index].focusMinutes / 60),
+                        width: 16,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ],
                   ),
-                ],
+              ],
+              titlesData: FlTitlesData(
+                leftTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 52,
+                    interval: interval,
+                    getTitlesWidget: (value, meta) {
+                      return SideTitleWidget(
+                        axisSide: meta.axisSide,
+                        space: 8,
+                        child: Text(
+                          _formatYAxisValue(value),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 44,
+                    interval: 1,
+                    getTitlesWidget: (value, meta) {
+                      if (value.roundToDouble() != value) {
+                        return const SizedBox.shrink();
+                      }
+
+                      final index = value.toInt();
+
+                      if (index < 0 || index >= items.length) {
+                        return const SizedBox.shrink();
+                      }
+
+                      final step = items.length > 14 ? 3 : 1;
+                      final isLast = index == items.length - 1;
+
+                      if (index % step != 0 && !isLast) {
+                        return const SizedBox.shrink();
+                      }
+
+                      final rawLabel = items[index].label;
+                      final label = labelFormatter?.call(rawLabel) ?? rawLabel;
+
+                      return SideTitleWidget(
+                        axisSide: meta.axisSide,
+                        space: 10,
+                        child: Text(
+                          label,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                topTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                rightTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
               ),
-          ],
-          titlesData: FlTitlesData(
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                reservedSize: 52,
-                interval: interval,
-                getTitlesWidget: (value, meta) {
-                  return SideTitleWidget(
-                    axisSide: meta.axisSide,
-                    space: 8,
-                    child: Text(
-                      _formatYAxisValue(value),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  );
-                },
+              gridData: FlGridData(
+                show: true,
+                horizontalInterval: interval,
+                drawVerticalLine: false,
               ),
-            ),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                reservedSize: 44,
-                interval: 1,
-                getTitlesWidget: (value, meta) {
-                  if (value.roundToDouble() != value) {
-                    return const SizedBox.shrink();
-                  }
-
-                  final index = value.toInt();
-
-                  if (index < 0 || index >= items.length) {
-                    return const SizedBox.shrink();
-                  }
-
-                  final step = items.length > 14 ? 3 : 1;
-                  final isLast = index == items.length - 1;
-
-                  if (index % step != 0 && !isLast) {
-                    return const SizedBox.shrink();
-                  }
-
-                  final rawLabel = items[index].label;
-                  final label = labelFormatter?.call(rawLabel) ?? rawLabel;
-
-                  return SideTitleWidget(
-                    axisSide: meta.axisSide,
-                    space: 10,
-                    child: Text(
-                      label,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  );
-                },
-              ),
-            ),
-            topTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            rightTitles: const AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
+              borderData: FlBorderData(show: false),
             ),
           ),
-          gridData: FlGridData(
-            show: true,
-            horizontalInterval: interval,
-            drawVerticalLine: false,
-          ),
-          borderData: FlBorderData(show: false),
-        ),
+        );
       ),
-    );
+    ),
   }
 }
 
@@ -239,4 +252,25 @@ String _formatMinutes(int minutes) {
   }
 
   return '$hours h $rest min';
+}
+
+String _chartSummary(
+  AppLocalizations l10n,
+  List<StatsItem> items,
+  String Function(String label)? labelFormatter,
+) {
+  final visibleItems = items.take(8).map((item) {
+    final label = labelFormatter?.call(item.label) ?? item.label;
+    return l10n.statsChartItemSemantics(
+      label,
+      _formatMinutes(item.focusMinutes),
+      l10n.pomodoroCount(item.pomodoros),
+    );
+  }).join('; ');
+
+  if (items.length <= 8) {
+    return visibleItems;
+  }
+
+  return l10n.statsChartSummaryWithMore(visibleItems, items.length - 8);
 }

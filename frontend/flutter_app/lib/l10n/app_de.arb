@@ -419,5 +419,221 @@
         "type": "String"
       }
     }
-  }
+  },
+  "timerSemanticsLabel": "Timer. Phase: {phase}. Status: {status}. Verbleibende Zeit: {time}. {progress}. {today}.",
+  "@timerSemanticsLabel": {
+    "placeholders": {
+      "phase": {},
+      "status": {},
+      "time": {},
+      "progress": {},
+      "today": {}
+    }
+  },
+  "timerProgressSemantics": "Fortschritt: {percent} Prozent abgeschlossen.",
+  "@timerProgressSemantics": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "timerHeaderSemantics": "Aktuelle Timer-Phase: {phase}. Status: {status}. Danach folgt: {nextPhase}.",
+  "@timerHeaderSemantics": {
+    "placeholders": {
+      "phase": {},
+      "status": {},
+      "nextPhase": {}
+    }
+  },
+  "timerTaskSelectorSemantics": "Aufgabenauswahl für den Timer. Aktuell ausgewählt: {task}.",
+  "@timerTaskSelectorSemantics": {
+    "placeholders": {
+      "task": {}
+    }
+  },
+  "startTimerSemantics": "Timer starten",
+  "pauseTimerSemantics": "Timer pausieren",
+  "continueTimerSemantics": "Timer fortsetzen",
+  "resetTimerSemantics": "Timer zurücksetzen",
+  "skipPauseSemantics": "Pause überspringen",
+  "timerSavingSemantics": "Die abgeschlossene Timer-Phase wird gespeichert.",
+  "timerSyncSemantics": "Timer-Synchronisierung: {message}",
+  "@timerSyncSemantics": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "timerErrorSemantics": "Timer-Fehler: {message}",
+  "@timerErrorSemantics": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "timerKeyboardShortcutsSemantics": "Tastaturkürzel für den Timer: {shortcuts}",
+  "@timerKeyboardShortcutsSemantics": {
+    "placeholders": {
+      "shortcuts": {}
+    }
+  },
+  "sessionSyncBannerSemantics": "Synchronisierungsstatus: {message}",
+  "@sessionSyncBannerSemantics": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "createTaskSemantics": "Neue Aufgabe erstellen",
+  "activeTaskBannerSemantics": "{title}. {description}",
+  "@activeTaskBannerSemantics": {
+    "placeholders": {
+      "title": {},
+      "description": {}
+    }
+  },
+  "tasksToolbarSemantics": "Aufgaben-Suche, Filter und Sortierung",
+  "taskCardSemantics": "Aufgabe: {title}. Status: {status}. Priorität: {priority}. Abgeschlossen: {pomodoros}. Für Timer aktiv: {selected}.",
+  "@taskCardSemantics": {
+    "placeholders": {
+      "title": {},
+      "status": {},
+      "priority": {},
+      "pomodoros": {},
+      "selected": {}
+    }
+  },
+  "taskCompletedToggleSemantics": "Aufgabe {title} als erledigt oder offen markieren",
+  "@taskCompletedToggleSemantics": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "selectTaskForTimerSemantics": "Aufgabe {title} für den Timer auswählen",
+  "@selectTaskForTimerSemantics": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "editTaskSemantics": "Aufgabe {title} bearbeiten",
+  "@editTaskSemantics": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "deleteTaskSemantics": "Aufgabe {title} löschen",
+  "@deleteTaskSemantics": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "taskErrorSemantics": "Aufgaben-Fehler: {message}",
+  "@taskErrorSemantics": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "taskStatusSemantics": "Aufgaben-Status: {message}",
+  "@taskStatusSemantics": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "taskPrioritySelectorSemantics": "Priorität der Aufgabe auswählen",
+  "statsChartSemantics": "Statistikdiagramm. {summary}",
+  "@statsChartSemantics": {
+    "placeholders": {
+      "summary": {}
+    }
+  },
+  "statsChartWithTitleSemantics": "{title}. Statistikdiagramm. {summary}",
+  "@statsChartWithTitleSemantics": {
+    "placeholders": {
+      "title": {},
+      "summary": {}
+    }
+  },
+  "statsChartItemSemantics": "{label}: {focusTime}, {pomodoros}",
+  "@statsChartItemSemantics": {
+    "placeholders": {
+      "label": {},
+      "focusTime": {},
+      "pomodoros": {}
+    }
+  },
+  "statsChartSummaryWithMore": "{summary}; und {count} weitere Werte.",
+  "@statsChartSummaryWithMore": {
+    "placeholders": {
+      "summary": {},
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "statsInfoCardSemantics": "{title}: {value}",
+  "@statsInfoCardSemantics": {
+    "placeholders": {
+      "title": {},
+      "value": {}
+    }
+  },
+  "taskStatsProgressSemantics": "Fortschritt für Aufgabe {title}",
+  "@taskStatsProgressSemantics": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "settingsDurationControlSemantics": "{title}: aktueller Wert {value} {unit}. Erlaubter Bereich: {min} bis {max}.",
+  "@settingsDurationControlSemantics": {
+    "placeholders": {
+      "title": {},
+      "value": {
+        "type": "int"
+      },
+      "unit": {},
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsDecreaseValueSemantics": "{title} verringern",
+  "@settingsDecreaseValueSemantics": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "settingsIncreaseValueSemantics": "{title} erhöhen",
+  "@settingsIncreaseValueSemantics": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "settingsNumberInputSemantics": "Wert für {title} eingeben",
+  "@settingsNumberInputSemantics": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "settingsErrorSemantics": "Einstellungsfehler: {message}",
+  "@settingsErrorSemantics": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "authErrorSemantics": "Anmeldefehler: {message}",
+  "@authErrorSemantics": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "accountInfoRowSemantics": "{label}: {value}",
+  "@accountInfoRowSemantics": {
+    "placeholders": {
+      "label": {},
+      "value": {}
+    }
+  },
+  "googleSignInSemantics": "Mit Google anmelden oder Konto erstellen",
+  "githubSignInSemantics": "Mit GitHub anmelden oder Konto erstellen"
 }

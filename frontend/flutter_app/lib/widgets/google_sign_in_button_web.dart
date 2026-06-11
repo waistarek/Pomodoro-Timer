@@ -15,19 +15,24 @@ class GoogleWebSignInButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return IgnorePointer(
-      ignoring: !enabled,
-      child: Opacity(
-        opacity: enabled ? 1.0 : 0.55,
-        child: Center(
-          child: google_web.renderButton(
-            configuration: google_web.GSIButtonConfiguration(
-              type: google_web.GSIButtonType.standard,
-              theme: google_web.GSIButtonTheme.outline,
-              size: google_web.GSIButtonSize.large,
-              text: google_web.GSIButtonText.signinWith,
-              minimumWidth: 360,
-              locale: l10n.localeName,
+    return Semantics(
+      button: true,
+      enabled: enabled,
+      label: l10n.googleSignInSemantics,
+      child: IgnorePointer(
+        ignoring: !enabled,
+        child: Opacity(
+          opacity: enabled ? 1.0 : 0.55,
+          child: Center(
+            child: google_web.renderButton(
+              configuration: google_web.GSIButtonConfiguration(
+                type: google_web.GSIButtonType.standard,
+                theme: google_web.GSIButtonTheme.outline,
+                size: google_web.GSIButtonSize.large,
+                text: google_web.GSIButtonText.signinWith,
+                minimumWidth: 360,
+                locale: l10n.localeName,
+              ),
             ),
           ),
         ),

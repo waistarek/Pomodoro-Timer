@@ -19,4 +19,29 @@ void main() {
     expect(find.text('Start'), findsOneWidget);
     expect(find.byIcon(Icons.play_arrow), findsOneWidget);
   });
+
+  testWidgets('BigButton exposes semantic label', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: BigButton(
+            label: 'Start',
+            semanticLabel: 'Start timer',
+            icon: Icons.play_arrow,
+            onPressed: () {},
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      tester.getSemantics(find.byType(BigButton)),
+      matchesSemantics(
+        label: 'Start timer',
+        isButton: true,
+        isEnabled: true,
+        hasTapAction: true,
+      ),
+    );
+  });
 }

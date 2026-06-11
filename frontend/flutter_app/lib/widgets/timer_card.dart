@@ -22,6 +22,14 @@ class TimerCard extends StatelessWidget {
       builder: (context, timer, taskProvider, statsProvider, _) {
         final l10n = AppLocalizations.of(context);
         final phaseColor = _phaseColor(context, timer.phase);
+        final phaseLabel = _phaseLabel(timer.phase, l10n);
+        final statusLabel = _timerStatusLabel(timer, l10n);
+        final progressLabel = _phaseProgressLabel(timer, l10n);
+        final todayPomodorosLabel = statsProvider.todayPomodorosLoading
+            ? l10n.todayPomodorosLoading
+            : l10n.todayPomodoros(
+                l10n.pomodoroCount(statsProvider.todayPomodoros),
+              );
 
         timer.setWorkPhaseCompletedCallback(() async {
           await Future.wait([
@@ -75,10 +83,10 @@ class TimerCard extends StatelessWidget {
                       _ProgressTimer(
                         progress: timer.progress,
                         formattedTime: timer.formattedTime,
-                        progressLabel: _phaseProgressLabel(timer, l10n),
-                        todayPomodoros: statsProvider.todayPomodoros,
-                        todayPomodorosLoading:
-                            statsProvider.todayPomodorosLoading,
+                        phaseLabel: phaseLabel,
+                        statusLabel: statusLabel,
+                        progressLabel: progressLabel,
+                        todayPomodorosLabel: todayPomodorosLabel,
                         color: phaseColor,
                         diameter: timerDiameter,
                       ),
@@ -399,18 +407,20 @@ class _ProgressTimer extends StatelessWidget {
   const _ProgressTimer({
     required this.progress,
     required this.formattedTime,
+    required this.phaseLabel,
+    required this.statusLabel,
     required this.progressLabel,
-    required this.todayPomodoros,
-    required this.todayPomodorosLoading,
+    required this.todayPomodorosLabel,
     required this.color,
     required this.diameter,
   });
 
   final double progress;
   final String formattedTime;
+  final String phaseLabel;
+  final String statusLabel;
   final String progressLabel;
-  final int todayPomodoros;
-  final bool todayPomodorosLoading;
+  final String todayPomodorosLabel;
   final Color color;
   final double diameter;
 
@@ -421,63 +431,76 @@ class _ProgressTimer extends StatelessWidget {
         Theme.of(context).colorScheme.surfaceContainerHighest;
 
     final isCompact = diameter < 240;
+    final clampedProgress = progress.clamp(0.0, 1.0);
+    final progressPercent = (clampedProgress * 100).round();
 
-    return SizedBox(
-      width: diameter,
-      height: diameter,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          SizedBox.expand(
-            child: CircularProgressIndicator(
-              value: 1,
-              strokeWidth: isCompact ? 12 : 14,
-              color: backgroundColor,
-              strokeCap: StrokeCap.round,
-            ),
-          ),
-          SizedBox.expand(
-            child: CircularProgressIndicator(
-              value: progress.clamp(0.0, 1.0),
-              strokeWidth: isCompact ? 12 : 14,
-              color: color,
-              strokeCap: StrokeCap.round,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  formattedTime,
-                  style: isCompact
-                      ? Theme.of(context).textTheme.displayMedium
-                      : Theme.of(context).textTheme.displayLarge,
-                  textAlign: TextAlign.center,
+    return Semantics(
+      container: true,
+      liveRegion: true,
+      label: l10n.timerSemanticsLabel(
+        phaseLabel,
+        statusLabel,
+        formattedTime,
+        progressLabel,
+        todayPomodorosLabel,
+      ),
+      value: l10n.timerProgressSemantics(progressPercent),
+      child: ExcludeSemantics(
+        child: SizedBox(
+          width: diameter,
+          height: diameter,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              SizedBox.expand(
+                child: CircularProgressIndicator(
+                  value: 1,
+                  strokeWidth: isCompact ? 12 : 14,
+                  color: backgroundColor,
+                  strokeCap: StrokeCap.round,
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  progressLabel,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                  textAlign: TextAlign.center,
+              ),
+              SizedBox.expand(
+                child: CircularProgressIndicator(
+                  value: clampedProgress,
+                  strokeWidth: isCompact ? 12 : 14,
+                  color: color,
+                  strokeCap: StrokeCap.round,
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  todayPomodorosLoading
-                      ? l10n.todayPomodorosLoading
-                      : l10n.todayPomodoros(
-                          l10n.pomodoroCount(todayPomodoros),
-                        ),
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  textAlign: TextAlign.center,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      formattedTime,
+                      style: isCompact
+                          ? Theme.of(context).textTheme.displayMedium
+                          : Theme.of(context).textTheme.displayLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      progressLabel,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      todayPomodorosLabel,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -504,18 +527,26 @@ class _TimerActions extends StatelessWidget {
           BigButton(
             label: l10n.pause,
             icon: Icons.pause,
+            semanticLabel: l10n.pauseTimerSemantics,
+            tooltip: l10n.pauseTimerSemantics,
             onPressed: timer.pause,
           )
         else
           BigButton(
             label: timer.isPaused ? l10n.continueButton : l10n.start,
             icon: Icons.play_arrow,
+            semanticLabel:
+                timer.isPaused ? l10n.continueTimerSemantics : l10n.startTimerSemantics,
+            tooltip:
+                timer.isPaused ? l10n.continueTimerSemantics : l10n.startTimerSemantics,
             onPressed: timer.startOrResume,
           ),
         BigButton(
           label: l10n.reset,
           icon: Icons.restart_alt,
           filled: false,
+          semanticLabel: l10n.resetTimerSemantics,
+          tooltip: l10n.resetTimerSemantics,
           onPressed: () => _confirmResetTimer(context, timer),
         ),
         if (timer.canSkipPause)
@@ -523,6 +554,8 @@ class _TimerActions extends StatelessWidget {
             label: l10n.skipPause,
             icon: Icons.skip_next,
             filled: false,
+            semanticLabel: l10n.skipPauseSemantics,
+            tooltip: l10n.skipPauseSemantics,
             onPressed: timer.skipPause,
           ),
       ],
@@ -575,35 +608,42 @@ class _TimerBackgroundSyncBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Card(
-      elevation: 0,
-      color: colorScheme.secondaryContainer.withValues(alpha: 0.45),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Row(
-          children: [
-            Icon(
-              Icons.sync_outlined,
-              color: colorScheme.secondary,
+    return Semantics(
+      container: true,
+      liveRegion: true,
+      label: l10n.timerSavingSemantics,
+      child: ExcludeSemantics(
+        child: Card(
+          elevation: 0,
+          color: colorScheme.secondaryContainer.withValues(alpha: 0.45),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.sync_outlined,
+                  color: colorScheme.secondary,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    message,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurface,
+                        ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              ],
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                message,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurface,
-                    ),
-              ),
-            ),
-            const SizedBox(
-              width: 18,
-              height: 18,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-          ],
-        ),
+          ),
+        );
       ),
-    );
+    ),
   }
 }
 
@@ -615,44 +655,51 @@ class _TimerSavingBanner extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context);
 
-    return Card(
-      elevation: 0,
-      color: colorScheme.surfaceContainerHighest,
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          children: [
-            Row(
+    return Semantics(
+      container: true,
+      liveRegion: true,
+      label: l10n.timerSavingSemantics,
+      child: ExcludeSemantics(
+        child: Card(
+          elevation: 0,
+          color: colorScheme.surfaceContainerHighest,
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
               children: [
-                Icon(
-                  Icons.cloud_upload_outlined,
-                  color: colorScheme.primary,
+                Row(
+                  children: [
+                    Icon(
+                      Icons.cloud_upload_outlined,
+                      color: colorScheme.primary,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        l10n.phaseSavingTitle,
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    l10n.phaseSavingTitle,
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
+                const SizedBox(height: 8),
+                Text(
+                  l10n.phaseSavingDescription,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                ),
+                const SizedBox(height: 12),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(999),
+                  child: const LinearProgressIndicator(minHeight: 4),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.phaseSavingDescription,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-            ),
-            const SizedBox(height: 12),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(999),
-              child: const LinearProgressIndicator(minHeight: 4),
-            ),
-          ],
-        ),
+          ),
+        );
       ),
-    );
+    ),
   }
 }
 
@@ -670,51 +717,56 @@ class _TimerErrorBanner extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context);
 
-    return Card(
-      color: colorScheme.errorContainer,
-      elevation: 0,
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              Icons.warning_amber_outlined,
-              color: colorScheme.onErrorContainer,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.storageProblem,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: colorScheme.onErrorContainer,
-                        ),
+    return Semantics(
+      container: true,
+      liveRegion: true,
+      label: l10n.timerErrorSemantics(message),
+      child:  Card(
+          color: colorScheme.errorContainer,
+          elevation: 0,
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.warning_amber_outlined,
+                  color: colorScheme.onErrorContainer,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.storageProblem,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                              color: colorScheme.onErrorContainer,
+                            ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        message,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: colorScheme.onErrorContainer,
+                            ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    message,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onErrorContainer,
-                        ),
+                ),
+                IconButton(
+                  tooltip: l10n.messageClose,
+                  onPressed: onClose,
+                  icon: Icon(
+                    Icons.close,
+                    color: colorScheme.onErrorContainer,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            IconButton(
-              tooltip: l10n.messageClose,
-              onPressed: onClose,
-              icon: Icon(
-                Icons.close,
-                color: colorScheme.onErrorContainer,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+          ),
+        );
+    ),
   }
 }
 

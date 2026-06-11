@@ -419,5 +419,221 @@
         "type": "String"
       }
     }
+  },
+  "timerSemanticsLabel": "Timer. Phase: {phase}. Status: {status}. Remaining time: {time}. {progress}. {today}.",
+  "timerProgressSemantics": "Progress: {percent} percent completed.",
+  "timerHeaderSemantics": "Current timer phase: {phase}. Status: {status}. Next: {nextPhase}.",
+  "timerTaskSelectorSemantics": "Timer task selection. Currently selected: {task}.",
+  "startTimerSemantics": "Start timer",
+  "pauseTimerSemantics": "Pause timer",
+  "continueTimerSemantics": "Continue timer",
+  "resetTimerSemantics": "Reset timer",
+  "skipPauseSemantics": "Skip break",
+  "timerSavingSemantics": "The completed timer phase is being saved.",
+  "timerSyncSemantics": "Timer synchronization: {message}",
+  "timerErrorSemantics": "Timer error: {message}",
+  "timerKeyboardShortcutsSemantics": "Keyboard shortcuts for the timer: {shortcuts}",
+  "sessionSyncBannerSemantics": "Synchronization status: {message}",
+  "createTaskSemantics": "Create new task",
+  "activeTaskBannerSemantics": "{title}. {description}",
+  "tasksToolbarSemantics": "Task search, filter and sorting",
+  "taskCardSemantics": "Task: {title}. Status: {status}. Priority: {priority}. Completed: {pomodoros}. Active for timer: {selected}.",
+  "taskCompletedToggleSemantics": "Mark task {title} as completed or open",
+  "selectTaskForTimerSemantics": "Select task {title} for the timer",
+  "editTaskSemantics": "Edit task {title}",
+  "deleteTaskSemantics": "Delete task {title}",
+  "taskErrorSemantics": "Task error: {message}",
+  "taskStatusSemantics": "Task status: {message}",
+  "taskPrioritySelectorSemantics": "Select task priority",
+  "statsChartSemantics": "Statistics chart. {summary}",
+  "statsChartWithTitleSemantics": "{title}. Statistics chart. {summary}",
+  "statsChartItemSemantics": "{label}: {focusTime}, {pomodoros}",
+  "statsChartSummaryWithMore": "{summary}; and {count} more values.",
+  "statsInfoCardSemantics": "{title}: {value}",
+  "taskStatsProgressSemantics": "Progress for task {title}",
+  "settingsDurationControlSemantics": "{title}: current value {value} {unit}. Allowed range: {min} to {max}.",
+  "settingsDecreaseValueSemantics": "Decrease {title}",
+  "settingsIncreaseValueSemantics": "Increase {title}",
+  "settingsNumberInputSemantics": "Enter value for {title}",
+  "settingsErrorSemantics": "Settings error: {message}",
+  "authErrorSemantics": "Login error: {message}",
+  "accountInfoRowSemantics": "{label}: {value}",
+  "googleSignInSemantics": "Sign in or create an account with Google",
+  "githubSignInSemantics": "Sign in or create an account with GitHub",
+  "@timerSemanticsLabel": {
+    "placeholders": {
+      "phase": {},
+      "status": {},
+      "time": {},
+      "progress": {},
+      "today": {}
+    }
+  },
+  "@timerProgressSemantics": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@timerHeaderSemantics": {
+    "placeholders": {
+      "phase": {},
+      "status": {},
+      "nextPhase": {}
+    }
+  },
+  "@timerTaskSelectorSemantics": {
+    "placeholders": {
+      "task": {}
+    }
+  },
+  "@timerSyncSemantics": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "@timerErrorSemantics": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "@timerKeyboardShortcutsSemantics": {
+    "placeholders": {
+      "shortcuts": {}
+    }
+  },
+  "@sessionSyncBannerSemantics": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "@activeTaskBannerSemantics": {
+    "placeholders": {
+      "title": {},
+      "description": {}
+    }
+  },
+  "@taskCardSemantics": {
+    "placeholders": {
+      "title": {},
+      "status": {},
+      "priority": {},
+      "pomodoros": {},
+      "selected": {}
+    }
+  },
+  "@taskCompletedToggleSemantics": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "@selectTaskForTimerSemantics": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "@editTaskSemantics": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "@deleteTaskSemantics": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "@taskErrorSemantics": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "@taskStatusSemantics": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "@statsChartSemantics": {
+    "placeholders": {
+      "summary": {}
+    }
+  },
+  "@statsChartWithTitleSemantics": {
+    "placeholders": {
+      "title": {},
+      "summary": {}
+    }
+  },
+  "@statsChartItemSemantics": {
+    "placeholders": {
+      "label": {},
+      "focusTime": {},
+      "pomodoros": {}
+    }
+  },
+  "@statsChartSummaryWithMore": {
+    "placeholders": {
+      "summary": {},
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@statsInfoCardSemantics": {
+    "placeholders": {
+      "title": {},
+      "value": {}
+    }
+  },
+  "@taskStatsProgressSemantics": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "@settingsDurationControlSemantics": {
+    "placeholders": {
+      "title": {},
+      "value": {
+        "type": "int"
+      },
+      "unit": {},
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "@settingsDecreaseValueSemantics": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "@settingsIncreaseValueSemantics": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "@settingsNumberInputSemantics": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "@settingsErrorSemantics": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "@authErrorSemantics": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "@accountInfoRowSemantics": {
+    "placeholders": {
+      "label": {},
+      "value": {}
+    }
   }
 }

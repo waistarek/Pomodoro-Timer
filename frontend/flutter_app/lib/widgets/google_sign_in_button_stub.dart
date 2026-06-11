@@ -14,12 +14,17 @@ class GoogleWebSignInButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return SizedBox(
-      width: double.infinity,
-      child: OutlinedButton.icon(
-        onPressed: null,
-        icon: const Icon(Icons.login),
-        label: Text(l10n.googleWebOnly),
+    return Semantics(
+      button: true,
+      enabled: false,
+      label: l10n.googleSignInSemantics,
+      child: SizedBox(
+        width: double.infinity,
+        child: OutlinedButton.icon(
+          onPressed: null,
+          icon: const ExcludeSemantics(child: Icon(Icons.login)),
+          label: Text(l10n.googleWebOnly),
+        ),
       ),
     );
   }

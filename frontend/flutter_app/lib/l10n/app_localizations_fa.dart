@@ -890,4 +890,189 @@ class AppLocalizationsFa extends AppLocalizations {
   String phaseProgress(String elapsed, String total) {
     return '$elapsed از $total';
   }
+
+  @override
+  String timerSemanticsLabel(
+      Object phase, Object status, Object time, Object progress, Object today) {
+    return 'Timer. Phase: $phase. Status: $status. Verbleibende Zeit: $time. $progress. $today.';
+  }
+
+  @override
+  String timerProgressSemantics(int percent) {
+    return 'Fortschritt: $percent Prozent abgeschlossen.';
+  }
+
+  @override
+  String timerHeaderSemantics(Object phase, Object status, Object nextPhase) {
+    return 'Aktuelle Timer-Phase: $phase. Status: $status. Danach folgt: $nextPhase.';
+  }
+
+  @override
+  String timerTaskSelectorSemantics(Object task) {
+    return 'Aufgabenauswahl für den Timer. Aktuell ausgewählt: $task.';
+  }
+
+  @override
+  String get startTimerSemantics => 'Timer starten';
+
+  @override
+  String get pauseTimerSemantics => 'Timer pausieren';
+
+  @override
+  String get continueTimerSemantics => 'Timer fortsetzen';
+
+  @override
+  String get resetTimerSemantics => 'Timer zurücksetzen';
+
+  @override
+  String get skipPauseSemantics => 'Pause überspringen';
+
+  @override
+  String get timerSavingSemantics =>
+      'Die abgeschlossene Timer-Phase wird gespeichert.';
+
+  @override
+  String timerSyncSemantics(Object message) {
+    return 'Timer-Synchronisierung: $message';
+  }
+
+  @override
+  String timerErrorSemantics(Object message) {
+    return 'Timer-Fehler: $message';
+  }
+
+  @override
+  String timerKeyboardShortcutsSemantics(Object shortcuts) {
+    return 'Tastaturkürzel für den Timer: $shortcuts';
+  }
+
+  @override
+  String sessionSyncBannerSemantics(Object message) {
+    return 'Synchronisierungsstatus: $message';
+  }
+
+  @override
+  String get createTaskSemantics => 'Neue Aufgabe erstellen';
+
+  @override
+  String activeTaskBannerSemantics(Object title, Object description) {
+    return '$title. $description';
+  }
+
+  @override
+  String get tasksToolbarSemantics => 'Aufgaben-Suche, Filter und Sortierung';
+
+  @override
+  String taskCardSemantics(Object title, Object status, Object priority,
+      Object pomodoros, Object selected) {
+    return 'Aufgabe: $title. Status: $status. Priorität: $priority. Abgeschlossen: $pomodoros. Für Timer aktiv: $selected.';
+  }
+
+  @override
+  String taskCompletedToggleSemantics(Object title) {
+    return 'Aufgabe $title als erledigt oder offen markieren';
+  }
+
+  @override
+  String selectTaskForTimerSemantics(Object title) {
+    return 'Aufgabe $title für den Timer auswählen';
+  }
+
+  @override
+  String editTaskSemantics(Object title) {
+    return 'Aufgabe $title bearbeiten';
+  }
+
+  @override
+  String deleteTaskSemantics(Object title) {
+    return 'Aufgabe $title löschen';
+  }
+
+  @override
+  String taskErrorSemantics(Object message) {
+    return 'Aufgaben-Fehler: $message';
+  }
+
+  @override
+  String taskStatusSemantics(Object message) {
+    return 'Aufgaben-Status: $message';
+  }
+
+  @override
+  String get taskPrioritySelectorSemantics => 'Priorität der Aufgabe auswählen';
+
+  @override
+  String statsChartSemantics(Object summary) {
+    return 'Statistikdiagramm. $summary';
+  }
+
+  @override
+  String statsChartWithTitleSemantics(Object title, Object summary) {
+    return '$title. Statistikdiagramm. $summary';
+  }
+
+  @override
+  String statsChartItemSemantics(
+      Object label, Object focusTime, Object pomodoros) {
+    return '$label: $focusTime, $pomodoros';
+  }
+
+  @override
+  String statsChartSummaryWithMore(Object summary, int count) {
+    return '$summary; und $count weitere Werte.';
+  }
+
+  @override
+  String statsInfoCardSemantics(Object title, Object value) {
+    return '$title: $value';
+  }
+
+  @override
+  String taskStatsProgressSemantics(Object title) {
+    return 'Fortschritt für Aufgabe $title';
+  }
+
+  @override
+  String settingsDurationControlSemantics(
+      Object title, int value, Object unit, int min, int max) {
+    return '$title: aktueller Wert $value $unit. Erlaubter Bereich: $min bis $max.';
+  }
+
+  @override
+  String settingsDecreaseValueSemantics(Object title) {
+    return '$title verringern';
+  }
+
+  @override
+  String settingsIncreaseValueSemantics(Object title) {
+    return '$title erhöhen';
+  }
+
+  @override
+  String settingsNumberInputSemantics(Object title) {
+    return 'Wert für $title eingeben';
+  }
+
+  @override
+  String settingsErrorSemantics(Object message) {
+    return 'Einstellungsfehler: $message';
+  }
+
+  @override
+  String authErrorSemantics(Object message) {
+    return 'Anmeldefehler: $message';
+  }
+
+  @override
+  String accountInfoRowSemantics(Object label, Object value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get googleSignInSemantics =>
+      'Mit Google anmelden oder Konto erstellen';
+
+  @override
+  String get githubSignInSemantics =>
+      'Mit GitHub anmelden oder Konto erstellen';
 }

@@ -301,8 +301,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  if (provider.error != null) ...[
-                    Card(
+                  Semantics(
+                    container: true,
+                    liveRegion: true,
+                    label: l10n.settingsErrorSemantics(
+                      _localizedSettingsError(l10n, provider.error!),
+                    ),
+                    child: Card(
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Row(
@@ -320,7 +325,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                  ],
+                  ),
+                  
                   FilledButton.icon(
                     onPressed: canSave ? () => _saveSettings(provider) : null,
                     icon: _saving
@@ -547,57 +553,69 @@ class _NumberInputTileState extends State<_NumberInputTile> {
     final canDecrease = widget.value > widget.min;
     final canIncrease = widget.value < widget.max;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final controls = _NumberControls(
-            controller: _controller,
-            focusNode: _focusNode,
-            unitLabel: widget.unitLabel,
-            canDecrease: canDecrease,
-            canIncrease: canIncrease,
-            onDecrease: () => _changeBy(-1),
-            onIncrease: () => _changeBy(1),
-            onSubmit: _commitInput,
-          );
-
-          if (constraints.maxWidth < 560) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.title,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 4),
-                Text('${widget.value} ${widget.suffix}'),
-                const SizedBox(height: 12),
-                controls,
-              ],
-            );
-          }
-
-          return Row(
-            children: [
-              Expanded(
-                child: ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(widget.title),
-                  subtitle: Text('${widget.value} ${widget.suffix}'),
-                ),
-              ),
-              controls,
-            ],
-          );
-        },
+    return Semantics(
+      container: true,
+      label: AppLocalizations.of(context).settingsDurationControlSemantics(
+        widget.title,
+        widget.value,
+        widget.suffix,
+        widget.min,
+        widget.max,
       ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: LayoutBuilder(
+            builder: (context, constraints) {
+              final controls = _NumberControls(
+                title: widget.title,
+                controller: _controller,
+                focusNode: _focusNode,
+                unitLabel: widget.unitLabel,
+                canDecrease: canDecrease,
+                canIncrease: canIncrease,
+                onDecrease: () => _changeBy(-1),
+                onIncrease: () => _changeBy(1),
+                onSubmit: _commitInput,
+              );
+
+              if (constraints.maxWidth < 560) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.title,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 4),
+                    Text('${widget.value} ${widget.suffix}'),
+                    const SizedBox(height: 12),
+                    controls,
+                  ],
+                );
+              }
+
+              return Row(
+                children: [
+                  Expanded(
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(widget.title),
+                      subtitle: Text('${widget.value} ${widget.suffix}'),
+                    ),
+                  ),
+                  controls,
+                ],
+              );
+            },
+          ),
+        );
     );
   }
 }
 
 class _NumberControls extends StatelessWidget {
   const _NumberControls({
+    required this.title,
     required this.controller,
     required this.focusNode,
     required this.unitLabel,
@@ -608,6 +626,7 @@ class _NumberControls extends StatelessWidget {
     required this.onSubmit,
   });
 
+  final String title;
   final TextEditingController controller;
   final FocusNode focusNode;
   final String unitLabel;
@@ -630,7 +649,7 @@ class _NumberControls extends StatelessWidget {
             width: 48,
             height: 48,
             child: IconButton.outlined(
-              tooltip: l10n.decrease,
+              tooltip: l10n.settingsDecreaseValueSemantics(title),
               onPressed: canDecrease ? onDecrease : null,
               icon: const Icon(Icons.remove),
             ),
@@ -648,6 +667,7 @@ class _NumberControls extends StatelessWidget {
                 FilteringTextInputFormatter.digitsOnly,
               ],
               decoration: const InputDecoration(
+                labelText: l10n.settingsNumberInputSemantics(title),
                 isDense: true,
                 border: OutlineInputBorder(),
                 contentPadding: EdgeInsets.symmetric(
@@ -674,7 +694,7 @@ class _NumberControls extends StatelessWidget {
             width: 48,
             height: 48,
             child: IconButton.outlined(
-              tooltip: l10n.increase,
+              tooltip: l10n.settingsIncreaseValueSemantics(title),
               onPressed: canIncrease ? onIncrease : null,
               icon: const Icon(Icons.add),
             ),

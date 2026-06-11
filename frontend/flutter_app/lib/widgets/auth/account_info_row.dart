@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 
 class AccountInfoRow extends StatelessWidget {
   const AccountInfoRow({
@@ -21,29 +22,35 @@ class AccountInfoRow extends StatelessWidget {
       style: Theme.of(context).textTheme.bodyMedium,
     );
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(icon, size: 20),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: Theme.of(context).textTheme.labelMedium,
-              ),
-              tooltip == null
-                  ? valueWidget
-                  : Tooltip(
-                      message: tooltip!,
-                      child: valueWidget,
-                    ),
-            ],
+    final l10n = AppLocalizations.of(context);
+
+    return Semantics(
+      container: true,
+      label: l10n.accountInfoRowSemantics(label, value),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ExcludeSemantics(child: Icon(icon, size: 20)),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+                tooltip == null
+                    ? valueWidget
+                    : Tooltip(
+                        message: tooltip!,
+                        child: valueWidget,
+                      ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

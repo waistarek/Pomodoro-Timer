@@ -349,6 +349,7 @@ class _GeneralStatsContent extends StatelessWidget {
                 const SizedBox(height: 16),
                 StatsChart(
                   items: stats.items,
+                  semanticTitle: chartTitle,
                   labelFormatter: (label) =>
                       _formatChartLabel(label, mode, l10n),
                 ),
@@ -468,7 +469,13 @@ class _TaskStatsContent extends StatelessWidget {
                             ],
                           ),
                           const SizedBox(height: 6),
-                          LinearProgressIndicator(value: progress),
+                          Semantics(
+                            label: l10n.taskStatsProgressSemantics(
+                              _localizedTaskTitle(item.taskTitle, l10n),
+                            ),
+                            value: l10n.timerProgressSemantics((progress * 100).round()),
+                            child: LinearProgressIndicator(value: progress),
+                          ),
                           const SizedBox(height: 4),
                           Text(
                             l10n.taskPomodoroMinutes(
@@ -519,41 +526,45 @@ class _InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 260,
-      height: 130,
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Icon(icon, size: 30),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+    return Semantics(
+      container: true,
+      label: AppLocalizations.of(context).statsInfoCardSemantics(title, value),
+      child: SizedBox(
+        width: 260,
+        height: 130,
+        child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Icon(icon, size: 30),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          value,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      value,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
+        );
+    ),
   }
 }
 

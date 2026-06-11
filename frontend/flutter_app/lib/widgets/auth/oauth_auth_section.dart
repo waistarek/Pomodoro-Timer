@@ -137,10 +137,13 @@ class _GithubAuthSection extends StatelessWidget {
         if (!githubConfigured)
           Text(l10n.githubNotConfigured)
         else
-          OutlinedButton.icon(
-            onPressed: loading ? null : onStartGithubOAuth,
-            icon: const Icon(Icons.code),
-            label: Text(description),
+          Tooltip(
+            message: l10n.githubSignInSemantics,
+            child: OutlinedButton.icon(
+              onPressed: loading ? null : onStartGithubOAuth,
+              icon: const ExcludeSemantics(child: Icon(Icons.code)),
+              label: Text(description),
+            ),
           ),
       ],
     );

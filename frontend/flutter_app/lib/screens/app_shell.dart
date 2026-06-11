@@ -225,57 +225,67 @@ class _SessionSyncBanner extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = AppLocalizations.of(context);
     final hasError = sessionSync.error != null;
+    final message = hasError
+        ? l10n.sessionSyncFailed
+        : _sessionSyncStatusText(l10n, sessionSync);
 
-    return Material(
-      color: hasError
-          ? colorScheme.errorContainer
-          : colorScheme.secondaryContainer.withValues(alpha: 0.55),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Row(
-            children: [
-              if (sessionSync.syncing)
-                const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              else
-                Icon(
-                  hasError ? Icons.warning_amber_outlined : Icons.sync_outlined,
-                  color: hasError
-                      ? colorScheme.onErrorContainer
-                      : colorScheme.secondary,
+    return Semantics(
+      container: true,
+      liveRegion: true,
+      label: l10n.sessionSyncBannerSemantics(message),
+      child: Material(
+        color: hasError
+            ? colorScheme.errorContainer
+            : colorScheme.secondaryContainer.withValues(alpha: 0.55),
+        child: SafeArea(
+          bottom: false,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              children: [
+                if (sessionSync.syncing)
+                  const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                else
+                  ExcludeSemantics(
+                    child: Icon(
+                      hasError
+                          ? Icons.warning_amber_outlined
+                          : Icons.sync_outlined,
+                      color: hasError
+                          ? colorScheme.onErrorContainer
+                          : colorScheme.secondary,
+                    ),
+                  ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    message,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: hasError
+                              ? colorScheme.onErrorContainer
+                              : colorScheme.onSurface,
+                        ),
+                  ),
                 ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  hasError
-                      ? l10n.sessionSyncFailed
-                      : _sessionSyncStatusText(l10n, sessionSync),
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: hasError
-                            ? colorScheme.onErrorContainer
-                            : colorScheme.onSurface,
-                      ),
-                ),
-              ),
-              if (hasError)
-                TextButton(
-                  onPressed: sessionSync.clearError,
-                  child: Text(l10n.close),
-                )
-              else if (sessionSync.canSync &&
-                  sessionSync.pendingCount > 0 &&
-                  !sessionSync.syncing)
-                TextButton.icon(
-                  onPressed: sessionSync.syncStoredSessions,
-                  icon: const Icon(Icons.refresh),
-                  label: Text(l10n.retry),
-                ),
-            ],
+                if (hasError)
+                  TextButton(
+                    onPressed: sessionSync.clearError,
+                    child: Text(l10n.close),
+                  )
+                else if (sessionSync.canSync &&
+                    sessionSync.pendingCount > 0 &&
+                    !sessionSync.syncing)
+                  TextButton.icon(
+                    onPressed: sessionSync.syncStoredSessions,
+                    icon: const ExcludeSemantics(child: Icon(Icons.refresh)),
+                    label: Text(l10n.retry),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
