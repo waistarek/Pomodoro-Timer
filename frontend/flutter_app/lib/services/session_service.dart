@@ -17,23 +17,26 @@ class SessionService {
   bool get canSync => localStorage.token != null;
 
   int get pendingSessionCount {
-    return localStorage.getJsonList(_guestSessionsKey).length +
+    return localStorage
+            .getJsonListInScope(
+              LocalStorageService.guestScope,
+              _guestSessionsKey,
+            )
+            .length +
         localStorage.getJsonList(_pendingSessionsKey).length;
   }
 
   Future<void> createSession(PomodoroSession session) async {
-    if (localStorage.token == null) {
-      await _saveGuestSession(session);
-      return;
-    }
-
-    await _queuePendingSession(session);
+    await queueSessionForRetry(session);
     await syncPendingSessions();
   }
 
   Future<List<PomodoroSession>> getGuestSessions() async {
     return localStorage
-        .getJsonList(_guestSessionsKey)
+        .getJsonListInScope(
+          LocalStorageService.guestScope,
+          _guestSessionsKey,
+        )
         .map(PomodoroSession.fromJson)
         .toList();
   }
@@ -43,16 +46,22 @@ class SessionService {
       return;
     }
 
-    await _moveGuestSessionsToPending();
-    await syncPendingSessions();
+    final targetScope = localStorage.scope;
+
+    await _moveGuestSessionsToPending(targetScope);
+    await syncPendingSessions(scope: targetScope);
   }
 
-  Future<void> syncPendingSessions() async {
+  Future<void> syncPendingSessions({String? scope}) async {
     if (localStorage.token == null) {
       return;
     }
 
-    final pending = localStorage.getJsonList(_pendingSessionsKey);
+    final targetScope = scope ?? localStorage.scope;
+    final pending = localStorage.getJsonListInScope(
+      targetScope,
+      _pendingSessionsKey,
+    );
 
     if (pending.isEmpty) {
       return;
@@ -71,39 +80,58 @@ class SessionService {
       }
     }
 
-    await localStorage.setJsonList(
+    await localStorage.setJsonListInScope(
+      targetScope,
       _pendingSessionsKey,
       _deduplicateByClientSessionId(remaining),
     );
   }
 
-  Future<void> _moveGuestSessionsToPending() async {
-    final guestSessions = localStorage.getJsonList(_guestSessionsKey);
+  Future<void> _moveGuestSessionsToPending(String targetScope) async {
+    final guestSessions = localStorage.getJsonListInScope(
+      LocalStorageService.guestScope,
+      _guestSessionsKey,
+    );
 
     if (guestSessions.isEmpty) {
       return;
     }
 
-    var pending = localStorage.getJsonList(_pendingSessionsKey);
+    var pending = localStorage.getJsonListInScope(
+      targetScope,
+      _pendingSessionsKey,
+    );
 
     for (final item in guestSessions) {
       final session = PomodoroSession.fromJson(item);
       pending = _upsertByClientSessionId(pending, session);
     }
 
-    await localStorage.setJsonList(
+    await localStorage.setJsonListInScope(
+      targetScope,
       _pendingSessionsKey,
       _deduplicateByClientSessionId(pending),
     );
 
-    await localStorage.remove(_guestSessionsKey);
+    await localStorage.removeInScope(
+      LocalStorageService.guestScope,
+      _guestSessionsKey,
+    );
   }
 
   Future<void> _saveGuestSession(PomodoroSession session) async {
-    final sessions = localStorage.getJsonList(_guestSessionsKey);
+    final sessions = localStorage.getJsonListInScope(
+      LocalStorageService.guestScope,
+      _guestSessionsKey,
+    );
+
     final updated = _upsertByClientSessionId(sessions, session);
 
-    await localStorage.setJsonList(_guestSessionsKey, updated);
+    await localStorage.setJsonListInScope(
+      LocalStorageService.guestScope,
+      _guestSessionsKey,
+      updated,
+    );
   }
 
   Future<void> _queuePendingSession(PomodoroSession session) async {
