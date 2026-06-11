@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Pomodoro App';
+  String get appTitle => 'Time2Focus';
 
   @override
   String get navTimer => 'Timer';
@@ -1076,4 +1076,144 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get githubSignInSemantics =>
       'Sign in or create an account with GitHub';
+
+  @override
+  String get landingLogoSemantics => 'Time2Focus logo and landing area';
+
+  @override
+  String get landingLoginButton => 'Login';
+
+  @override
+  String get landingHeroBadge => 'Pomodoro timer & focus app';
+
+  @override
+  String get landingHeroTitle => 'Work with more focus using Time2Focus';
+
+  @override
+  String get landingHeroDescription =>
+      'Time2Focus is a Pomodoro timer app for focus sessions, task management and better productivity. Plan focused work intervals, keep breaks visible and track your progress over time.';
+
+  @override
+  String get landingPrimaryCta => 'Start Pomodoro timer';
+
+  @override
+  String get landingSecondaryCta => 'Create account or log in';
+
+  @override
+  String get landingHeroHint =>
+      'Use it directly in the browser. Start without installation and sync with your account when needed.';
+
+  @override
+  String get landingPreviewSemantics =>
+      'Preview of the Time2Focus app with timer, tasks and statistics features';
+
+  @override
+  String get landingPreviewLabel => 'App preview';
+
+  @override
+  String get landingPreviewTitle => 'Your next focus session';
+
+  @override
+  String get landingPreviewPhase => 'Focus time';
+
+  @override
+  String get landingPreviewTask => 'Link task';
+
+  @override
+  String get landingPreviewBreak => 'Plan breaks';
+
+  @override
+  String get landingPreviewStats => 'See progress';
+
+  @override
+  String get landingFeaturesSectionTitle =>
+      'Everything you need for focused work';
+
+  @override
+  String get landingFeaturesSectionSubtitle =>
+      'Time2Focus combines a Pomodoro timer, tasks and productivity statistics in a clear web app without unnecessary distraction.';
+
+  @override
+  String get landingFeatureTimerTitle =>
+      'Pomodoro timer for clear focus sessions';
+
+  @override
+  String get landingFeatureTimerText =>
+      'Work in fixed intervals with focus phases, short breaks and long breaks. This keeps your focus planned and your workday better structured.';
+
+  @override
+  String get landingFeatureTasksTitle => 'Task management for your work';
+
+  @override
+  String get landingFeatureTasksText =>
+      'Connect focus sessions with specific tasks. Later you can see more clearly where your focused work time was spent.';
+
+  @override
+  String get landingFeatureStatsTitle =>
+      'Productivity statistics with overview';
+
+  @override
+  String get landingFeatureStatsText =>
+      'Analyze completed focus time, Pomodoros and task time. This helps you understand progress, routines and productive patterns.';
+
+  @override
+  String get landingHowItWorksTitle => 'How Time2Focus works';
+
+  @override
+  String get landingHowItWorksSubtitle =>
+      'The workflow stays intentionally simple: choose a task, start a focus session and review your progress after working.';
+
+  @override
+  String get landingStepOneTitle => 'Prepare a task';
+
+  @override
+  String get landingStepOneText =>
+      'Create a task or start directly without one. Time2Focus supports both ways of working.';
+
+  @override
+  String get landingStepTwoTitle => 'Start a focus session';
+
+  @override
+  String get landingStepTwoText =>
+      'Start the Pomodoro timer and work with focus until the next break. The app guides you through work and break phases.';
+
+  @override
+  String get landingStepThreeTitle => 'Review progress';
+
+  @override
+  String get landingStepThreeText =>
+      'Use statistics to better understand focus time, completed Pomodoros and task time.';
+
+  @override
+  String get landingFaqTitle => 'Frequently asked questions';
+
+  @override
+  String get landingFaqSubtitle =>
+      'Short answers for new users who want to try Time2Focus first.';
+
+  @override
+  String get landingFaqOneQuestion =>
+      'Can I use Time2Focus without an account?';
+
+  @override
+  String get landingFaqOneAnswer =>
+      'Yes. You can use the timer directly in the browser. An account is useful if you want to sync data later and use it on multiple devices.';
+
+  @override
+  String get landingFaqTwoQuestion => 'Is Time2Focus only a Pomodoro timer?';
+
+  @override
+  String get landingFaqTwoAnswer =>
+      'No. Time2Focus combines a Pomodoro timer, focus sessions, task management and statistics so you can connect work and progress more clearly.';
+
+  @override
+  String get landingFaqThreeQuestion => 'Does Time2Focus work on smartphones?';
+
+  @override
+  String get landingFaqThreeAnswer =>
+      'Yes. The web app is responsive and can be used in the browser on desktop, tablet and smartphone.';
+
+  @override
+  String get landingFooter =>
+      'Time2Focus – Pomodoro timer and focus app for focused work.';
 }

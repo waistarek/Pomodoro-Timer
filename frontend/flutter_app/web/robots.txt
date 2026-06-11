@@ -1,6 +1,10 @@
 User-agent: *
 Allow: /
 
+Disallow: /timer
+Disallow: /tasks
+Disallow: /statistics
+Disallow: /settings
 Disallow: /account
 Disallow: /auth/
 Disallow: /reset-password

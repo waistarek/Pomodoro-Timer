@@ -127,7 +127,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In de, this message translates to:
-  /// **'Pomodoro App'**
+  /// **'Time2Focus'**
   String get appTitle;
 
   /// No description provided for @navTimer.
@@ -1957,6 +1957,246 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Mit GitHub anmelden oder Konto erstellen'**
   String get githubSignInSemantics;
+
+  /// No description provided for @landingLogoSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Time2Focus Logo und Startbereich'**
+  String get landingLogoSemantics;
+
+  /// No description provided for @landingLoginButton.
+  ///
+  /// In de, this message translates to:
+  /// **'Login'**
+  String get landingLoginButton;
+
+  /// No description provided for @landingHeroBadge.
+  ///
+  /// In de, this message translates to:
+  /// **'Pomodoro Timer & Fokus-App'**
+  String get landingHeroBadge;
+
+  /// No description provided for @landingHeroTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Konzentrierter arbeiten mit Time2Focus'**
+  String get landingHeroTitle;
+
+  /// No description provided for @landingHeroDescription.
+  ///
+  /// In de, this message translates to:
+  /// **'Time2Focus ist eine Pomodoro Timer App für Fokus-Sessions, Aufgabenverwaltung und bessere Produktivität. Plane konzentrierte Arbeitsphasen, halte Pausen ein und behalte deinen Fortschritt im Blick.'**
+  String get landingHeroDescription;
+
+  /// No description provided for @landingPrimaryCta.
+  ///
+  /// In de, this message translates to:
+  /// **'Pomodoro Timer starten'**
+  String get landingPrimaryCta;
+
+  /// No description provided for @landingSecondaryCta.
+  ///
+  /// In de, this message translates to:
+  /// **'Konto erstellen oder einloggen'**
+  String get landingSecondaryCta;
+
+  /// No description provided for @landingHeroHint.
+  ///
+  /// In de, this message translates to:
+  /// **'Direkt im Browser nutzbar. Ohne Installation starten und bei Bedarf mit deinem Konto synchronisieren.'**
+  String get landingHeroHint;
+
+  /// No description provided for @landingPreviewSemantics.
+  ///
+  /// In de, this message translates to:
+  /// **'Vorschau der Time2Focus App mit Timer, Aufgaben und Statistikfunktionen'**
+  String get landingPreviewSemantics;
+
+  /// No description provided for @landingPreviewLabel.
+  ///
+  /// In de, this message translates to:
+  /// **'App-Vorschau'**
+  String get landingPreviewLabel;
+
+  /// No description provided for @landingPreviewTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Deine nächste Fokus-Session'**
+  String get landingPreviewTitle;
+
+  /// No description provided for @landingPreviewPhase.
+  ///
+  /// In de, this message translates to:
+  /// **'Fokuszeit'**
+  String get landingPreviewPhase;
+
+  /// No description provided for @landingPreviewTask.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufgabe verknüpfen'**
+  String get landingPreviewTask;
+
+  /// No description provided for @landingPreviewBreak.
+  ///
+  /// In de, this message translates to:
+  /// **'Pausen planen'**
+  String get landingPreviewBreak;
+
+  /// No description provided for @landingPreviewStats.
+  ///
+  /// In de, this message translates to:
+  /// **'Fortschritt sehen'**
+  String get landingPreviewStats;
+
+  /// No description provided for @landingFeaturesSectionTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Alles, was du für konzentriertes Arbeiten brauchst'**
+  String get landingFeaturesSectionTitle;
+
+  /// No description provided for @landingFeaturesSectionSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Time2Focus verbindet Pomodoro Timer, Aufgaben und Produktivitätsstatistiken in einer klaren Web-App ohne unnötige Ablenkung.'**
+  String get landingFeaturesSectionSubtitle;
+
+  /// No description provided for @landingFeatureTimerTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Pomodoro Timer für klare Fokus-Sessions'**
+  String get landingFeatureTimerTitle;
+
+  /// No description provided for @landingFeatureTimerText.
+  ///
+  /// In de, this message translates to:
+  /// **'Arbeite in festen Intervallen mit Arbeitsphasen, kurzen Pausen und langen Pausen. So bleibt dein Fokus planbar und dein Arbeitstag besser strukturiert.'**
+  String get landingFeatureTimerText;
+
+  /// No description provided for @landingFeatureTasksTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufgabenverwaltung für deine Arbeit'**
+  String get landingFeatureTasksTitle;
+
+  /// No description provided for @landingFeatureTasksText.
+  ///
+  /// In de, this message translates to:
+  /// **'Verknüpfe Fokus-Sessions mit konkreten Aufgaben. Dadurch siehst du später besser, wofür deine konzentrierte Arbeitszeit genutzt wurde.'**
+  String get landingFeatureTasksText;
+
+  /// No description provided for @landingFeatureStatsTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Produktivitätsstatistiken mit Überblick'**
+  String get landingFeatureStatsTitle;
+
+  /// No description provided for @landingFeatureStatsText.
+  ///
+  /// In de, this message translates to:
+  /// **'Analysiere abgeschlossene Fokuszeiten, Pomodoros und Aufgabenzeiten. So erkennst du Fortschritt, Routinen und produktive Muster.'**
+  String get landingFeatureStatsText;
+
+  /// No description provided for @landingHowItWorksTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'So funktioniert Time2Focus'**
+  String get landingHowItWorksTitle;
+
+  /// No description provided for @landingHowItWorksSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Der Ablauf bleibt bewusst einfach: Aufgabe auswählen, Fokus-Session starten und nach der Arbeit den Fortschritt auswerten.'**
+  String get landingHowItWorksSubtitle;
+
+  /// No description provided for @landingStepOneTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Aufgabe vorbereiten'**
+  String get landingStepOneTitle;
+
+  /// No description provided for @landingStepOneText.
+  ///
+  /// In de, this message translates to:
+  /// **'Lege eine Aufgabe an oder starte direkt ohne Aufgabe. Time2Focus unterstützt beide Arbeitsweisen.'**
+  String get landingStepOneText;
+
+  /// No description provided for @landingStepTwoTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Fokus-Session starten'**
+  String get landingStepTwoTitle;
+
+  /// No description provided for @landingStepTwoText.
+  ///
+  /// In de, this message translates to:
+  /// **'Starte den Pomodoro Timer und arbeite konzentriert bis zur nächsten Pause. Die App führt dich durch Arbeits- und Pausenphasen.'**
+  String get landingStepTwoText;
+
+  /// No description provided for @landingStepThreeTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Fortschritt auswerten'**
+  String get landingStepThreeTitle;
+
+  /// No description provided for @landingStepThreeText.
+  ///
+  /// In de, this message translates to:
+  /// **'Nutze Statistiken, um Fokuszeit, erledigte Pomodoros und Aufgabenzeiten besser zu verstehen.'**
+  String get landingStepThreeText;
+
+  /// No description provided for @landingFaqTitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Häufige Fragen'**
+  String get landingFaqTitle;
+
+  /// No description provided for @landingFaqSubtitle.
+  ///
+  /// In de, this message translates to:
+  /// **'Kurze Antworten für neue Nutzerinnen und Nutzer, die Time2Focus zuerst ausprobieren möchten.'**
+  String get landingFaqSubtitle;
+
+  /// No description provided for @landingFaqOneQuestion.
+  ///
+  /// In de, this message translates to:
+  /// **'Kann ich Time2Focus ohne Konto verwenden?'**
+  String get landingFaqOneQuestion;
+
+  /// No description provided for @landingFaqOneAnswer.
+  ///
+  /// In de, this message translates to:
+  /// **'Ja. Du kannst den Timer direkt im Browser nutzen. Ein Konto ist hilfreich, wenn du Daten später synchronisieren und auf mehreren Geräten verwenden möchtest.'**
+  String get landingFaqOneAnswer;
+
+  /// No description provided for @landingFaqTwoQuestion.
+  ///
+  /// In de, this message translates to:
+  /// **'Ist Time2Focus nur ein Pomodoro Timer?'**
+  String get landingFaqTwoQuestion;
+
+  /// No description provided for @landingFaqTwoAnswer.
+  ///
+  /// In de, this message translates to:
+  /// **'Nein. Time2Focus kombiniert Pomodoro Timer, Fokus-Sessions, Aufgabenverwaltung und Statistiken, damit du Arbeit und Fortschritt besser verbinden kannst.'**
+  String get landingFaqTwoAnswer;
+
+  /// No description provided for @landingFaqThreeQuestion.
+  ///
+  /// In de, this message translates to:
+  /// **'Funktioniert Time2Focus auf dem Smartphone?'**
+  String get landingFaqThreeQuestion;
+
+  /// No description provided for @landingFaqThreeAnswer.
+  ///
+  /// In de, this message translates to:
+  /// **'Ja. Die Web-App ist responsiv aufgebaut und kann im Browser auf Desktop, Tablet und Smartphone genutzt werden.'**
+  String get landingFaqThreeAnswer;
+
+  /// No description provided for @landingFooter.
+  ///
+  /// In de, this message translates to:
+  /// **'Time2Focus – Pomodoro Timer und Fokus-App für konzentriertes Arbeiten.'**
+  String get landingFooter;
 }
 
 class _AppLocalizationsDelegate
