@@ -434,7 +434,19 @@ class _LoginScreenState extends State<LoginScreen> {
     final sessionSyncProvider = context.read<SessionSyncProvider>();
     final messenger = ScaffoldMessenger.of(context);
 
+    final preferredLocale = settingsProvider.settings.appLocale;
+    final shouldKeepPreferredLocale =
+        AppRoutes.isSupportedLandingLocale(preferredLocale);
+
     await settingsProvider.loadRemoteSettings();
+
+    if (shouldKeepPreferredLocale &&
+        settingsProvider.settings.appLocale != preferredLocale) {
+      await settingsProvider.save(
+        settingsProvider.settings.copyWith(appLocale: preferredLocale),
+      );
+    }
+
     await taskProvider.loadRemoteTasks();
 
     unawaited(

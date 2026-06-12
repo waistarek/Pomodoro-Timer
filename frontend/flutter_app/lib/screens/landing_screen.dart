@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../l10n/app_localizations.dart';
+import '../providers/settings_provider.dart';
 import '../router/app_routes.dart';
 
 String _landingLanguageLabel(AppLocalizations l10n, String localeCode) {
@@ -23,6 +25,61 @@ String _landingLanguageLabel(AppLocalizations l10n, String localeCode) {
     'fa' => l10n.languagePersian,
     _ => localeCode,
   };
+}
+
+String? _currentLandingLocaleCode(BuildContext context) {
+  return AppRoutes.landingLocaleFromPath(
+    GoRouterState.of(context).uri.path,
+  );
+}
+
+Future<void> _saveAppLocale(
+  BuildContext context,
+  String localeCode,
+) async {
+  if (!AppRoutes.isSupportedLandingLocale(localeCode)) {
+    return;
+  }
+
+  final settingsProvider = context.read<SettingsProvider>();
+
+  if (settingsProvider.settings.appLocale == localeCode) {
+    return;
+  }
+
+  await settingsProvider.save(
+    settingsProvider.settings.copyWith(appLocale: localeCode),
+  );
+}
+
+Future<void> _selectLandingLanguage(
+  BuildContext context,
+  String localeCode,
+) async {
+  await _saveAppLocale(context, localeCode);
+
+  if (!context.mounted) {
+    return;
+  }
+
+  context.go(AppRoutes.localizedLandingPath(localeCode));
+}
+
+Future<void> _goFromLanding(
+  BuildContext context,
+  String targetPath,
+) async {
+  final localeCode = _currentLandingLocaleCode(context);
+
+  if (localeCode != null) {
+    await _saveAppLocale(context, localeCode);
+  }
+
+  if (!context.mounted) {
+    return;
+  }
+
+  context.go(targetPath);
 }
 
 class LandingScreen extends StatelessWidget {
@@ -120,7 +177,7 @@ class _Header extends StatelessWidget {
           tooltip: l10n.languageTitle,
           icon: const Icon(Icons.language_outlined),
           onSelected: (localeCode) {
-            context.go(AppRoutes.localizedLandingPath(localeCode));
+            _selectLandingLanguage(context, localeCode);
           },
           itemBuilder: (context) {
             final currentLocaleCode = AppRoutes.landingLocaleFromPath(
@@ -139,7 +196,7 @@ class _Header extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         TextButton(
-          onPressed: () => context.go(AppRoutes.account),
+          onPressed: () => _goFromLanding(context, AppRoutes.account),
           child: Text(l10n.landingLoginButton),
         ),
       ],
@@ -235,7 +292,7 @@ class _HeroText extends StatelessWidget {
           runSpacing: 14,
           children: [
             FilledButton.icon(
-              onPressed: () => context.go(AppRoutes.timer),
+              onPressed: () => _goFromLanding(context, AppRoutes.timer),
               icon: const Icon(Icons.play_arrow_rounded),
               label: Text(l10n.landingPrimaryCta),
               style: FilledButton.styleFrom(
@@ -244,7 +301,7 @@ class _HeroText extends StatelessWidget {
               ),
             ),
             OutlinedButton.icon(
-              onPressed: () => context.go(AppRoutes.account),
+              onPressed: () => _goFromLanding(context, AppRoutes.account),
               icon: const Icon(Icons.person_add_alt_1_outlined),
               label: Text(l10n.landingSecondaryCta),
               style: OutlinedButton.styleFrom(
