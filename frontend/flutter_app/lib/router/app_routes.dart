@@ -25,7 +25,7 @@ class AppRoutes {
     'fa',
   };
 
-  static String localizedLandingPath(String localeCode) => '/$localeCode/';
+  static String localizedLandingPath(String localeCode) => '/$localeCode';
 
   static bool isSupportedLandingLocale(String localeCode) {
     return supportedLandingLocales.contains(localeCode);

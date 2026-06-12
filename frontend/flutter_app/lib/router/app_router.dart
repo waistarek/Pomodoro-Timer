@@ -92,7 +92,7 @@ GoRouter createAppRouter(AuthProvider authProvider) {
         name: 'landing',
         builder: (context, state) => const LandingScreen(),
       ),
-      for (final localeCode in AppRoutes.supportedLandingLocales)
+      for (final localeCode in AppRoutes.supportedLandingLocales) ...[
         GoRoute(
           path: AppRoutes.localizedLandingPath(localeCode),
           name: 'landing_$localeCode',
@@ -100,6 +100,14 @@ GoRouter createAppRouter(AuthProvider authProvider) {
             return _LocalizedLandingScreen(localeCode: localeCode);
           },
         ),
+        GoRoute(
+          path: '${AppRoutes.localizedLandingPath(localeCode)}/',
+          name: 'landing_${localeCode}_slash',
+          redirect: (context, state) {
+            return AppRoutes.localizedLandingPath(localeCode);
+          },
+        ),
+      ],
       ShellRoute(
         builder: (context, state, child) {
           return AppShell(

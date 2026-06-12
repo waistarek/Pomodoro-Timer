@@ -38,8 +38,7 @@
         ? normalizedPath
         : '';
 
-      const canonicalPath = activeLocale ? '/' + activeLocale + '/' : '/';
-      const canonicalUrl = baseUrl + canonicalPath;
+      const canonicalPath = activeLocale ? '/' + activeLocale : '/';      const canonicalUrl = baseUrl + canonicalPath;
 
       const canonical = document.createElement('link');
       canonical.setAttribute('rel', 'canonical');
@@ -48,21 +47,21 @@
 
       const alternateUrls = {
         'x-default': baseUrl + '/',
-        'de': baseUrl + '/de/',
-        'en': baseUrl + '/en/',
-        'ar': baseUrl + '/ar/',
-        'zh': baseUrl + '/zh/',
-        'fr': baseUrl + '/fr/',
-        'es': baseUrl + '/es/',
-        'hi': baseUrl + '/hi/',
-        'pt': baseUrl + '/pt/',
-        'ru': baseUrl + '/ru/',
-        'ja': baseUrl + '/ja/',
-        'tr': baseUrl + '/tr/',
-        'it': baseUrl + '/it/',
-        'ko': baseUrl + '/ko/',
-        'id': baseUrl + '/id/',
-        'fa': baseUrl + '/fa/'
+        'de': baseUrl + '/de',
+        'en': baseUrl + '/en',
+        'ar': baseUrl + '/ar',
+        'zh': baseUrl + '/zh',
+        'fr': baseUrl + '/fr',
+        'es': baseUrl + '/es',
+        'hi': baseUrl + '/hi',
+        'pt': baseUrl + '/pt',
+        'ru': baseUrl + '/ru',
+        'ja': baseUrl + '/ja',
+        'tr': baseUrl + '/tr',
+        'it': baseUrl + '/it',
+        'ko': baseUrl + '/ko',
+        'id': baseUrl + '/id',
+        'fa': baseUrl + '/fa'
       };
 
       Object.entries(alternateUrls).forEach(function ([hreflang, href]) {
