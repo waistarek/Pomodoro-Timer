@@ -24,6 +24,17 @@ GoRouter createAppRouter(AuthProvider authProvider) {
       final uri = state.uri;
       final path = uri.path.isEmpty ? AppRoutes.root : uri.path;
       final query = uri.queryParameters;
+      final normalizedLocalizedLandingPath =
+          AppRoutes.normalizedLocalizedLandingPath(path);
+
+      if (normalizedLocalizedLandingPath != null &&
+          path != normalizedLocalizedLandingPath) {
+        return uri.replace(path: normalizedLocalizedLandingPath).toString();
+      }
+
+      if (path.length > 1 && path.endsWith('/')) {
+        return uri.replace(path: path.substring(0, path.length - 1)).toString();
+      }
 
       final legacyResetToken =
           query['token'] ?? query['reset_token'] ?? query['set_token'];
@@ -81,6 +92,14 @@ GoRouter createAppRouter(AuthProvider authProvider) {
         name: 'landing',
         builder: (context, state) => const LandingScreen(),
       ),
+      for (final localeCode in AppRoutes.supportedLandingLocales)
+        GoRoute(
+          path: AppRoutes.localizedLandingPath(localeCode),
+          name: 'landing_$localeCode',
+          builder: (context, state) {
+            return _LocalizedLandingScreen(localeCode: localeCode);
+          },
+        ),
       ShellRoute(
         builder: (context, state, child) {
           return AppShell(
@@ -163,4 +182,27 @@ GoRouter createAppRouter(AuthProvider authProvider) {
       ),
     ],
   );
+}
+
+class _LocalizedLandingScreen extends StatelessWidget {
+  const _LocalizedLandingScreen({required this.localeCode});
+
+  final String localeCode;
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = Locale(localeCode);
+    final textDirection = AppRoutes.isRtlLandingLocale(localeCode)
+        ? TextDirection.rtl
+        : TextDirection.ltr;
+
+    return Localizations.override(
+      context: context,
+      locale: locale,
+      child: Directionality(
+        textDirection: textDirection,
+        child: const LandingScreen(),
+      ),
+    );
+  }
 }

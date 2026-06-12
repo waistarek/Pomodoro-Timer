@@ -2,6 +2,59 @@ class AppRoutes {
   const AppRoutes._();
 
   static const root = '/';
+  static const supportedLandingLocales = <String>[
+    'de',
+    'en',
+    'ar',
+    'zh',
+    'fr',
+    'es',
+    'hi',
+    'pt',
+    'ru',
+    'ja',
+    'tr',
+    'it',
+    'ko',
+    'id',
+    'fa',
+  ];
+
+  static const rtlLandingLocales = <String>{
+    'ar',
+    'fa',
+  };
+
+  static String localizedLandingPath(String localeCode) => '/$localeCode/';
+
+  static bool isSupportedLandingLocale(String localeCode) {
+    return supportedLandingLocales.contains(localeCode);
+  }
+
+  static bool isRtlLandingLocale(String localeCode) {
+    return rtlLandingLocales.contains(localeCode);
+  }
+
+  static String? landingLocaleFromPath(String path) {
+    final cleanedPath = path.replaceAll(RegExp(r'^/+|/+$'), '');
+
+    if (!isSupportedLandingLocale(cleanedPath)) {
+      return null;
+    }
+
+    return cleanedPath;
+  }
+
+  static String? normalizedLocalizedLandingPath(String path) {
+    final localeCode = landingLocaleFromPath(path);
+
+    if (localeCode == null) {
+      return null;
+    }
+
+    return localizedLandingPath(localeCode);
+  }
+
   static const timer = '/timer';
   static const tasks = '/tasks';
   static const statistics = '/statistics';

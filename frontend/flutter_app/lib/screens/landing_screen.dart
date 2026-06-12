@@ -4,6 +4,27 @@ import 'package:go_router/go_router.dart';
 import '../l10n/app_localizations.dart';
 import '../router/app_routes.dart';
 
+String _landingLanguageLabel(AppLocalizations l10n, String localeCode) {
+  return switch (localeCode) {
+    'de' => l10n.languageGerman,
+    'en' => l10n.languageEnglish,
+    'ar' => l10n.languageArabic,
+    'zh' => l10n.languageChinese,
+    'fr' => l10n.languageFrench,
+    'es' => l10n.languageSpanish,
+    'hi' => l10n.languageHindi,
+    'pt' => l10n.languagePortuguese,
+    'ru' => l10n.languageRussian,
+    'ja' => l10n.languageJapanese,
+    'tr' => l10n.languageTurkish,
+    'it' => l10n.languageItalian,
+    'ko' => l10n.languageKorean,
+    'id' => l10n.languageIndonesian,
+    'fa' => l10n.languagePersian,
+    _ => localeCode,
+  };
+}
+
 class LandingScreen extends StatelessWidget {
   const LandingScreen({super.key});
 
@@ -87,11 +108,36 @@ class _Header extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 12),
-        Text(
-          'Time2Focus',
-          style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+        Expanded(
+          child: Text(
+            'Time2Focus',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+          ),
         ),
-        const Spacer(),
+        PopupMenuButton<String>(
+          tooltip: l10n.languageTitle,
+          icon: const Icon(Icons.language_outlined),
+          onSelected: (localeCode) {
+            context.go(AppRoutes.localizedLandingPath(localeCode));
+          },
+          itemBuilder: (context) {
+            final currentLocaleCode = AppRoutes.landingLocaleFromPath(
+                    GoRouterState.of(context).uri.path) ??
+                Localizations.localeOf(context).languageCode;
+
+            return [
+              for (final localeCode in AppRoutes.supportedLandingLocales)
+                CheckedPopupMenuItem<String>(
+                  value: localeCode,
+                  checked: localeCode == currentLocaleCode,
+                  child: Text(_landingLanguageLabel(l10n, localeCode)),
+                ),
+            ];
+          },
+        ),
+        const SizedBox(width: 8),
         TextButton(
           onPressed: () => context.go(AppRoutes.account),
           child: Text(l10n.landingLoginButton),

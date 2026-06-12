@@ -11,9 +11,81 @@
   <title>Time2Focus – Pomodoro Timer & Fokus-App für produktives Arbeiten</title>
   <meta name="description" content="Time2Focus ist eine Pomodoro Timer und Fokus-App für konzentriertes Arbeiten, Aufgabenverwaltung, Fokus-Sessions, Pausen und Produktivitätsstatistiken.">
   <meta name="robots" content="index, follow">
+    <script>
+    (function () {
+      const baseUrl = 'https://time2focus.app';
+      const supportedLocales = [
+        'de',
+        'en',
+        'ar',
+        'zh',
+        'fr',
+        'es',
+        'hi',
+        'pt',
+        'ru',
+        'ja',
+        'tr',
+        'it',
+        'ko',
+        'id',
+        'fa'
+      ];
+      const rtlLocales = ['ar', 'fa'];
+
+      const normalizedPath = window.location.pathname.replace(/^\/+|\/+$/g, '');
+      const activeLocale = supportedLocales.includes(normalizedPath)
+        ? normalizedPath
+        : '';
+
+      const canonicalPath = activeLocale ? '/' + activeLocale + '/' : '/';
+      const canonicalUrl = baseUrl + canonicalPath;
+
+      const canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      canonical.setAttribute('href', canonicalUrl);
+      document.head.appendChild(canonical);
+
+      const alternateUrls = {
+        'x-default': baseUrl + '/',
+        'de': baseUrl + '/de/',
+        'en': baseUrl + '/en/',
+        'ar': baseUrl + '/ar/',
+        'zh': baseUrl + '/zh/',
+        'fr': baseUrl + '/fr/',
+        'es': baseUrl + '/es/',
+        'hi': baseUrl + '/hi/',
+        'pt': baseUrl + '/pt/',
+        'ru': baseUrl + '/ru/',
+        'ja': baseUrl + '/ja/',
+        'tr': baseUrl + '/tr/',
+        'it': baseUrl + '/it/',
+        'ko': baseUrl + '/ko/',
+        'id': baseUrl + '/id/',
+        'fa': baseUrl + '/fa/'
+      };
+
+      Object.entries(alternateUrls).forEach(function ([hreflang, href]) {
+        const alternate = document.createElement('link');
+        alternate.setAttribute('rel', 'alternate');
+        alternate.setAttribute('hreflang', hreflang);
+        alternate.setAttribute('href', href);
+        document.head.appendChild(alternate);
+      });
+
+      if (activeLocale) {
+        document.documentElement.lang = activeLocale;
+        document.documentElement.dir = rtlLocales.includes(activeLocale)
+          ? 'rtl'
+          : 'ltr';
+      }
+    })();
+  </script>
+
+
   <meta name="application-name" content="Time2Focus">
   <meta name="theme-color" content="#FF5A3D">
-  <link rel="canonical" href="https://time2focus.app/">
+  
 
   <meta property="og:locale" content="de_DE">
   <meta property="og:title" content="Time2Focus – Pomodoro Timer & Fokus-App">
