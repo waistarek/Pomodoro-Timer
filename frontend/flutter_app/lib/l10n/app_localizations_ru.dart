@@ -1164,7 +1164,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Анализируйте завершённое время фокуса, Pomodoro-сессии и время по задачам. Это помогает лучше понимать прогресс, привычки и продуктивные рабочие модели.';
 
   @override
-  String get landingHowItWorksTitle => 'So funktioniert Time2Focus';
+  String get landingHowItWorksTitle => 'Как работает Time2Focus';
 
   @override
   String get landingHowItWorksSubtitle =>
