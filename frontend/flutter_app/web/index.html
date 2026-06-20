@@ -38,7 +38,8 @@
         ? normalizedPath
         : '';
 
-      const canonicalPath = activeLocale ? '/' + activeLocale : '/';      const canonicalUrl = baseUrl + canonicalPath;
+      const canonicalPath = activeLocale ? '/' + activeLocale : '/';
+      const canonicalUrl = baseUrl + canonicalPath;
 
       const canonical = document.createElement('link');
       canonical.setAttribute('rel', 'canonical');
@@ -118,7 +119,7 @@
         "@type": "WebSite",
         "name": "Time2Focus",
         "url": "https://time2focus.app/",
-        "inLanguage": ["de", "en"]
+        "inLanguage": ["de", "en", "ar", "zh", "fr", "es", "hi", "pt", "ru", "ja", "tr", "it", "ko", "id", "fa"]
       },
       {
         "@type": "SoftwareApplication",
