@@ -55,7 +55,7 @@ Future<void> main() async {
 
   // Zuerst feststellen, welcher Benutzer bzw. Storage-Scope aktiv ist.
 // Dadurch kann der Timer danach aus dem richtigen Scope wiederhergestellt werden.
-  await authProvider.loadLocalSession()
+  await authProvider.loadLocalSession();
 
   final sessionSyncProvider = SessionSyncProvider(sessionService);
   final settingsProvider = SettingsProvider(localStorage, settingsService);
