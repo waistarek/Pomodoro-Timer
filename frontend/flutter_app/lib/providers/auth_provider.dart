@@ -17,42 +17,42 @@ class AuthProvider extends ChangeNotifier {
   bool get hasLocalToken => _authService.hasLocalToken;
 
   Future<void> loadLocalSession() async {
-    if (!_authService.hasLocalToken) {
-      _authService.useGuestScope();
-      user = null;
-      notifyListeners();
-      return;
-    }
-
-    loading = true;
-    error = null;
+  if (!_authService.hasLocalToken) {
+    _authService.useGuestScope();
+    user = null;
     notifyListeners();
-
-    try {
-      final currentUser = await _authService.me();
-
-      _authService.useUserScope(currentUser.id);
-      user = currentUser;
-    } on ApiException catch (e) {
-      user = null;
-      _authService.useGuestScope();
-
-      if (e.statusCode == 401 || e.statusCode == 403) {
-        await _authService.clearLocalToken();
-      } else {
-        debugPrint('Lokale Sitzung konnte nicht geprüft werden: $e');
-      }
-    } catch (e, stackTrace) {
-      user = null;
-      _authService.useGuestScope();
-
-      debugPrint('Lokale Sitzung konnte nicht geprüft werden: $e');
-      debugPrintStack(stackTrace: stackTrace);
-    } finally {
-      loading = false;
-      notifyListeners();
-    }
+    return;
   }
+
+  loading = true;
+  error = null;
+  notifyListeners();
+
+  try {
+    final currentUser = await _authService.me();
+
+    _authService.useUserScope(currentUser.id);
+    user = currentUser;
+  } on ApiException catch (e) {
+    if (e.statusCode == 401) {
+      await _authService.clearLocalToken();
+      _authService.useGuestScope();
+      user = null;
+    } else {
+      debugPrint(
+        'Lokale Sitzung konnte vorübergehend nicht geprüft werden: $e',
+      );
+    }
+  } catch (e, stackTrace) {
+    debugPrint(
+      'Lokale Sitzung konnte vorübergehend nicht geprüft werden: $e',
+    );
+    debugPrintStack(stackTrace: stackTrace);
+  } finally {
+    loading = false;
+    notifyListeners();
+  }
+}
 
   Future<bool> register(String email, String password) async {
     loading = true;

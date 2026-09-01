@@ -13,7 +13,7 @@ User-agent: *
 Allow: /
 
 Disallow: /timer
-Disallow: /tasks
+Disallow: /tasks 
 Disallow: /statistics
 Disallow: /settings
 Disallow: /account

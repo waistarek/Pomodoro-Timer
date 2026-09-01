@@ -110,7 +110,7 @@ class ApiClient {
   }
 
   bool _isAuthError(int statusCode) {
-    return statusCode == 401 || statusCode == 403;
+    return statusCode == 401;
   }
 
   Future<void> _handleUnauthorized() async {
