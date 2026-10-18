@@ -15,6 +15,53 @@ The primary application is developed with **Flutter Web**. An Android project is
 
 ---
 
+## Application Screenshots
+
+Time2Focus provides a responsive Flutter Web interface
+for managing focus sessions, tasks, and productivity data.
+
+### Landing Page
+
+The public landing page introduces the application
+and provides access to the Pomodoro timer and
+account authentication.
+
+![Time2Focus Landing Page](docs/screenshots/landing.png)
+
+### Pomodoro Timer
+
+The main timer interface supports configurable
+focus sessions, break management, and task selection.
+
+![Time2Focus Pomodoro Timer](docs/screenshots/timer.png)
+
+### Task Management
+
+Tasks can be organized, prioritized, completed,
+and associated with individual focus sessions.
+
+![Time2Focus Task Management](docs/screenshots/tasks.png)
+
+### Productivity Statistics
+
+The statistics dashboard visualizes completed
+Pomodoro sessions, focus time, streaks, and
+productivity trends.
+
+![Time2Focus Statistics](docs/screenshots/statistics.png)
+
+### Application Settings
+
+Users can customize timer durations, application
+appearance, theme colors, language preferences,
+and selected timer behaviors.
+
+![Time2Focus Settings](docs/screenshots/settings.png)
+
+**Try the application:**
+[time2focus.app](https://time2focus.app/)
+
+
 ## Features
 
 ### Pomodoro Timer
